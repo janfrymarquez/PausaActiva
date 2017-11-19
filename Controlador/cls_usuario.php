@@ -126,8 +126,10 @@ class Usuario extends Conexion
         $numero_registro = $resultado->rowCount();
 
         if ($numero_registro != 0) {
-            echo '<div align="center" id="NoExiste" class="No_Disponible"> El nombre de usuario no esta disponible';
-
+            echo 'existe';
+            //<div align="center" id="NoExiste" class="No_Disponible"> El nombre de usuario no esta disponible'
+        }else{
+            echo "no existe";
         }
 
         $resultado->closeCursor();

@@ -1,11 +1,16 @@
 <?php
-ini_set('max_execution_time', 300);
 
-/*if (!isset($_SESSION["userlog"])) {
+session_start();
 
-header("location:login.php");
+if (!isset($_SESSION["userlog"])) {
 
-}*/
+    header("location:Vista/login.php");
+
+}
+
+
+
+
 if (isset($_POST["login"])) {
 
     date_default_timezone_set('America/Santo_Domingo');
@@ -27,7 +32,7 @@ if (isset($_POST["login"])) {
 
     $RegistrarUsuario = new Usuario();
 
-    /// $RegistrarUsuario->RegistrarUser($ID, $usuario, $password, $Email, $Nombre, $Apellido, $UsuarioActual, $FechaCreacion);
+    $RegistrarUsuario->RegistrarUser($ID, $usuario, $password, $Email, $Nombre, $Apellido, $UsuarioActual, $FechaCreacion);
 
 }
 ?>
@@ -52,7 +57,7 @@ if (isset($_POST["login"])) {
 	<link rel="stylesheet" type="text/css" href="assets/css/github.min.css">
 
 	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.0/sweetalert2.min.css">
 
 
 
@@ -151,15 +156,12 @@ echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>'
 						<div class="panel-heading">Usuarios</div>
 							<div class="panel-body">
 
-                                <div class="form-group col-md-12"  id="estadoUser">
-
-
-
-                                </div>
-
-                                <div  class="form-group col-md-6">
+                                <div  class="form-group col-md-6" id="FormUsuario">
 									<label>Usuario</label>
-									<input type="text" class= "form-control"  name= "Usuario" id ="txt_username" onblur="checkField(this);" onkeyup="javascript:ComprobarUsuario('../Controlador/comprobarUser.php','estadoUser')" required />
+									<!--<input type="text" class= "form-control"  name= "Usuario" id ="txt_username"   onblur="checkField(this);" onkeyup="javascript:ComprobarUsuario('../Controlador/comprobarUser.php','estadoUser')" required />-->
+
+									<input type="text" class= "form-control"  name= "Usuario" id ="txt_username" onfocusout="ComprobarUsuario()" required />
+
 								 </div>
 
 		                        <div class="form-group col-md-6">
@@ -219,12 +221,12 @@ echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>'
 
 
 
-	          <div class="row">
+	          <div class="row" >
 	                <div class="col-lg-12">
 						<div class="Panel-Botones">
 	                         <div class="Panel-Botones-Guardar col-lg-6 col-lg-offset-9">
 	                         	<input type="reset" class="btn btn-danger" value="Reset"  />
-	                   				<input type="submit" class="btn btn-info" name="login" value="Submit" onclick="return verificar();" />
+	                   				<input type="submit" id="BotonGuardar" class="btn btn-info" name="login" value="Submit" onclick="return verificar();" />
 
 	           			     </div>
 						</div>
@@ -244,11 +246,11 @@ echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>'
 	<script src="js/jquery-1.11.1.min.js"></script>
 
 		<script src="js/bootstrap.min.js"></script>
-		<script src="js/chart.min.js"></script>
-		<script src="js/chart-data.js"></script>
+		<!--<script src="js/chart.min.js"></script>
+		<script src="js/chart-data.js"></script>-->
 		<script src="js/ValidarExistencia.js"></script>
-		<script src="js/easypiechart.js"></script>
-		<script src="js/easypiechart-data.js"></script>
+		<!--<script src="js/easypiechart.js"></script>
+		<script src="js/easypiechart-data.js"></script>-->
 		<script src="js/bootstrap-datepicker.js"></script>
 		<script src="js/custom.js"></script>
 		<script type="text/javascript" src="assets/js/jquery.min.js"></script>
@@ -263,26 +265,67 @@ echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>'
 	</script>
 
 	<script type="text/javascript">
-			$(document).ready(function(){
-	$(".select2").select2();
+	
+	
+	$(document).ready(function(){
+			$(".select2").select2();
+	});
+	</script>
 
-			});
 
+	<script type="text/javascript">
+		//Comprueba si el usuario existe en la db
 
+		function ComprobarUsuario(){
 
+			var usuario = $("#txt_username").val();
 
+			if (usuario.length > 4){
 
+				$.ajax({
+					    url : "../Controlador/comprobarUser.php",
+					    type: "POST",
+					    data : {username :usuario},
+					    success: function(data, textStatus)
+					    {
+					    	 $("#FormUsuario").addClass("has-success");
+
+					      	if (data == "existe"){
+
+								$("#BotonGuardar").attr("disabled", true);
+								swal('Alerta','El usuario ya existe','error');
+					      		$("#FormUsuario").addClass("has-error");
+					      	
+					      	}else{
+
+					      		$("#txt_username").attr("required", false);
+									$("#BotonGuardar").attr("disabled", false);
+									$("#FormUsuario").removeClass("has-error");
+									$("#FormUsuario").addClass("has-success");
+									
+					      	}
+					    },
+					    error: function (jqXHR, textStatus)
+					    {
+					 		alert("fallo");
+					    }
+				});
+
+			}
+
+		}
 
 	</script>
 
 
 
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 	<script type="text/javascript" src="assets/js/highlight.min.js"></script>
 	<script type="text/javascript">
 	hljs.configure({tabReplace: '    '});
 	hljs.initHighlightingOnLoad();
 	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.0/sweetalert2.js"></script>
 </body>
 </html>
