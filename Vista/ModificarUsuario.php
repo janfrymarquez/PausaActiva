@@ -1,13 +1,12 @@
 <?php
 
-session_start();
+/*session_start();
 
 if (!isset($_SESSION["userlog"])) {
 
-    header("location:Vista/login.php");
+    header("location:login.php");
 
-}
-
+}*/
 
 
 
@@ -24,7 +23,9 @@ if (isset($_POST["login"])) {
     $Email           = htmlentities(addslashes($_POST["Email"]));
     $confirmpassword = htmlentities(addslashes($_POST["confirmpassword"]));
     $Permisos        = $_POST["Permisos"];
-    $UsuarioActual   = $_SESSION["userlog"];
+    //$UsuarioActual   = $_SESSION["userlog"];
+
+    $UsuarioActual   =1;
     $FechaCreacion   = date('Y/m/d');
     $ID              = 0;
 
@@ -156,6 +157,11 @@ echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>'
 						<div class="panel-heading">Usuarios</div>
 							<div class="panel-body">
 
+								 
+
+									<div  id="UserNoDisponible">  </div>
+								 
+
                                 <div  class="form-group col-md-6" id="FormUsuario">
 									<label>Usuario</label>
 									<!--<input type="text" class= "form-control"  name= "Usuario" id ="txt_username"   onblur="checkField(this);" onkeyup="javascript:ComprobarUsuario('../Controlador/comprobarUser.php','estadoUser')" required />-->
@@ -286,15 +292,20 @@ echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>'
 					    url : "../Controlador/comprobarUser.php",
 					    type: "POST",
 					    data : {username :usuario},
+
+
 					    success: function(data, textStatus)
 					    {
+
+					    	
 					    	 $("#FormUsuario").addClass("has-success");
 
 					      	if (data == "existe"){
 
 								$("#BotonGuardar").attr("disabled", true);
-								swal('Alerta','El usuario ya existe','error');
+								
 					      		$("#FormUsuario").addClass("has-error");
+					      		document.getElementById("UserNoDisponible").innerHTML =' <div align="center" id="NoExiste" class="No_Disponible"> El nombre de usuario no esta disponible  </div>'
 					      	
 					      	}else{
 
@@ -302,16 +313,23 @@ echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>'
 									$("#BotonGuardar").attr("disabled", false);
 									$("#FormUsuario").removeClass("has-error");
 									$("#FormUsuario").addClass("has-success");
-									
+									document.getElementById("UserNoDisponible").innerHTML ='';
 					      	}
 					    },
 					    error: function (jqXHR, textStatus)
 					    {
-					 		alert("fallo");
+					 		alert("Algo Fallo");
 					    }
 				});
 
 			}
+
+
+
+
+
+
+
 
 		}
 
