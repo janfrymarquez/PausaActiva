@@ -9,17 +9,17 @@ if (isset($_POST["enviar"])) {
 
     $user = new Usuario();
 
-    $login = $user->VerificarUser($usuario, $password);
+    $user->VerificarUser($usuario, $password);
 
-    if ($login) {
+    /* if ($login) {
 
-        session_start();
+session_start();
 
-        $_SESSION["userlog"] = $_POST["Usuario"];
+$_SESSION["userlog"] = $_POST["Usuario"];
 
-        header("Location:../index.php");
+header("Location:../index.php");
 
-    }
+}*/
 }
 ?>
 

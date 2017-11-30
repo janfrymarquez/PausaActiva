@@ -69,6 +69,8 @@ echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>'
 			</div>
 		</form>
 		<ul class="nav menu">
+
+
 			<li class="active"><a href="index.php"><em class="fa fa-dashboard">&nbsp;</em> Dashboard</a></li>
 			<li><a href="Vista/charts.php"><em class="fa fa-bar-chart">&nbsp;</em> Estadistica</a></li>
 			<li><a href="Vista/elements.php"><em class="fa fa-toggle-off">&nbsp;</em> Administrar P Activa </a></li>
@@ -173,8 +175,6 @@ echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>'
 	<script src="Vista/js/bootstrap.min.js"></script>
 	<script src="Vista/js/chart.min.js"></script>
 	<script src="Vista/js/chart-data.js"></script>
-	<script src="Vista/js/easypiechart.js"></script>
-	<script src="Vista/js/easypiechart-data.js"></script>
 	<script src="Vista/js/bootstrap-datepicker.js"></script>
 	<script src="Vista/js/custom.js"></script>
 	<script>

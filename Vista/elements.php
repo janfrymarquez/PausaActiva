@@ -1,11 +1,10 @@
  	<?php
- ini_set ( 'max_execution_time', 300);
+ini_set('max_execution_time', 300);
 session_start();
 
-if(!isset($_SESSION["userlog"])){
-	
-  header("location:login.php");
+if (!isset($_SESSION["userlog"])) {
 
+    header("location:login.php");
 
 }
 ?>
@@ -37,9 +36,14 @@ if(!isset($_SESSION["userlog"])){
 	<nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
 		<div class="container-fluid">
 			<div class="navbar-header">
-			
+
+             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar-collapse"><span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span></button>
+
 				<a class="navbar-brand" href="#"><span>PAUSA ACTIVA </span> </span> Admin</a>
-				
+
 			</div>
 		</div><!-- /.container-fluid -->
 	</nav>
@@ -49,13 +53,14 @@ if(!isset($_SESSION["userlog"])){
 				<img src="http://placehold.it/50/30a5ff/fff" class="img-responsive" alt="">
 			</div>
 			<div class="profile-usertitle">
-				 <?php
 
-               $usar =$_SESSION["userlog"];
+               <?php
 
-			echo '<div class="profile-usertitle-name"> '."Hola".'  '.$usar.' </div>';
-			?>
-				<div class="profilsertitle-status"><span class="indicator label-success"></span>Online</div>
+$usar = $_SESSION["userlog"];
+
+echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>';
+?>
+			<div class="profile-usertitle-status"><span class="indicator label-success"></span>Online</div>
 			</div>
 			<div class="clear"></div>
 		</div>
@@ -87,7 +92,7 @@ if(!isset($_SESSION["userlog"])){
 			<li><a href="logout.php"><em class="fa fa-power-off">&nbsp;</em> Logout</a></li>
 		</ul>
 	</div><!--/.sidebar-->
-		
+
 	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 		<div class="row">
 			<ol class="breadcrumb">
@@ -97,21 +102,21 @@ if(!isset($_SESSION["userlog"])){
 				<li class="active">Forms Admin</li>
 			</ol>
 		</div><!--/.row-->
-		
+
 		<div class="row">
 			<div class="col-lg-12">
 				<h1 class="page-header">Administrar Pausa Activa</h1>
 			</div>
 		</div><!--/.row-->
-				
-		
+
+
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">Configuraciones</div>
 						<div class="panel-body">
-						
-							
+
+
 	                        <div class="form-group col-md-6">
 								<label>Departamentos</label>
 									<select class="form-control select2" multiple name="departamento">
@@ -126,12 +131,12 @@ if(!isset($_SESSION["userlog"])){
 								<label>Dias</label>
 									<select class="form-control" name="dias" id="dias">
 									<?php
-											//Array -> Datos
-										foreach ($Datos as $key => $value) {
-											echo "<option value='".$key."'>".$value."</option>";
-										}
+//Array -> Datos
+foreach ($Datos as $key => $value) {
+    echo "<option value='" . $key . "'>" . $value . "</option>";
+}
 
-									?>
+?>
 								</select>
 							 </div>
 
@@ -173,9 +178,9 @@ if(!isset($_SESSION["userlog"])){
 											<option>Video 3</option>
 											<option>Video 4</option>
 										</select>
-								</div>          
-						
-					
+								</div>
+
+
 							</div><!-- /.panel body-->
 						</div><!-- /.panel-->
 					</div><!-- /.col-->
@@ -186,7 +191,7 @@ if(!isset($_SESSION["userlog"])){
 						<div class="panel panel-default">
 							<div class="panel-heading">Video Preview</div>
 								<div class="panel-video ">
-						
+
 						        <div class="video-container ">
 									<iframe src="C:\Users\hbjjmarquez\Videos\video.mp2"
 							      allowfullscreen="allowfullscreen" width="400" height="340"
@@ -207,7 +212,7 @@ if(!isset($_SESSION["userlog"])){
                          <div class="Panel-Botones-Guardar col-lg-6 col-lg-offset-9">
                    				<input type="submit" class="btn btn-info" value="Aceptar">
                    				<button type="button" class="btn btn-danger">Cancelar</button>
-           			     </div> 
+           			     </div>
 					</div>
 				</div>
            	</div>
@@ -226,7 +231,7 @@ if(!isset($_SESSION["userlog"])){
 	<script src="js/chart.min.js"></script>
 	<script src="js/chart-data.js"></script>
 	<script src="js/easypiechart.js"></script>
-	<script src="js/easypiechart-data.js"></script>
+
 	<script src="js/bootstrap-datepicker.js"></script>
 	<script src="js/custom.js"></script>
 	<script type="text/javascript" src="assets/js/jquery.min.js"></script>
@@ -245,7 +250,7 @@ $('.clockpicker').clockpicker({
 $(".select2").select2();
 
 		});
-			
+
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script type="text/javascript" src="assets/js/highlight.min.js"></script>

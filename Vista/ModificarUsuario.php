@@ -1,14 +1,12 @@
 <?php
 
-/*session_start();
+session_start();
 
 if (!isset($_SESSION["userlog"])) {
 
     header("location:login.php");
 
-}*/
-
-
+}
 
 if (isset($_POST["login"])) {
 
@@ -21,19 +19,20 @@ if (isset($_POST["login"])) {
     $Nombre          = htmlentities(addslashes($_POST["Nombre"]));
     $Apellido        = htmlentities(addslashes($_POST["Apellido"]));
     $Email           = htmlentities(addslashes($_POST["Email"]));
+    $imagen          = $_FILES["imagen"];
     $confirmpassword = htmlentities(addslashes($_POST["confirmpassword"]));
     $Permisos        = $_POST["Permisos"];
     //$UsuarioActual   = $_SESSION["userlog"];
-
-    $UsuarioActual   =1;
-    $FechaCreacion   = date('Y/m/d');
-    $ID              = 0;
+    $UsuarioActual = "Admin";
+    $UsuarioActual = 1;
+    $FechaCreacion = date('Y/m/d');
+    $ID            = 3;
 
     require "../Controlador/cls_usuario.php";
 
     $RegistrarUsuario = new Usuario();
 
-    $RegistrarUsuario->RegistrarUser($ID, $usuario, $password, $Email, $Nombre, $Apellido, $UsuarioActual, $FechaCreacion);
+    $RegistrarUsuario->RegistrarUser($ID, $usuario, $password, $Email, $Nombre, $Apellido, $imagen, $UsuarioActual, $FechaCreacion);
 
 }
 ?>
@@ -77,36 +76,42 @@ if (isset($_POST["login"])) {
 
 <body>
 		<nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
-			<div class="container-fluid">
-				<div class="navbar-header">
+		<div class="container-fluid">
+			<div class="navbar-header">
 
-					<a class="navbar-brand" href="#"><span>PAUSA ACTIVA </span> </span> Admin</a>
+             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar-collapse"><span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span></button>
 
-				</div>
-			</div><!-- /.container-fluid -->
-		</nav>
-		<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
-			<div class="profile-sidebar">
-				<div class="profile-userpic">
-					<img src="http://placehold.it/50/30a5ff/fff" class="img-responsive" alt="">
-				</div>
-				<div class="profile-usertitle">
-					 <?php
+				<a class="navbar-brand" href="#"><span>PAUSA ACTIVA </span> </span> Admin</a>
+
+			</div>
+		</div><!-- /.container-fluid -->
+	</nav>
+	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+		<div class="profile-sidebar">
+			<div class="profile-userpic">
+				<img src="http://placehold.it/50/30a5ff/fff" class="img-responsive" alt="">
+			</div>
+			<div class="profile-usertitle">
+
+               <?php
 
 $usar = $_SESSION["userlog"];
 
 echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>';
 ?>
-					<div class="profilsertitle-status"><span class="indicator label-success"></span>Online</div>
-				</div>
-				<div class="clear"></div>
+			<div class="profile-usertitle-status"><span class="indicator label-success"></span>Online</div>
 			</div>
-			<div class="divider"></div>
-			<form role="search">
-				<div class="form-group">
-					<input type="text" class="form-control" placeholder="Search">
-				</div>
-			</form>
+			<div class="clear"></div>
+		</div>
+		<div class="divider"></div>
+		<form role="search">
+			<div class="form-group">
+				<input type="text" class="form-control" placeholder="Search">
+			</div>
+		</form>
 			<ul class="nav menu">
 				<li ><a href="../index.php"><em class="fa fa-dashboard">&nbsp;</em> Dashboard</a></li>
 				<li><a href="charts.php"><em class="fa fa-bar-chart">&nbsp;</em> Estadistica</a></li>
@@ -157,10 +162,10 @@ echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>'
 						<div class="panel-heading">Usuarios</div>
 							<div class="panel-body">
 
-								 
+
 
 									<div  id="UserNoDisponible">  </div>
-								 
+
 
                                 <div  class="form-group col-md-6" id="FormUsuario">
 									<label>Usuario</label>
@@ -170,57 +175,71 @@ echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>'
 
 								 </div>
 
-		                        <div class="form-group col-md-6">
+		                        <div class="form-group col-md-6" id="FormNombre">
 									<label> Nombre</label>
-										<input type="text" class= "form-control" name= "Nombre" id= "Nombre" required />
+										<input type="text" class= "form-control" name= "Nombre" id= "Nombre" onfocusout="Verificar_Nombre()" required />
 								 </div>
 
-								 <div class="form-group col-md-6">
+								 <div class="form-group col-md-6" id="FormApellido">
 									<label>Apellido</label>
-									<input type="text" class= "form-control"  name= "Apellido" id ="Apellido" required  />
+									<input type="text" class= "form-control"  name= "Apellido" id ="Apellido" onfocusout="Verificar_Apellido()" required  />
 								 </div>
 
 
 
-								 <div class="form-group col-md-6">
+								 <div class="form-group col-md-6 " id="FormEmail">
 									<label>Correo Electronico</label>
-									<input type="email" class= "form-control"  name= "Email" id ="Email" required />
+									<input type="email" class= "form-control"  name= "Email" id ="Email" onfocusout="Verificar_Email()"required />
 								 </div>
 
-								 <div class="form-group col-md-6">
+								 <div class="form-group col-md-6"  id="FormPassword">
 									<label>Contraseña</label>
-									<input type="password" class= "form-control"  name= "Password" id ="Password" required />
+									<input type="password" class= "form-control"  name= "Password" id ="Password"  onfocusout="verificar_Password()" required />
 								 </div>
 
-								 <div class="form-group col-md-6">
+								 <div class="form-group col-md-6 " id="FormConfirmPassword">
 									<label>Confirmar Contraseña</label>
-									<input type="password" class= "form-control"  name= "confirmpassword" id ="ConfirPassword" required />
+									<input type="password" class= "form-control"  name= "confirmpassword" id ="ConfirPassword"  onfocusout = "Verificar_confirmPassword()" required />
 								 </div>
 
 
 								 <div class="form-group col-md-6">
 									<label>Permisos</label>
 										<select class="form-control " name="Permisos" required>
-											<option>SuperAdmin</option>
-											<option>Admin</option>
-											<option>Consulta</option>
 											<option>Pausa Activa</option>
+											<option>SuperAdmin</option>
+											<option>Consulta</option>
+											<option>Admin</option>
+
+
 											</select>
 								 </div>
 
-								 <div class="form-group col-md-6">
+
+
+
+								<div class="form-group col-md-6">
 									<label>Imagen</label>
-									<center><label  for="imageUpload"  style="background :#F0F8FF;" class="form-control">Seleccionar imagenes</label></center>
-									<input type="file" class ="form-control" name ="ImagenProfile" id="imageUpload" accept="image/*" style="display: none">
-								 </div>
+								    <input id="input-image-1" class ="close" name="imagen" type="file" accept="image/*" >
+								</div>
+								<!-- an example modal dialog to display confirmation of the resized image -->
+								<div id="kv-success-modal" class="modal fade form-group col-md-6 ">
+								  <div class="modal-dialog">
+								    <div class="modal-content">
+								      <div class="modal-header">
+								        <h4 class="modal-title">Yippee!</h4>
+								        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								      </div>
+								      <div id="kv-success-box" class="modal-body">
+								      </div>
+								    </div>
+								  </div>
+								</div>
 
 
 
 
 
-
-
-								</div><!-- /.panel body-->
 							</div><!-- /.panel-->
 						</div><!-- /.col-->
 	               	</div><!--/.row-->
@@ -232,7 +251,7 @@ echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>'
 						<div class="Panel-Botones">
 	                         <div class="Panel-Botones-Guardar col-lg-6 col-lg-offset-9">
 	                         	<input type="reset" class="btn btn-danger" value="Reset"  />
-	                   				<input type="submit" id="BotonGuardar" class="btn btn-info" name="login" value="Submit" onclick="return verificar();" />
+	                   				<input type="submit" id="BotonGuardar" class="btn btn-info" name="login" value="Submit"/>
 
 	           			     </div>
 						</div>
@@ -262,17 +281,14 @@ echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>'
 		<script type="text/javascript" src="assets/js/jquery.min.js"></script>
 	<script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="dist/bootstrap-clockpicker.min.js"></script>
-	<script type="text/javascript">
-	$('.clockpicker').clockpicker({
-	    placement: 'top',
-	    align: 'left',
-	    donetext: 'Done'
-	});
-	</script>
+
+<script src="js/piexif.js"></script>
+<script src="js/fileinput.js"></script>
+
 
 	<script type="text/javascript">
-	
-	
+
+
 	$(document).ready(function(){
 			$(".select2").select2();
 	});
@@ -286,6 +302,7 @@ echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>'
 
 			var usuario = $("#txt_username").val();
 
+
 			if (usuario.length > 4){
 
 				$.ajax({
@@ -297,16 +314,16 @@ echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>'
 					    success: function(data, textStatus)
 					    {
 
-					    	
+
 					    	 $("#FormUsuario").addClass("has-success");
 
 					      	if (data == "existe"){
 
 								$("#BotonGuardar").attr("disabled", true);
-								
+
 					      		$("#FormUsuario").addClass("has-error");
-					      		document.getElementById("UserNoDisponible").innerHTML =' <div align="center" id="NoExiste" class="No_Disponible"> El nombre de usuario no esta disponible  </div>'
-					      	
+					      		document.getElementById("UserNoDisponible").innerHTML =' <div align="center" id="NoExiste" class="fa fa-warning alert alert-danger col-lg-12 "> El nombre de usuario no esta disponible  </div>'
+
 					      	}else{
 
 					      		$("#txt_username").attr("required", false);
@@ -335,6 +352,22 @@ echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>'
 
 	</script>
 
+	<script>
+$("#input-image-1").fileinput({
+    uploadUrl: "/site/image-upload",
+    allowedFileExtensions: ["jpg", "png", "gif"],
+    maxImageWidth: 200,
+    maxFileCount: 1,
+    resizeImage: true
+}).on('filepreupload', function() {
+    $('#kv-success-box').html('');
+}).on('fileuploaded', function(event, data) {
+    $('#kv-success-box').append(data.response.link);
+    $('#kv-success-modal').modal('show');
+});
+</script>
+
+
 
 
 
@@ -345,5 +378,7 @@ echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>'
 	hljs.initHighlightingOnLoad();
 	</script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.0/sweetalert2.js"></script>
+
+
 </body>
 </html>

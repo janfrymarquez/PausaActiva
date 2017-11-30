@@ -38,6 +38,11 @@ if (!isset($_SESSION["userlog"])) {
 		<div class="container-fluid">
 			<div class="navbar-header">
 
+             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar-collapse"><span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span></button>
+
 				<a class="navbar-brand" href="#"><span>PAUSA ACTIVA </span> </span> Admin</a>
 
 			</div>
@@ -50,16 +55,13 @@ if (!isset($_SESSION["userlog"])) {
 			</div>
 			<div class="profile-usertitle">
 
-
-
-                <?php
+               <?php
 
 $usar = $_SESSION["userlog"];
 
 echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>';
 ?>
-
-				<div class="profile-usertitle-status"><span class="indicator label-success"></span>Online</div>
+			<div class="profile-usertitle-status"><span class="indicator label-success"></span>Online</div>
 			</div>
 			<div class="clear"></div>
 		</div>
@@ -77,10 +79,10 @@ echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>'
 				<em class="fa fa-navicon">&nbsp;</em> Configuraciones <span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"><em class="fa fa-plus"></em></span>
 				</a>
 				<ul class="children collapse" id="sub-item-1">
-					<li><a class="" href="Vista/ModificarUsuario.php">
+					<li><a class="" href="ModificarUsuario.php">
 						<span class="fa fa-user-plus">&nbsp;</span> Configurar Usuarios
 					</a></li>
-					<li><a class="" href="Vista/ModificarUsuario.php">
+					<li><a class="" href="ModificarUsuario.php">
 						<span class="fa fa-arrow-right">&nbsp;</span> Configurar Empleados
 					</a></li>
 					<li><a class="" href="#">
@@ -370,8 +372,6 @@ echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>'
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/chart.min.js"></script>
 	<script src="js/chart-data.js"></script>
-	<script src="js/easypiechart.js"></script>
-	<script src="js/easypiechart-data.js"></script>
 	<script src="js/bootstrap-datepicker.js"></script>
 	<script src="js/custom.js"></script>
 	<script>

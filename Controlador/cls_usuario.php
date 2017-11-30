@@ -29,7 +29,7 @@ class Usuario extends Conexion
 
     }
 
-    public function RegistrarUser($ID, $Usuario, $password, $Email, $Nombre, $Apellido, $UsuarioActual, $FechaCreacion)
+    public function RegistrarUser($ID, $Usuario, $password, $Email, $Nombre, $Apellido, $imagen, $UsuarioActual, $FechaCreacion)
     {
 
         try {
@@ -60,11 +60,11 @@ class Usuario extends Conexion
             //Crear usuario
             else {
 
-                $sql = "INSERT INTO tbl_users (Usuario,Password,Email,PrimerNombre,Apellido,CreadoPorUsuarioId,FechaCreacion) VALUES (:Usuario, :Password,:Email,:Nombre,:Apellido,:Creadopor,:FechaCreacion) ";
+                $sql = "INSERT INTO tbl_users (Usuario,Password,Email,PrimerNombre,Apellido,Foto,CreadoPorUsuarioId,FechaCreacion) VALUES (:Usuario, :Password,:Email,:Nombre,:Apellido, :imgen,:Creadopor,:FechaCreacion) ";
 
                 $resultado = $this->conexion_db->prepare($sql);
 
-                $resultado->execute(array(":Usuario" => $Usuario, ":Password" => $Password, ":Email" => $Email, ":Nombre" => $Nombre, ":Apellido" => $Apellido, "Creadopor" => $UsuarioActual, ":FechaCreacion" => $FechaCreacion));
+                $resultado->execute(array(":Usuario" => $Usuario, ":Password" => $Password, ":Email" => $Email, ":Nombre" => $Nombre, ":Apellido" => $Apellido, ":imgen" => $imagen, "Creadopor" => $UsuarioActual, ":FechaCreacion" => $FechaCreacion));
 
                 echo '<script language="javascript">';
                 echo 'alert("Los datos fueron guardado corectamente")';
@@ -85,7 +85,7 @@ class Usuario extends Conexion
     {
         $autenticado = false;
 
-        $sql = "SELECT * FROM  tbl_users WHERE Usuario = :login   OR Email =:login  LIMIT 1";
+        $sql = "SELECT * FROM  tbl_users WHERE Usuario = :login  LIMIT 1";
 
         $sentencia = $this->conexion_db->prepare($sql);
 
@@ -93,12 +93,15 @@ class Usuario extends Conexion
 
         while ($registro = $sentencia->fetch(PDO::FETCH_ASSOC)) {
 
-            if (password_verify($password, $registro['Password'])) {
+            if ($password == $registro['Password']) {
 
-                $autenticado = true;
+                session_start();
+
+                $_SESSION["userlog"] = $registro['PrimerNombre'];
+
+                header("Location:../index.php");
+
             } else {
-
-                $autenticado = false;
 
                 echo '<script language="javascript">';
                 echo 'alert("La contraseña es incorrecta. Inténtalo de nuevo")';
@@ -109,8 +112,6 @@ class Usuario extends Conexion
         }$sentencia->closeCursor();
 
         $this->conexion_db = null;
-
-        return $autenticado;
 
     }
 
@@ -128,7 +129,7 @@ class Usuario extends Conexion
         if ($numero_registro != 0) {
             echo 'existe';
             //<div align="center" id="NoExiste" class="No_Disponible"> El nombre de usuario no esta disponible'
-        }else{
+        } else {
             echo "no existe";
         }
 
