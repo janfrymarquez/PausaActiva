@@ -1,7 +1,7 @@
 
 <?php
 
-include "../Controlador/cls_usuario.php";
+include "../Modelo/cls_usuario.php";
 if (isset($_POST["enviar"])) {
 
     $usuario  = htmlentities(addslashes($_POST["Usuario"]));
@@ -32,8 +32,8 @@ header("Location:../index.php");
 <html >
 <head>
   <meta charset="UTF-8">
-  <title>Pausa Activa Administracion</title>
-
+  <title>Login Encuesta</title>
+ <link rel="icon" href="img/favicon.ico">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
 
   <link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900'>
@@ -49,7 +49,7 @@ header("Location:../index.php");
 
 <div class="container">
   <div class="info">
-    <h1>Pausa Activa HB </h1>
+    <h1> Encuesta Analytic Soluction</h1>
   </div>
 </div>
 <div class="form" >

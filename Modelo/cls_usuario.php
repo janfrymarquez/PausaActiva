@@ -1,6 +1,6 @@
 <?php
 
-require "../Modelo/Conexion.php";
+require "Conexion.php";
 
 class Usuario extends Conexion
 {
@@ -41,8 +41,9 @@ class Usuario extends Conexion
             if ($ID > 0) {
 
                 $sql = "UPDATE tbl_users
-                SET Password = '$pass_cifrado' ,
+                SET Password = '$Password' ,
                   Email = '$Email' ,
+                  Foto = '$imagen' ,
                   PrimerNombre ='$Nombre' ,
                   Apellido = '$Apellido',
                   ModificadoPorUsuarioId ='$UsuarioActual' ,
@@ -97,7 +98,13 @@ class Usuario extends Conexion
 
                 session_start();
 
-                $_SESSION["userlog"] = $registro['PrimerNombre'];
+                $_SESSION["userlog"] = $registro['Nombre'];
+
+                echo '<script language="javascript">';
+                echo 'alert("Holajjjjjj")';
+                echo '</script>';
+                $_SESSION["profileimg"]      = $registro['ImgenPerfil'];
+                $_SESSION["IdUsuarioActual"] = $registro['IdUsuario'];
 
                 header("Location:../index.php");
 

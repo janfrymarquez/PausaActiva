@@ -1493,30 +1493,6 @@
             self._change(e, 'dragdrop');
             self.$dropZone.removeClass('file-highlighted');
         },
-        _uploadClick: function(e) {
-            var self = this,
-                $btn = self.$container.find('.fileinput-upload'),
-                $form,
-                isEnabled = !$btn.hasClass('disabled') && $h.isEmpty($btn.attr('disabled'));
-            if (e && e.isDefaultPrevented()) {
-                return;
-            }
-            if (!self.isAjaxUpload) {
-                if (isEnabled && $btn.attr('type') !== 'submit') {
-                    $form = $btn.closest('form');
-                    // downgrade to normal form submit if possible
-                    if ($form.length) {
-                        $form.trigger('submit');
-                    }
-                    e.preventDefault();
-                }
-                return;
-            }
-            e.preventDefault();
-            if (isEnabled) {
-                self.upload();
-            }
-        },
         _submitForm: function() {
             var self = this;
             return self._isFileSelectionValid() && !self._abort({});

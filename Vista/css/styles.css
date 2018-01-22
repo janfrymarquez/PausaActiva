@@ -83,7 +83,7 @@ input.form-control {
 }
 .navbar-header .navbar-brand {
     color: #fff;
-    font-size: 20px;
+    font-size: 18px;
     text-transform: uppercase;
     font-weight: 500;
     height: 60px;
@@ -202,6 +202,7 @@ a.btn:active, button:active {
 .btn-primary, .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open>.dropdown-toggle.btn-primary, .btn-primary.disabled, .btn-primary[disabled], fieldset[disabled] .btn-primary, .btn-primary.disabled:hover, .btn-primary[disabled]:hover, fieldset[disabled] .btn-primary:hover, .btn-primary.disabled:focus, .btn-primary[disabled]:focus, fieldset[disabled] .btn-primary:focus, .btn-primary.disabled:active, .btn-primary[disabled]:active, fieldset[disabled] .btn-primary:active, .btn-primary.disabled.active, .btn-primary[disabled].active, fieldset[disabled] .btn-primary.active {
     background-color: #30a5ff;
     border-color: #30a5ff;
+    margin: 0px auto;
 }
 .btn-success, .btn-success:hover, .btn-success:focus, .btn-success:active, .btn-success.active, .open>.dropdown-toggle.btn-success, .btn-success.disabled, .btn-success[disabled], fieldset[disabled] .btn-success, .btn-success.disabled:hover, .btn-success[disabled]:hover, fieldset[disabled] .btn-success:hover, .btn-success.disabled:focus, .btn-success[disabled]:focus, fieldset[disabled] .btn-success:focus, .btn-success.disabled:active, .btn-success[disabled]:active, fieldset[disabled] .btn-success:active, .btn-success.disabled.active, .btn-success[disabled].active, fieldset[disabled] .btn-success.active {
     background-color: #8ad919;
@@ -846,7 +847,8 @@ a.label:hover, a.label:focus {
     height: 80px;
     margin: 0 auto;
     width: 80px;
-    border-radius: 9999px !important;
+    border: 2px solid #3E67ED;
+    border-radius: 9999px;
 }
 .profile-usertitle {
     float: left;
@@ -1166,7 +1168,6 @@ p.back-link {
     font-size: 13px;
     font-variant: small-caps;
     color: #999;
-    background: transparent url(../img/loading.gif) top left no-repeat;
 }
 .file-object {
     margin: 0 0 -5px 0;
@@ -1384,7 +1385,7 @@ p.back-link {
     width: 100%;
 }
 .file-thumb-loading {
-    background: transparent url(../img/loading.gif) no-repeat scroll center center content-box !important;
+    background: transparent no-repeat scroll center center content-box !important;
 }
 .file-drop-zone {
     border: 1px dashed #aaa;
@@ -1413,10 +1414,6 @@ p.back-link {
 .file-highlighted {
     border: 2px dashed #999 !important;
     background-color: #eee;
-}
-.file-uploading {
-    background: url(../img/loading-sm.gif) no-repeat center bottom 10px;
-    opacity: 0.65;
 }
 @media (min-width: 576px) {
     .file-zoom-dialog .modal-dialog {
@@ -1505,11 +1502,6 @@ p.back-link {
         width: 160px;
     }
 }
-.file-loading[dir=rtl]:before {
-    background: transparent url(../img/loading.gif) top right no-repeat;
-    padding-left: 0;
-    padding-right: 20px;
-}
 .file-sortable .file-drag-handle {
     cursor: move;
     opacity: 1;
@@ -1525,4 +1517,93 @@ p.back-link {
 }
 .file-preview-initial.sortable-chosen {
     background-color: #d9edf7;
+}
+.NombreEncuesta {
+    font-family: Tahoma, Verdana, Arial;
+    font-size: 100%;
+    color: #707070;
+    background-color: #FFFFFF;
+    border-width: 0;
+    font-weight: bold;
+    border-bottom: 1px solid #cccccc;
+}
+.BotonEnviar {
+    display: block;
+    margin-right: auto;
+}
+/* Imagen Select---------------------------------------- */
+
+.chose-image {
+    width: 55px;
+    height: 55px;
+    padding: 2px 5px 3px 0;
+}
+/* Image for Single mode */
+
+.chose-image-small {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    margin: -3px 0 0 0;
+    padding: 0 3px 0 0;
+}
+/* Images appended to the li(s) */
+
+.chose-image-list {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    margin: -3px 0 0 0;
+    padding: 0 3px 0 0;
+}
+/* Grey-out image for Multi mode */
+
+div.chosen-container-multi .result-selected img {
+    opacity: 0.3;
+}
+.RespComentario {
+    border-width: 0;
+    border-bottom: 1px solid #cccccc;
+}
+.btn_addOption {
+    padding left: 25px;
+    font-size: 20px;
+    border-radius: 10px;
+}
+textarea {
+    width: 30%;
+    height: 80px;
+    margin-top: 5px;
+    border-radius: 3px;
+    padding: 5px;
+    resize: none;
+}
+#valMaximo #ValMinimo {
+    width: 50%;
+}
+#flotante {
+    position: absolute;
+    display: none;
+    font-family: Arial;
+    font-color: #FFFFFF;
+    font-size: 0.8em;
+    width: 280px;
+    border: 1px solid #808080;
+    background-color: #A8A3A3;
+}
+#ImagenRepuesta {
+    width: 100%;
+    max-width: 150px;
+}
+.agragarPreguntaBtn {
+    margin-left: 1.5%;
+    margin-bottom: 1%;
+}
+.enviarFormBtn {
+    margin-right: 10%;
+    margin-bottom: 1%;
+}
+.enviarForm {
+    margin-bottom: 1%;
+    margin-top: 20%;
 }
