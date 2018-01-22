@@ -1,12 +1,10 @@
 	<?php
-ini_set("session.cookie_lifetime", "3600");
-ini_set("session.gc_maxlifetime", "3600");
+ini_set('session.cookie_lifetime', '3600');
+ini_set('session.gc_maxlifetime', '3600');
 session_start();
 
-if (!isset($_SESSION["userlog"])) {
-
-    header("location:login.php");
-
+if (!isset($_SESSION['userlog'])) {
+    header('location:login.php');
 }
 
 ?>
@@ -51,7 +49,7 @@ if (!isset($_SESSION["userlog"])) {
 
 	<body>
 			    <?php
-require "header.php";
+require 'header.php';
 ?>
 
 			<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
@@ -159,7 +157,7 @@ require "header.php";
 
 
 					<div class="col-sm-12">
-						<p class="back-link"><a ">Janfry Marquez </a></p>
+						<p class="back-link"><a>Janfry Marquez </a></p>
 					</div>
 
 

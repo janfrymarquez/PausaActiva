@@ -11,7 +11,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span></button>
 
-                    <a class="navbar-brand" href="#"><span>Encuesta </span> </span> Analytic Soluction</a>
+                    <a class="navbar-brand" href="../index.php"><span>Encuesta </span> </span> Analytic Soluction</a>
 
                 </div>
             </div><!-- /.container-fluid -->
@@ -19,14 +19,14 @@
         <div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
             <div class="profile-sidebar">
                 <div class="profile-userpic">
-                    <img src="img/<?php echo $_SESSION["profileimg"] ?> " class="img-responsive" alt="">
+                    <img src="img/<?php echo $_SESSION['profileimg']; ?> " class="img-responsive" alt="">
                 </div>
                 <div class="profile-usertitle">
 
                     <?php
-$usar = $_SESSION["userlog"];
+$usar = $_SESSION['userlog'];
 
-echo '<div class="profile-usertitle-name"> ' . "Hola" . '  ' . $usar . ' </div>';
+echo '<div class="profile-usertitle-name"> '.'Hola'.'  '.$usar.' </div>';
 ?>
                     <div class="profile-usertitle-status"><span class="indicator label-success"></span>Online</div>
                 </div>
