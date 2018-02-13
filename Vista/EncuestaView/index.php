@@ -114,12 +114,12 @@ $direccionIp = getRealIP();
             switch ($tipoRepuesta) {
             case '1':
 
-           echo '<input type="radio" class="Repuesta" required  id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada1'.$obj->IdEncuestaDetalle.'" value="'.$objRepuesta.'"> '.$objRepuesta.' <br>';
+           echo '<input type="radio" class="Repuesta" required  id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada'.$obj->IdEncuestaDetalle.'" value="'.$objRepuesta.'"> '.$objRepuesta.' <br>';
 
             break;
             case '2':
 
-          echo '<input type="radio" required class="Repuesta"  id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada1'.$obj->IdEncuestaDetalle.'" value="'.$objRepuesta.'"> '.$objRepuesta.' <br>';
+          echo '<input type="radio" required class="Repuesta"  id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada'.$obj->IdEncuestaDetalle.'" value="'.$objRepuesta.'"> '.$objRepuesta.' <br>';
 
             break;
             case '3':
@@ -137,7 +137,7 @@ $direccionIp = getRealIP();
             $numero_registro = $resultado->rowCount();
             if (0 !== $numero_registro) {
                 while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                    echo'    <label><input type="radio" class="Repuesta" id="'.$obj->IdEncuestaDetalle.'" name="imagenRepuesta'.$obj->IdEncuestaDetalle.'" value="'.$registro['ValorImagen'].'" /><img class="pequeña" src="../'.$registro['ImagenRuta'].'"></label>';
+                    echo'    <label><input type="radio" class="Repuesta" id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada'.$obj->IdEncuestaDetalle.'" value="'.$registro['ImagenDescripcion'].'" /><img class="pequeña" src="../'.$registro['ImagenRuta'].'"></label>';
                 }
             } else {
                 echo '<option value="">  Tipo de repuesta no disponibles </option>';
@@ -148,7 +148,7 @@ $direccionIp = getRealIP();
             case '7':
             case '8':
 
-              echo '<input type="radio" required class="Repuesta" id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada1'.$obj->IdEncuestaDetalle.'" value="'.$objRepuesta.'"> '.$objRepuesta.' <br>';
+              echo '<input type="radio" required class="Repuesta checkval'.$obj->IdEncuestaDetalle.'" id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada'.$obj->IdEncuestaDetalle.'" value="'.$objRepuesta.'"> '.$objRepuesta.' <br>';
 
             break;
           }
@@ -178,14 +178,23 @@ $(function(){
 
 });
 
-
 function enviarResultado(){
-    $("#formEnviarEncuesta :input.Repuesta").each(function(){
-        var IdPregunta = $(this).attr('id');
 
+  var resultado=[];
+
+    $("#formEnviarEncuesta :input.Repuesta:checked").each(function(){
+        var IdPregunta = $(this).attr('id');
+        var TodaRepuesta =$(this).val();
+
+        resultado.push({
+          Id_Pregunta:IdPregunta,
+          RepuestaSelec:TodaRepuesta
+    });
 
 
   });
+  console.log(resultado)
+
 }
 
 </script>

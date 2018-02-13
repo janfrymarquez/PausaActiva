@@ -105,7 +105,8 @@ offset = unfortunately calculating heights with javascript isn't always 100% acc
         var previous = "<li><a class='goto_previous' href='#'>" + options.previous + "</a></li>";
         var next = "<li><a class='goto_next' href='#'>" + options.next + "</a></li>";
         var previous_inactive = "<li><a class='inactive'>" + options.previous + "</a></li>";
-        var buttonSent = "<button id='buttonSent' class='btn btn-primary'  onclick='enviarResultado()'>Enviar</button>";
+
+        var buttonSent = '<button type="button"   id="buttonEnviarEncuesta" class="btn btn-info" onclick="enviarResultado()">Guardar Cambios</button>';
         var next_inactive = "<li><a class='inactive'>" + options.next + "</a></li>";
         end = "</ul><br clear='all' />"
         var after = number_of_pages - options.after + 1;
