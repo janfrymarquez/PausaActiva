@@ -408,7 +408,7 @@ require 'header.php';
     $.ajax({
     type: 'POST',
     url: '../Controlador/GuardarEditarEncuesta.php',
-    data: 'Actualizar=' +Actualizar,
+    data: 'Actualizar' +Actualizar,
 
     success: function(html){
     console.log(html);

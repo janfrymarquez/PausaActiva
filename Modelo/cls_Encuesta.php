@@ -380,4 +380,44 @@ class Encuesta extends Conexion
             echo '<script type="text/javascript">alert("Pregunta no eliminada");</script>';
         }
     }
+
+    public function GuardarResultadosEncuesta($resultadoArrayEncuesta)
+    {
+        date_default_timezone_set('America/Santo_Domingo');  //Se seleciona la zona horaria
+
+        $fechaCreacion = date('Y-m-d');
+        $horaCreacion = date('H:i:s');
+        function getRealIP()
+        {
+            if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+                return $_SERVER['HTTP_CLIENT_IP'];
+            }
+            if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                return $_SERVER['HTTP_X_FORWARDED_FOR'];
+            }
+            if (isset($_SERVER['HTTP_X_FORWARDED'])) {
+                return $_SERVER['HTTP_X_FORWARDED'];
+            }
+            if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+                return $_SERVER['HTTP_FORWARDED_FOR'];
+            }
+            if (isset($_SERVER['HTTP_FORWARDED'])) {
+                return $_SERVER['HTTP_FORWARDED'];
+            }
+
+            return $_SERVER['REMOTE_ADDR'];
+        }
+
+        $direccionIp = getRealIP();
+
+        $guardarResultadoSql = 'INSERT INTO tbl_resultados (IdPregunta,CampoSelecionado,DireccionIpCreacion,FechaCreacion,HoraCreacion) VALUES
+                          (:IdPregunta,:CampoSelecionado, :DireccionIpCreacion,:FechaCreacion,:HoraCreacion)';
+        $Data = $this->conexion_db->prepare($guardarResultadoSql);
+
+        for ($i = 0; $i < count($resultadoArrayEncuesta['Id_Pregunta']); ++$i) {
+            $Data->execute([':IdPregunta' => $resultadoArrayEncuesta['Id_Pregunta'][$i], ':CampoSelecionado' => $resultadoArrayEncuesta['RepuestaSelec'][$i], ':DireccionIpCreacion' => $direccionIp, ':FechaCreacion' => $fechaCreacion,
+                       ':HoraCreacion' => $horaCreacion, ]);
+        }
+        $resultado->closeCursor();
+    }
 }

@@ -42,3 +42,11 @@ if (isset($_POST['IdPreguntaEliminar']) && !empty($_POST['IdPreguntaEliminar']))
     $IdPreguntaEliminar = $_POST['IdPreguntaEliminar'];
     $Encuesta->EliminarPreguntaEncuesta($IdPreguntaEliminar);
 }
+
+if (isset($_POST['EncuestaArray']) && !empty($_POST['EncuestaArray'])) {
+    $DatasGuardarResultados = $_POST['EncuestaArray'];
+
+    $GuardarResuldado = json_decode($DatasGuardarResultados);
+
+    $Encuesta->GuardarResultadosEncuesta($GuardarResuldado);
+}
