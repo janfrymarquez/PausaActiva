@@ -369,6 +369,8 @@ class Encuesta extends Conexion
         $resultado->closeCursor();
     }
 
+    //fin Funcion Guardar Datos Encuesta
+
     public function EliminarPreguntaEncuesta($IDPregunta)
     {
         $sqlEliminarPregunta = "DELETE FROM tbl_encuesta_detalle WHERE IdEncuestaDetalle = '${IDPregunta}' ";
@@ -409,15 +411,21 @@ class Encuesta extends Conexion
         }
 
         $direccionIp = getRealIP();
-        print_r($resultadoArrayEncuesta);
 
-        $guardarResultadoSql = 'INSERT INTO tbl_resultados (IdPregunta,CampoSelecionado,DireccionIpCreacion,FechaCreacion,HoraCreacion) VALUES
-                                  (:IdPregunta,:CampoSelecionado, :DireccionIpCreacion,:FechaCreacion,:HoraCreacion)';
+        $guardarResultadoSql = 'INSERT INTO tbl_resultados (IdPregunta,IdEncuesta,CampoSelecionado,DireccionIpCreacion,FechaCreacion,HoraCreacion) VALUES
+                                  (:IdPregunta,:IdEncuesta, :CampoSelecionado, :DireccionIpCreacion,:FechaCreacion,:HoraCreacion)';
         $Data = $this->conexion_db->prepare($guardarResultadoSql);
-
-        for ($i = 0; $i < count($resultadoArrayEncuesta['Id_Pregunta']); ++$i) {
-            $Data->execute([':IdPregunta' => $resultadoArrayEncuesta['Id_Pregunta'][$i], ':CampoSelecionado' => $resultadoArrayEncuesta['RepuestaSelec'][$i], ':DireccionIpCreacion' => $direccionIp, ':FechaCreacion' => $fechaCreacion,
-                               ':HoraCreacion' => $horaCreacion, ]);
+        $idPregunta = [];
+        $respSelec = [];
+        $EncuestaId = '';
+        foreach ($resultadoArrayEncuesta as $key => $value) {
+            $idPregunta = $value->Id_Pregunta;
+            $respSelec = $value->RepuestaSelec;
+            $EncuestaId = $value->IdEncuesta;
+        }
+        for ($i = 0; $i < count($idPregunta); ++$i) {
+            $Data->execute([':IdPregunta' => $idPregunta[$i], ':IdEncuesta' => $EncuestaId, ':CampoSelecionado' => $respSelec[$i], ':DireccionIpCreacion' => $direccionIp, ':FechaCreacion' => $fechaCreacion,
+                             ':HoraCreacion' => $horaCreacion, ]);
         }
         $Data->closeCursor();
     }

@@ -30,6 +30,8 @@ $resultados->closeCursor();
       <link rel="icon" href="../img/favicon.ico">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <link href="../css/bootstrap.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="../css/sweetalert.css">
+      <script src="../js/sweetalert.js"></script>
       <link href="../css/font-awesome.min.css" rel="stylesheet">
       <link href="../css/datepicker3.css" rel="stylesheet">
       <link rel="../stylesheet" href="css/chosen.css">
@@ -151,6 +153,9 @@ $resultados->closeCursor();
 </form>
 
 <script>
+
+
+
 $(function(){
     $(".BloquePregunta").jPaginate();
 
@@ -159,17 +164,17 @@ $(function(){
 function enviarResultado(){
 
   var resultado=[];
-
+  var IdEncuesta =$('.Cabecera').attr('id');
   resultado.push({
 
     Id_Pregunta:[],
     RepuestaSelec:[],
+    IdEncuesta:IdEncuesta,
 });
 $.each(resultado, function( index, value){
     $("#formEnviarEncuesta :input.Repuesta:checked").each(function(){
       value.RepuestaSelec.push($(this).val());
       value.Id_Pregunta.push($(this).attr('id'));
-
 
       });
     });
@@ -177,13 +182,14 @@ $.each(resultado, function( index, value){
   var EncuestaArray = JSON.stringify(resultado);
 
 console.log(EncuestaArray);
+
   $.ajax({
   type: 'POST',
     url: '../../Controlador/GuardarEditarEncuesta.php',
   dataType: "text",
   data: { 'EncuestaArray': JSON.stringify(resultado) },
   success: function(html){
-  console.log(html);
+  swal("Gracias!", "Encuesta Guardadad!", "success");
 
 }
 
