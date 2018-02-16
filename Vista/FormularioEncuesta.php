@@ -22,8 +22,10 @@
           <meta charset="utf-8">
           <link rel="icon" href="img/favicon.ico">
           <meta name="viewport" content="width=device-width, initial-scale=1">
+
           <title>Analytic Soluction</title>
           <link href="css/bootstrap.min.css" rel="stylesheet">
+          <link rel="stylesheet" href="css/sweetalert.css">
           <link href="css/font-awesome.min.css" rel="stylesheet">
           <link href="css/datepicker3.css" rel="stylesheet">
           <link rel="stylesheet" href="css/chosen.css">
@@ -152,14 +154,14 @@
 
               <script src="js/jquery-3.3.1.min.js"></script>
               <script src="js/bootstrap.min.js"></script>
-              <script src="js/simple-popup.js"></script>
+              <script src="js/sweetalert.js"></script>
+
               <script src="js/fileinput.js"></script>
-              <script src="js/custom.js"></script>
-              <script src="js/bootstrap.min.js"></script>
+
               <script src="js/ValidarExistencia.js"></script>
               <script type="js/text/javascript" src="assets/js/jquery.min.js"></script>
               <script type="js/text/javascript" src="assets/js/bootstrap.min.js"></script>
-              <script type="js/text/javascript" src="dist/bootstrap-clockpicker.min.js"></script>
+
               <script src="js/chosen.jquery.js"></script>
               <script src="js/ImageSelect.jquery.js"></script>
               <script src="js/select2.min.js"></script>
@@ -214,23 +216,33 @@
 
                     var DataJson = JSON.stringify(result);
 
+                    swal({
+                      title: "Guardar Encuesta",
+                      text: "Ok para guardar la EncuestaArray",
+                      type: "info",
+                      showCancelButton: true,
+                      closeOnConfirm: false,
+                      showLoaderOnConfirm: true
+                    }, function () {
 
-                     $.ajax({
+                      setTimeout(function () {
+                        swal("Encuesta Guardada!");
+                      }, 2300);
+
+                      $.ajax({
+
                         type: 'POST',
                         url: '../Controlador/GuardarEditarEncuesta.php',
                         data: 'DataJson=' +DataJson,
-
                         success: function(html){
                           console.log(html);
-                              }
+                          window.location.href = '../index.php';
+                        }
 
+                      });
 
-
-
-
-                         });
-
-                }
+                    });
+              }
 
               </script>
 

@@ -409,15 +409,16 @@ class Encuesta extends Conexion
         }
 
         $direccionIp = getRealIP();
+        print_r($resultadoArrayEncuesta);
 
         $guardarResultadoSql = 'INSERT INTO tbl_resultados (IdPregunta,CampoSelecionado,DireccionIpCreacion,FechaCreacion,HoraCreacion) VALUES
-                          (:IdPregunta,:CampoSelecionado, :DireccionIpCreacion,:FechaCreacion,:HoraCreacion)';
+                                  (:IdPregunta,:CampoSelecionado, :DireccionIpCreacion,:FechaCreacion,:HoraCreacion)';
         $Data = $this->conexion_db->prepare($guardarResultadoSql);
 
         for ($i = 0; $i < count($resultadoArrayEncuesta['Id_Pregunta']); ++$i) {
             $Data->execute([':IdPregunta' => $resultadoArrayEncuesta['Id_Pregunta'][$i], ':CampoSelecionado' => $resultadoArrayEncuesta['RepuestaSelec'][$i], ':DireccionIpCreacion' => $direccionIp, ':FechaCreacion' => $fechaCreacion,
-                       ':HoraCreacion' => $horaCreacion, ]);
+                               ':HoraCreacion' => $horaCreacion, ]);
         }
-        $resultado->closeCursor();
+        $Data->closeCursor();
     }
 }

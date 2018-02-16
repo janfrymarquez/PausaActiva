@@ -10,43 +10,35 @@
  * with this source code in the file LICENSE.
  */
 
-require '../Modelo/cls_Encuesta.php';
+ require '../Modelo/cls_Encuesta.php';
 
-$Encuesta = new Encuesta();
+ $Encuesta = new Encuesta();
 
-if (isset($_POST['DataJson']) && !empty($_POST['DataJson'])) {
-    $DatosEncuesta = $_POST['DataJson'];
+ if (isset($_POST['DataJson']) && !empty($_POST['DataJson'])) {
+     $DatosEncuestaJsom = $_POST['DataJson'];
+     $DataArray = json_decode($DatosEncuestaJsom);
+     $Encuesta->GuardarDatosEncuesta($DataArray);
+ }
 
-    $datoinsertar = json_decode($DatosEncuesta);
+ if (isset($_POST['InsertarDatos']) && !empty($_POST['InsertarDatos'])) {
+     $InsertarDatosJsom = $_POST['InsertarDatos'];
+     $datoinsertar = json_decode($InsertarDatosJsom);
+     $Encuesta->InsertarDatosOnEncuesta($datoinsertar);
+ }
 
-    $Encuesta->GuardarDatosEncuesta($datoinsertar);
-}
+ if (isset($_POST['DatosActualizar']) && !empty($_POST['DatosActualizar'])) {
+     $ActualizarJsom = $_POST['DatosActualizar'];
+     $actualizar = json_decode($ActualizarJsom);
+     $Encuesta->ActualizarDatosEncuesta($actualizar);
+ }
 
-if (isset($_POST['InsertarDatos']) && !empty($_POST['InsertarDatos'])) {
-    $DatosEncuesta = $_POST['InsertarDatos'];
+ if (isset($_POST['IdPreguntaEliminar']) && !empty($_POST['IdPreguntaEliminar'])) {
+     $IdPreguntaEliminar = $_POST['IdPreguntaEliminar'];
+     $Encuesta->EliminarPreguntaEncuesta($IdPreguntaEliminar);
+ }
 
-    $datoinsertar = json_decode($DatosEncuesta);
-
-    $Encuesta->InsertarDatosOnEncuesta($datoinsertar);
-}
-
-if (isset($_POST['Actualizar']) && !empty($_POST['Actualizar'])) {
-    $DatosActualizarEncuesta = $_POST['Actualizar'];
-
-    $actualizar = json_decode($DatosActualizarEncuesta);
-
-    $Encuesta->ActualizarDatosEncuesta($actualizar);
-}
-
-if (isset($_POST['IdPreguntaEliminar']) && !empty($_POST['IdPreguntaEliminar'])) {
-    $IdPreguntaEliminar = $_POST['IdPreguntaEliminar'];
-    $Encuesta->EliminarPreguntaEncuesta($IdPreguntaEliminar);
-}
-
-if (isset($_POST['EncuestaArray']) && !empty($_POST['EncuestaArray'])) {
-    $DatasGuardarResultados = $_POST['EncuestaArray'];
-
-    $GuardarResuldado = json_decode($DatasGuardarResultados);
-
-    $Encuesta->GuardarResultadosEncuesta($GuardarResuldado);
-}
+ if (isset($_POST['EncuestaArray']) && !empty($_POST['EncuestaArray'])) {
+     $DatasGuardarResultados = $_POST['EncuestaArray'];
+     $Datajson = json_decode($DatasGuardarResultados);
+     $Encuesta->GuardarResultadosEncuesta($Datajson);
+ }

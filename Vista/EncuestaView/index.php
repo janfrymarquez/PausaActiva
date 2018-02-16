@@ -160,24 +160,28 @@ function enviarResultado(){
 
   var resultado=[];
 
+  resultado.push({
+
+    Id_Pregunta:[],
+    RepuestaSelec:[],
+});
+$.each(resultado, function( index, value){
     $("#formEnviarEncuesta :input.Repuesta:checked").each(function(){
-        var IdPregunta = $(this).attr('id');
-        var TodaRepuesta =$(this).val();
+      value.RepuestaSelec.push($(this).val());
+      value.Id_Pregunta.push($(this).attr('id'));
 
-        resultado.push({
-          Id_Pregunta:IdPregunta,
-          RepuestaSelec:TodaRepuesta
+
+      });
     });
-
-  });
 
   var EncuestaArray = JSON.stringify(resultado);
 
+console.log(EncuestaArray);
   $.ajax({
   type: 'POST',
-  url: '../../Controlador/GuardarEditarEncuesta.php',
-  data: 'EncuestaArray' +EncuestaArray,
-
+    url: '../../Controlador/GuardarEditarEncuesta.php',
+  dataType: "text",
+  data: { 'EncuestaArray': JSON.stringify(resultado) },
   success: function(html){
   console.log(html);
 
