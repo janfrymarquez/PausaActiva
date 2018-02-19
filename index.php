@@ -23,10 +23,12 @@
   	<meta name="viewport" content="width=device-width, initial-scale=1">
   	<title>Analytic Soluction</title>
   	<link href="Vista/css/bootstrap.min.css" rel="stylesheet">
+    <link href="Vista/css/fontawesome-all.css" rel="stylesheet">
   	<link href="Vista/css/font-awesome.min.css" rel="stylesheet">
   	<link href="Vista/css/datepicker3.css" rel="stylesheet">
   	<link href="Vista/css/styles.css" rel="stylesheet">
-
+    <script src="Vista/js/jquery.min.js"></script>
+    <script src="Vista/js/bootstrap.min.js"></script>
   	<!--Custom Font-->
   	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
@@ -73,17 +75,17 @@
   		<ul class="nav menu">
 
 
-  			<li ><a href="index.php"><em class="fa fa-dashboard">&nbsp;</em> Dashboard</a></li>
+  			<li ><a href="index.php"><em class="fas fa-home">&nbsp;</em> Inicio</a></li>
 
-  			<li><a href="Vista/FormularioEncuesta.php"><em class="glyphicon glyphicon-folder-open">&nbsp;</em> Crear Encuesta </a></li>
+  			<li><a href="Vista/FormularioEncuesta.php"><em class="far fa-plus-square">&nbsp;</em> Crear Encuesta </a></li>
 
 
   <li class="parent "><a data-toggle="collapse" href="#sub-item-1">
-                          <em class="glyphicon glyphicon-cog">&nbsp;</em> Configuraciones <span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"><em class="fa fa-plus"></em></span>
+                          <em class="fas fa-cogs">&nbsp;</em> Configuraciones <span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"><em class="fa fa-plus"></em></span>
                       </a>
                       <ul class="children collapse" id="sub-item-1">
                           <li><a class="" href="Vista/ModificarUsuario.php">
-                                  <span class="fa fa-user-plus">&nbsp;</span>Usuarios
+                                  <span class="fas fa-user">&nbsp;</span>Usuarios
                               </a></li>
                           <li><a class="" href="Vista/ModificarUsuario.php">
                                   <span class="glyphicon glyphicon-usd">&nbsp;</span>Clientes
@@ -100,7 +102,7 @@
                       </ul>
                   </li>
 
-  <li><a href="Vista/charts.php"><em class="fa fa-bar-chart">&nbsp;</em> Reportes</a></li>
+  <li><a href="Vista/charts.php"><em class="fas fa-chart-pie">&nbsp;</em> Reportes</a></li>
 
   			<li><a href="Vista/logout.php"><em class="fa fa-power-off">&nbsp;</em> Logout</a></li>
   		</ul>
@@ -136,9 +138,61 @@
 
     <div id="EncuestaOpciones">
           <ul class="ulMenu">
-
           </ul>
     </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+
+          <div class="modal-CompartirHeader">
+
+            <h4 class="modal-title">Enviar Vínculo</h4>
+            <div class='ModalEncuestName'> </div>
+          </div>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Permiso:</label></br>
+            <select class="form-control PermisoCompartir" name="Permisos">
+
+                <option selected value="1">Enlace Normal</option>
+                <option value="2">Enlace unico</option>
+                <option value="2">Autenticacion por usurio</option>
+                <option value="3">Fecha de expiracion y enlace sin retrinciones</option>
+                <option value="4">Fecha de expiracion y enlace unico</option>
+            </select>
+            </div>
+
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Correo Electronico:</label>
+              <input type="text" class="form-control" id="recipient-name">
+            </div>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">Mensaje(opcional):</label>
+              <textarea class="form-control" id="message-text"></textarea>
+            </div>
+
+            <div class="form-group modalbottons"></div>
+            <div class="URLCopiado"></div>
+
+          </form>
+        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Enviar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Mode -->
+
 
 <div class="Encuesta">
   <div class="Div_Encuesta">
@@ -156,12 +210,12 @@
           } else {
               $fecha = $registro['FechaModificacion'];
           }
-          echo'  <div class="encuesta-item encuestaList" id="'.$registro['IdEncuestaCabecera'].'">
+          echo'  <div name="'.$registro['NombreEncuesta'].'" class="encuesta-item encuestaList" id="'.$registro['IdEncuestaCabecera'].'">
 					<img src="Vista/img/EncuestaImagen.png" alt="" >
 
 					<a  href="Vista\EditarEncuesta.php?id='.$registro['IdEncuestaCabecera'].'">'.$registro['NombreEncuesta'].'</a>
 
-           <h6 class="MenuEncuesta"><i class=" fa fa-pencil-square-o"></i> &nbsp; Modificado '.$fecha.'</h6>
+           <h6 class="MenuEncuesta"><i class="fas fa-edit"></i> &nbsp; Modificado '.$fecha.'</h6>
 				</div>';
       }
   }
@@ -180,12 +234,12 @@
   		</div><!--/.row-->
 
 
-  	<script src="Vista/js/jquery-1.11.1.min.js"></script>
-  	<script src="Vista/js/bootstrap.min.js"></script>
+
   	<script src="Vista/js/chart.min.js"></script>
   	<script src="Vista/js/chart-data.js"></script>
   	<script src="Vista/js/bootstrap-datepicker.js"></script>
   	<script src="Vista/js/custom.js"></script>
+    <script src="Vista/js/fontawesome-all.js"></script>
 <script>
 
 
@@ -198,13 +252,16 @@ $(document).ready(function(){
             con el ratón */
             $( ".encuestaList" ).bind( "contextmenu", function(e) {
               encuestaId= $(this).attr("id");
-
+              nombreEncues= $(this).attr('name');
+              console.log(nombreEncues);
               var posicion = $(this).position();
-              $(".ulMenu").html('<li class="liMenu" id="Editar"><a class="btn btn-primary" href="Vista/EditarEncuesta.php?id='+encuestaId+'"><i class="fa fa-pencil fa-lg"></i>&nbsp;Editar &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </a></li><li class="liMenu" id="Compartir"><a class=" btn btn-info" href="Vista/EncuestaView/index.php?id='+encuestaId+'"><i class="fa fa-share-alt fa-lg"></i>&nbsp;Compartir</a></li><li class="liMenu" id="Eliminar"><a class="btn btn-danger" href="#"><i class="fa fa-trash-o fa-lg"></i>&nbsp;Eliminar &nbsp;&nbsp;&nbsp;  </a></li>');
-
+              $(".ulMenu").html('<li class="liMenu" id="Editar"><a class="btn btn-primary" href="Vista/EditarEncuesta.php?id='+encuestaId+'"><i class="fas fa-edit fa-lg"></i>&nbsp;Editar &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></li><li class="liMenu" id="Compartir"><button type="button" class="btn btn-info btCompartirEncc" data-toggle="modal" data-target="#myModal"><i class="fas fa-share-alt fa-lg"></i>&nbsp;Compartir</button></li> <li class="liMenu" id="Eliminar"><a class="btn btn-danger" href="#"><i class="fas fa-trash-alt fa-lg"></i>&nbsp;Eliminar &nbsp;&nbsp;&nbsp;  </a></li>');
+              $('.ModalEncuestName').html('<h5>'+nombreEncues+'</h5> ');
+              $('.modalbottons').html('<button type="button" id="'+encuestaId+'"class="boton getUrlEncuesta"  onclick="GetEncuestaUrl()" ><i class="fas fa-link fa-lg"></i></button></br><label for="message-text"  id=""class="col-form-label GetURL">Copiar enlace:</label>')
                   $("#EncuestaOpciones").css({'display':'block', 'left': posicion.left+55, 'top': posicion.top+50});
                   return false;
             });
+
 
 
             //cuando hagamos click, el menú desaparecerá
@@ -222,26 +279,19 @@ $(document).ready(function(){
                   }
             });
 
-            //controlamos los botones del menú
-            $("#EncuestaOpciones").click(function(e){
 
-                  // El switch utiliza los IDs de los <li> del menú
-                  switch(e.target.id){
-                        case "copiar":
-                              alert("copiado!");
-                              break;
-                        case "mover":
-                              alert("movido!");
-                              break;
-                        case "eliminar":
-                              alert("eliminado!");
-                              break;
-                  }
-
-            });
 
 
       });
+
+      function GetEncuestaUrl(){
+      EncuestaId = $(this).atrr('id');
+      console.log(EncuestaId);
+
+
+      };
+
+
 
 </script>
 

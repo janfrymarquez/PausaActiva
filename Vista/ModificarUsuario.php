@@ -23,14 +23,15 @@ if (!isset($_SESSION['userlog'])) {
 		<title>Pausa Activa Admin</title>
 		<link href="css/bootstrap.min.css" rel="stylesheet">
 		<link href="css/font-awesome.min.css" rel="stylesheet">
-
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/jquery.min.js"></script>
 		<link href="css/styles.css" rel="stylesheet">
 
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+
 		<link rel="stylesheet" type="text/css" href="assets/css/github.min.css">
 
 		<link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.0/sweetalert2.min.css">
+
 
 
 
@@ -162,20 +163,12 @@ require 'header.php';
 
 
 
-		<script src="js/jquery-1.11.1.min.js"></script>
 
-			<script src="js/bootstrap.min.js"></script>
-			<!--<script src="js/chart.min.js"></script>
-			<script src="js/chart-data.js"></script>-->
-			<script src="js/ValidarExistencia.js"></script>
-			<!--<script src="js/easypiechart.js"></script>
-			<script src="js/easypiechart-data.js"></script>-->
-			<script src="js/bootstrap-datepicker.js"></script>
-			<script src="js/custom.js"></script>
-			<script type="text/javascript" src="assets/js/jquery.min.js"></script>
-		<script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="dist/bootstrap-clockpicker.min.js"></script>
 
+
+	<script src="js/ValidarExistencia.js"></script>
+
+<script src="js/select2.min.js"></script>
 	<script src="js/piexif.js"></script>
 	<script src="js/fileinput.js"></script>
 

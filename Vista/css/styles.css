@@ -2244,3 +2244,25 @@ img.pequeña {
   width: 5em;
   height: 5em;
 }
+
+.modal-header {
+  background-color: #eee;
+}
+
+.modal-title, .ModalEncuestName {
+  text-align: center;
+}
+
+.boton {
+  width: 50px;
+  height: 50px;
+  background-color: #eee;
+  margin-left: 5%;
+  margin-bottom: 1em;
+  margin-top: 3em;
+  border-radius: 60px;
+  border-color: gray;
+  font-size: 11px;
+}
+
+.modalbottos {}

@@ -24,17 +24,9 @@
           <meta name="viewport" content="width=device-width, initial-scale=1">
 
           <title>Analytic Soluction</title>
-          <link href="css/bootstrap.min.css" rel="stylesheet">
-          <link rel="stylesheet" href="css/sweetalert.css">
-          <link href="css/font-awesome.min.css" rel="stylesheet">
-          <link href="css/datepicker3.css" rel="stylesheet">
-          <link rel="stylesheet" href="css/chosen.css">
-          <link href="css/styles.css" rel="stylesheet">
-          <link rel="stylesheet" type="text/css" href="dist/bootstrap-clockpicker.min.css">
-          <link href="css/select2.min.css" rel="stylesheet" />
-          <link rel="stylesheet" type="text/css" href="assets/css/github.min.css">
 
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+
 
       </head>
       <?php
@@ -152,25 +144,8 @@
               </form>
 
 
-              <script src="js/jquery-3.3.1.min.js"></script>
-              <script src="js/bootstrap.min.js"></script>
-              <script src="js/sweetalert.js"></script>
 
-              <script src="js/fileinput.js"></script>
-
-              <script src="js/ValidarExistencia.js"></script>
-              <script type="js/text/javascript" src="assets/js/jquery.min.js"></script>
-              <script type="js/text/javascript" src="assets/js/bootstrap.min.js"></script>
-
-              <script src="js/chosen.jquery.js"></script>
               <script src="js/ImageSelect.jquery.js"></script>
-              <script src="js/select2.min.js"></script>
-              <script type="text/javascript" src="assets/js/highlight.min.js"></script>
-              <script type="text/javascript">
-                  hljs.configure({tabReplace: '    '});
-                  hljs.initHighlightingOnLoad();
-              </script>
-
 
               <script>
 

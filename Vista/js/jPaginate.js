@@ -76,7 +76,6 @@ offset = unfortunately calculating heights with javascript isn't always 100% acc
         });
       }
 
-
       // display first page and set first cookie
       if (options.cookies == true) {
         if (get_cookie("current")) {
@@ -91,6 +90,9 @@ offset = unfortunately calculating heights with javascript isn't always 100% acc
         showPage(1);
         createPagination(1);
       }
+
+
+
       //show selected page
       function showPage(page) {
         obj.children().hide();
@@ -106,7 +108,7 @@ offset = unfortunately calculating heights with javascript isn't always 100% acc
         var next = "<li><a class='goto_next' href='#'>" + options.next + "</a></li>";
         var previous_inactive = "<li><a class='inactive'>" + options.previous + "</a></li>";
 
-        var buttonSent = '<button type="button"   id="buttonEnviarEncuesta" class="btn btn-info" onclick="enviarResultado()">Guardar Cambios</button>';
+        var buttonSent = '<button type="button"   id="buttonEnviarEncuesta" class="btn btn-info" onclick="enviarResultado()">Enviar</button>';
         var next_inactive = "<li><a class='inactive'>" + options.next + "</a></li>";
         end = "</ul><br clear='all' />"
         var after = number_of_pages - options.after + 1;
@@ -171,8 +173,6 @@ offset = unfortunately calculating heights with javascript isn't always 100% acc
 
       }
 
-      /* code to handle cookies */
-      /* code to handle cookies */
       function set_cookie(c_name, value) {
         var expiredays = 999;
         var exdate = new Date();
@@ -193,6 +193,9 @@ offset = unfortunately calculating heights with javascript isn't always 100% acc
         }
         return "";
       }
+
+
+
 
       function paginationCalculator(curr) {
         var half = Math.floor(options.nav_items / 2);

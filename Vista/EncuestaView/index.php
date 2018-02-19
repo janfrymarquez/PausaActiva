@@ -31,19 +31,20 @@ $resultados->closeCursor();
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <link href="../css/bootstrap.min.css" rel="stylesheet">
       <link rel="stylesheet" href="../css/sweetalert.css">
-      <script src="../js/sweetalert.js"></script>
+
       <link href="../css/font-awesome.min.css" rel="stylesheet">
       <link href="../css/datepicker3.css" rel="stylesheet">
-      <link rel="../stylesheet" href="css/chosen.css">
-      <link rel="stylesheet" type="text/css" href="../dist/bootstrap-clockpicker.min.css">
-      <link href="../css/select2.min.css" rel="stylesheet" />
+
+
 
         <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
     <meta charset="utf-8">
     <title><?php echo $NombreEncuesta; ?></title>
     <script src="../js/jquery.js"></script>
+    >
     <script src="../js/jPaginate.js"></script>
 
+   <script src="../js/sweetalert.js"></script>
 
   </head>
   <body class="Cuerpo">
