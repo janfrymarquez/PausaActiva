@@ -4,12 +4,24 @@ require '../../Modelo/Conexion.php';
 $Conexion = new Conexion();
 $base = $Conexion->Conexion();
 
-$Id = $_GET['id'];
+$token = $_GET['token'];
 $IdTipoEncuesta = '';
 $SubTipoEncuenta = '';
-$sql = 'SELECT * FROM  tbl_encuesta_cabecera WHERE IdEncuestaCabecera = :Id';
+$activo = 1;
+$sql = 'SELECT * FROM  tbl_token WHERE token = :token && Activo = :Activo';
 $resultados = $base->prepare($sql);
-$resultados->execute([':Id' => $Id]);
+$resultados->execute([':token' => $token, ':Activo' => $activo]);
+$numero_registro = $resultados->rowCount();
+if (0 !== $numero_registro) {
+    $registros = $resultados->fetch(PDO::FETCH_ASSOC);
+
+    $Id = $registros['IdEncuesta'];
+}
+$resultados->closeCursor();
+
+$sql = 'SELECT * FROM  tbl_encuesta_cabecera WHERE IdEncuestaCabecera = :Id && Activo = :Activo';
+$resultados = $base->prepare($sql);
+$resultados->execute([':Id' => $Id, ':Activo' => $activo]);
 $numero_registro = $resultados->rowCount();
 if (0 !== $numero_registro) {
     $registros = $resultados->fetch(PDO::FETCH_ASSOC);
@@ -41,7 +53,7 @@ $resultados->closeCursor();
     <meta charset="utf-8">
     <title><?php echo $NombreEncuesta; ?></title>
     <script src="../js/jquery.js"></script>
-    >
+
     <script src="../js/jPaginate.js"></script>
 
    <script src="../js/sweetalert.js"></script>
@@ -144,7 +156,8 @@ $resultados->closeCursor();
 
 
 </div > <!-- CampoPregunta-->
-
+<div id ="buttonSent" class="BotonEnviar"></div>
+<div id ="Paginacion" class="divPaginacion"></div>
 
 </div>  <!-- Conenedor-->
 
@@ -190,7 +203,16 @@ console.log(EncuestaArray);
   dataType: "text",
   data: { 'EncuestaArray': JSON.stringify(resultado) },
   success: function(html){
-  swal("Gracias!", "Encuesta Guardadad!", "success");
+  swal("Gracias!", "Gracias por preferirnos!", "success");
+$('.sa-confirm-button-container').click(function(){
+  setTimeout(function()
+   {
+       location.reload();
+
+   }, 100);
+
+})
+
 
 }
 

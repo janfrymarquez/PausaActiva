@@ -2254,15 +2254,36 @@ img.pequeña {
 }
 
 .boton {
-  width: 50px;
-  height: 50px;
+  width: 5em;
+  height: 5em;
   background-color: #eee;
-  margin-left: 5%;
-  margin-bottom: 1em;
-  margin-top: 3em;
   border-radius: 60px;
   border-color: gray;
   font-size: 11px;
 }
 
-.modalbottos {}
+.URLCopiado {
+  text-align: center;
+  margin-top: 12%;
+  margin-bottom: 12%;
+}
+
+.buttonUrl {
+  height: 10%;
+  margin-top: 5%;
+}
+
+.UrlEncuesta {
+  width: 50%;
+  height: 36px;
+  border: 1px solid;
+  font-size: 14px;
+  font-weight: 400;
+  white-space: nowrap;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+.UrlHeader {
+  text-align: center;
+}

@@ -297,7 +297,7 @@ require 'header.php';
 
 
 
-      
+
 
 
 
@@ -318,13 +318,13 @@ require 'header.php';
           $("#formEncuesta :input.Pregunta").each(function(){
 
             if ($(this).hasClass('nuevo')){
-              var IdInput = $(this).attr('id');
-              var ValorInput = $(this).val();
-              var TipoResp = $('.TipoDeRepuesta_'+IdInput+'').val();
-              var NombreEncuesta = $('.NombreEncuesta').val();
-              var TiposEncuestaID = $('#TiposEncuestaID').val();
-              var SubTipoEncuenta = $('#SubTipoEncuenta').val();
-              var IdEncuesta =$('.NombreEncuesta').attr('id');
+              var IdInput = $.trim($(this).attr('id'));
+              var ValorInput = $.trim($(this).val());
+              var TipoResp = $.trim($('.TipoDeRepuesta_'+IdInput+'').val());
+              var NombreEncuesta = $.trim($('.NombreEncuesta').val());
+              var TiposEncuestaID = $.trim($('#TiposEncuestaID').val());
+              var SubTipoEncuenta = $.trim($('#SubTipoEncuenta').val());
+              var IdEncuesta = $.trim($('.NombreEncuesta').attr('id'));
 
 
               nuevoResultado.push({
@@ -342,13 +342,13 @@ require 'header.php';
             }
             else{
 
-              var IdInput = $(this).attr('id');
-              var ValorInput = $(this).val();
-              var TipoResp = $('.TipoDeRepuesta_'+IdInput+'').val();
-              var NombreEncuesta = $('.NombreEncuesta').val();
-              var TiposEncuestaID = $('#TiposEncuestaID').val();
-              var SubTipoEncuenta = $('#SubTipoEncuenta').val();
-              var IdEncuesta =$('.NombreEncuesta').attr('id');
+              var IdInput = $.trim($(this).attr('id'));
+              var ValorInput = $.trim($(this).val());
+              var TipoResp = $.trim($('.TipoDeRepuesta_'+IdInput+'').val());
+              var NombreEncuesta = $.trim($('.NombreEncuesta').val());
+              var TiposEncuestaID = $.trim($('#TiposEncuestaID').val());
+              var SubTipoEncuenta = $.trim($('#SubTipoEncuenta').val());
+              var IdEncuesta = $.trim($('.NombreEncuesta').attr('id'));
 
               result.push({
                 Id_Pregunta:IdInput,
@@ -369,8 +369,8 @@ require 'header.php';
 
           $.each(result, function( index, value){
             $('#formEncuesta :input.Respuesta_'+value.Id_Pregunta+'').each(function(){
-              value.Respuesta.push(
-                $(this).val()
+              value.Respuesta.push($.trim(
+                $(this).val())
               );
             });
           });
@@ -378,8 +378,8 @@ require 'header.php';
 
           $.each(nuevoResultado, function( index, value){
             $('#formEncuesta :input.Respuesta_'+value.Id_Pregunta+'').each(function(){
-              value.Respuesta.push(
-                $(this).val()
+              value.Respuesta.push($.trim(
+                $(this).val())
               );
             });
           });

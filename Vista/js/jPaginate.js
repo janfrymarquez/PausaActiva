@@ -152,18 +152,20 @@ offset = unfortunately calculating heights with javascript isn't always 100% acc
           $('#buttonSent').hide();
 
         } else if (number_of_pages == 1) {
-          nav = buttonSent;
+          $('#buttonSent').show();
+          $('#buttonSent').html(buttonSent);
 
         } else if (curr == number_of_pages) {
-          nav = start + previous + items + next_inactive + end + buttonSent;
-
+          nav = start + previous + items + next_inactive + end;
+          $('#buttonSent').show();
+          $('#buttonSent').html(buttonSent);
         } else if (curr == 1) {
           nav = start + previous_inactive + items + next + end;
           $('#buttonSent').hide();
         }
 
         if (options.position == "before") {
-          obj.before(nav);
+          $('#Paginacion').html(nav);
         } else if (options.position == "after") {
           obj.after(nav);
         } else {

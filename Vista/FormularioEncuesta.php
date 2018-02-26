@@ -155,12 +155,12 @@
 
                   $("#formEncuesta :input.Pregunta").each(function(){
 
-                    var IdInput = $(this).attr('id');// This is the jquery object of the input, do what you will
-                    var ValorInput = $(this).val();// This is the jquery object of the input, do what you will
-                    var TipoResp = $('.TipoDeRepuesta_'+IdInput+'').val();
-                    var NombreEncuesta = $('.NombreEncuesta').val();
-                    var TiposEncuestaID = $('#TiposEncuestaID').val();
-                    var SubTipoEncuenta = $('#SubTipoEncuenta').val();
+                    var IdInput = $.trim($(this).attr('id'));// This is the jquery object of the input, do what you will
+                    var ValorInput = $.trim($(this).val());// This is the jquery object of the input, do what you will
+                    var TipoResp = $.trim($('.TipoDeRepuesta_'+IdInput+'').val());
+                    var NombreEncuesta = $.trim($('.NombreEncuesta').val());
+                    var TiposEncuestaID = $.trim($('#TiposEncuestaID').val());
+                    var SubTipoEncuenta = $.trim($('#SubTipoEncuenta').val());
 
 
 
@@ -180,8 +180,8 @@
                  $.each(result, function( index, value){
                    $('#formEncuesta :input.Respuesta_'+value.Id_Pregunta+'').each(function(){
 
-                     value.Respuesta.push(
-                       $(this).val()
+                     value.Respuesta.push($.trim(
+                       $(this).val())
 
                      );
 

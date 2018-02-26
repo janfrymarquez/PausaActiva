@@ -16,6 +16,7 @@
 <script src="js/ImageSelect.jquery.js"></script>
 <script src="js/select2.min.js"></script>
 <script src="js/chosen.jquery.js"></script>
+  <script src="js/sweetalert.js"></script>
 
 <script type="text/javascript" src="assets/js/highlight.min.js"></script>
 <script type="text/javascript">

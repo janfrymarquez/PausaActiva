@@ -429,4 +429,32 @@ class Encuesta extends Conexion
         }
         $Data->closeCursor();
     }
+
+    public function getUrlEncuesta($GetUrlbyEncuestaId, $PermisoUrl, $FechaExpiracion)
+    {
+        print_r($FechaExpiracion);
+        session_start();
+        $idUsuario = $_SESSION['IdUsuarioActual'];
+        $FechaCreacion = date('Y/m/d');
+        $token = sha1(uniqid());
+        $url = "http://lhbjjmarquez/SistemaEncuesta/Vista/EncuestaView/index.php?token=${token}";
+
+        if ('3' === $PermisoUrl || $PermisoUrl = '4') {
+            $sql = 'INSERT INTO tbl_token(token,FechaEspiracion,IdEncuesta,FechaCreacion,CreadoPorUsuarioId) VALUES
+                                      (:token,:FechaEspiracion,  :IdEncuesta,:FechaCreacion,:CreadoPorUsuarioId) ';
+            $Data = $this->conexion_db->prepare($sql);
+
+            $Data->execute([':token' => $token, ':FechaEspiracion' => $FechaExpiracion, ':IdEncuesta' => $GetUrlbyEncuestaId, ':FechaCreacion' => $FechaCreacion,
+                                                       ':CreadoPorUsuarioId' => $idUsuario, ]);
+        } else {
+            $sql = 'INSERT INTO tbl_token(token,IdEncuesta,FechaCreacion,CreadoPorUsuarioId) VALUES
+                                      (:token, :IdEncuesta,:FechaCreacion,:CreadoPorUsuarioId) ';
+            $Data = $this->conexion_db->prepare($sql);
+
+            $Data->execute([':token' => $token, ':IdEncuesta' => $GetUrlbyEncuestaId, ':FechaCreacion' => $FechaCreacion,
+                            ':CreadoPorUsuarioId' => $idUsuario, ]);
+        }
+
+        //  print_r($url);
+    }
 }

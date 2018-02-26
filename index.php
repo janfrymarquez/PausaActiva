@@ -27,8 +27,10 @@
   	<link href="Vista/css/font-awesome.min.css" rel="stylesheet">
   	<link href="Vista/css/datepicker3.css" rel="stylesheet">
   	<link href="Vista/css/styles.css" rel="stylesheet">
+      <link rel="stylesheet" href="Vista/css/sweetalert.css">
     <script src="Vista/js/jquery.min.js"></script>
     <script src="Vista/js/bootstrap.min.js"></script>
+    <script src="Vista/js/sweetalert.js"></script>
   	<!--Custom Font-->
   	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
@@ -122,7 +124,7 @@
       <div class="row">
           <div class="col-lg-12 Filtro">
           <div class="form-group col-md-3 pull-right">
-<label for="select">Filtrar por:</label><select id="filtro" name="fetchby" class="form-control" >
+            <label for="select">Filtrar por:</label><select id="filtro" name="fetchby" class="form-control" >
       <option  value="FechaCreacion">Fecha</option>
       <option selected value="NombreEncuesta">Nombre</option>
 
@@ -161,13 +163,22 @@
               <label for="recipient-name" class="col-form-label">Permiso:</label></br>
             <select class="form-control PermisoCompartir" name="Permisos">
 
-                <option selected value="1">Enlace Normal</option>
-                <option value="2">Enlace unico</option>
-                <option value="2">Autenticacion por usurio</option>
-                <option value="3">Fecha de expiracion y enlace sin retrinciones</option>
-                <option value="4">Fecha de expiracion y enlace unico</option>
+
+              <?php
+              $fecha = '';
+              $sql = 'SELECT * FROM  tbl_permiso_url WHERE Activo = :activo';
+              $resultado = $base->prepare($sql);
+              $resultado->execute([':activo' => 1]);
+
+            while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                echo '<option  value="'.$registro['Values'].'">'.$registro['Permiso'].'</option>';
+            }
+                $resultado->closeCursor();
+                ?>
             </select>
             </div>
+
+            <div class="form-group FechaExpiracion"></div>
 
             <div class="form-group">
               <label for="recipient-name" class="col-form-label">Correo Electronico:</label>
@@ -178,8 +189,10 @@
               <textarea class="form-control" id="message-text"></textarea>
             </div>
 
-            <div class="form-group modalbottons"></div>
-            <div class="URLCopiado"></div>
+     <div class="buttonUrl">
+            <div class="form-group col-md-1 modalbottons"></div>
+
+    </div>
 
           </form>
         </div>
@@ -189,6 +202,41 @@
       </div>
     </div>
   </div>
+</div>
+
+
+
+<!-- Modal URLCopiado-->
+
+<div class="modal fade" id="modalUrl" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal-content">
+  <div class="modal-header">
+
+      <div class="modal-CompartirHeader">
+
+        <h4 class="modal-title">Se ha generado el enlace a:</h4>
+        <div class='ModalEncuestName'> </div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+
+      </div>
+
+    </div>
+
+    <div class="modal-body">
+      <div class="UrlHeader"></div>
+      <div class="UrlBody">
+        <div class="URLCopiado input-group"></div>
+        </div>
+
+      </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary">Enviar</button>
+  </div>
+</div>
+</div>
 </div>
 
   <!-- Mode -->
@@ -218,6 +266,7 @@
            <h6 class="MenuEncuesta"><i class="fas fa-edit"></i> &nbsp; Modificado '.$fecha.'</h6>
 				</div>';
       }
+      $resultado->closeCursor();
   }
    ?>
 
@@ -245,53 +294,95 @@
 
 $(document).ready(function(){
 
-            //Ocultamos el menú al cargar la página
-            $("#EncuestaOpciones").hide();
+  //Ocultamos el menú al cargar la página
+  $("#EncuestaOpciones").hide();
 
-            /* mostramos el menú si hacemos click derecho
-            con el ratón */
-            $( ".encuestaList" ).bind( "contextmenu", function(e) {
-              encuestaId= $(this).attr("id");
-              nombreEncues= $(this).attr('name');
-              console.log(nombreEncues);
-              var posicion = $(this).position();
-              $(".ulMenu").html('<li class="liMenu" id="Editar"><a class="btn btn-primary" href="Vista/EditarEncuesta.php?id='+encuestaId+'"><i class="fas fa-edit fa-lg"></i>&nbsp;Editar &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></li><li class="liMenu" id="Compartir"><button type="button" class="btn btn-info btCompartirEncc" data-toggle="modal" data-target="#myModal"><i class="fas fa-share-alt fa-lg"></i>&nbsp;Compartir</button></li> <li class="liMenu" id="Eliminar"><a class="btn btn-danger" href="#"><i class="fas fa-trash-alt fa-lg"></i>&nbsp;Eliminar &nbsp;&nbsp;&nbsp;  </a></li>');
-              $('.ModalEncuestName').html('<h5>'+nombreEncues+'</h5> ');
-              $('.modalbottons').html('<button type="button" id="'+encuestaId+'"class="boton getUrlEncuesta"  onclick="GetEncuestaUrl()" ><i class="fas fa-link fa-lg"></i></button></br><label for="message-text"  id=""class="col-form-label GetURL">Copiar enlace:</label>')
-                  $("#EncuestaOpciones").css({'display':'block', 'left': posicion.left+55, 'top': posicion.top+50});
-                  return false;
-            });
+  /* mostramos el menú si hacemos click derecho
+  con el ratón */
+  $( ".encuestaList" ).bind( "contextmenu", function(e) {
+    encuestaId= $(this).attr("id");
+    nombreEncues= $(this).attr('name');
 
-
-
-            //cuando hagamos click, el menú desaparecerá
-            $( document).bind( "click", function(e) {
-                  if(e.button == 0){
-                        $("#EncuestaOpciones").css("display", "none");
-                  }
-            });
-
-
-            //si pulsamos escape, el menú desaparecerá
-            $(document).keydown(function(e){
-                  if(e.keyCode == 27){
-                        $("#EncuestaOpciones").css("display", "none");
-                  }
-            });
+    var posicion = $(this).position();
+    $(".ulMenu").html('<li class="liMenu" id="Editar"><a class="btn btn-primary" href="Vista/EditarEncuesta.php?id='+encuestaId+'"><i class="fas fa-edit fa-lg"></i>&nbsp;Editar &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></li><li class="liMenu" id="Compartir"><button type="button" class="btn btn-info btCompartirEncc" data-toggle="modal" data-target="#myModal"><i class="fas fa-share-alt fa-lg"></i>&nbsp;Compartir</button></li> <li class="liMenu" id="Eliminar"><a class="btn btn-danger" href="#"><i class="fas fa-trash-alt fa-lg"></i>&nbsp;Eliminar &nbsp;&nbsp;&nbsp;  </a></li>');
+    $('.ModalEncuestName').html('<h5>'+nombreEncues+'</h5> ');
+    $('.modalbottons').html('<button type="button" id="'+encuestaId+'" class="boton getUrlEncuesta" data-dismiss="modal"  data-toggle="modal" data-target="#modalUrl" onclick="GetEncuestaUrl()" ><i class="fas fa-link fa-lg"></i></button></br><label for="message-text"  id=""class="col-form-label GetURL">Copiar enlace:</label>')
+    $("#EncuestaOpciones").css({'display':'block', 'left': posicion.left+55, 'top': posicion.top+50});
+    return false;
+  });
 
 
 
+  //cuando hagamos click, el menú desaparecerá
+  $( document).bind( "click", function(e) {
+    if(e.button == 0){
+      $("#EncuestaOpciones").css("display", "none");
+    }
+  });
 
-      });
+  //si pulsamos escape, el menú desaparecerá
+  $(document).keydown(function(e){
+    if(e.keyCode == 27){
+      $("#EncuestaOpciones").css("display", "none");
+    }
+  });
+
+
+  $(document).on('change', '.PermisoCompartir', function(){
+
+    var  permiso_url = $(this).val();
+    switch (permiso_url) {
+
+       case '3':
+       case '4':
+       $('.FechaExpiracion').show();
+       $('.FechaExpiracion').html('<label for="recipient-name" class="col-form-label">Fecha de Expiración:</label><input type="text" class="form-control UrlDateExpire" id="datepicker">');
+        $( "#datepicker" ).datepicker("option", "dateFormat", "yy-mm-dd");
+         break;
+
+        default:
+        $('.FechaExpiracion').hide();
+ break;
+    }
+  });
+
+});
 
       function GetEncuestaUrl(){
-      EncuestaId = $(this).atrr('id');
-      console.log(EncuestaId);
+        EncuestaId2 =$('.getUrlEncuesta').attr("id");
+
+        $.ajax({
+          type: 'POST',
+          url: 'Controlador/EncuestaControlador.php',
+          data: {'GetUrlbyEncuestaId': $('.getUrlEncuesta').attr("id"),
+                 'FechaExpiracion': $('.UrlDateExpire').val(),
+                 'PermisoUrl': $('.PermisoCompartir').val()},
+
+          success: function(html){
+            $('.URLCopiado').html('<input type="text" id="txtUrlCopy" class="form-control" value="'+html+'"> <span class="input-group-btn"><button class="btn btn-btn-primary btnCopiar " onclick="copiarAlPortapapeles()" type="button">Copiar</button></span>');
+
+          }
+        });
+
+      }
 
 
-      };
+  function copiarAlPortapapeles() {
 
+    var value=$.trim($("#txtUrlCopy").val());
 
+      if(value.length>0){
+  $('.UrlHeader').show();
+  $('#txtUrlCopy').select();
+$('.UrlHeader').html('<img src="Vista/img/Icon/img_check_ok.jpg" height="80" width="80" align="middle">')
+  document.execCommand("copy");
+}
+else{
+    swal("Opps!", "No se ha podido Generar el Enlance!", "warning");
+  $('.UrlHeader').hide();
+
+}
+}
 
 </script>
 
