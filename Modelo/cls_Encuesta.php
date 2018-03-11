@@ -72,6 +72,29 @@ class Encuesta extends Conexion
         $resultado->closeCursor();
     }
 
+    ///Funcion para octener clientes
+    public function getClienteBySubTipoEncuenta($SubTipoEncuesta)
+    {
+        $sqlcliente = 'SELECT * FROM  tbl_clientes ORDER by NombreCliente ASC';
+
+        $resultado = $this->conexion_db->prepare($sqlcliente);
+
+        $resultado->execute();
+
+        $numero_registro = $resultado->rowCount();
+
+        if (0 !== $numero_registro) {
+            echo '<option value=""> -- Seleciones los Clientes -- </option>';
+            while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                echo '<option value="'.$registro['IdClientes'].'">'.$registro['NombreCliente'].'</option>';
+            }
+        } else {
+            echo 'NoDisponible';
+        }
+
+        $resultado->closeCursor();
+    }
+
     //Funcion para editarlos encuesta en al base de datos
     public function ActualizarDatosEncuesta($Datosactualizado)
     {
@@ -102,6 +125,17 @@ class Encuesta extends Conexion
 
         session_start(); // Se inicia seccion para tomar datos guadado en la seccion del usuario logueado
 
+        $SubTipoEncuestaDetalle = '';
+        $sqlSub = 'SELECT * FROM  tbl_sub_encuesta WHERE IdSubTipoEncuesta = :SubTipoEncuenta';
+        $resultado = $this->conexion_db->prepare($sqlSub);
+        $resultado->execute([':SubTipoEncuenta' => $SubTipoEncuenta]);
+        $numero_registro = $resultado->rowCount();
+        if (0 !== $numero_registro) {
+            while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                $SubTipoEncuestaDetalle = $registro['SubTipoEncuesta'];
+            }
+        }
+
         $IdSucursal = $_SESSION['IdSucursal'];
         $idSector = $_SESSION['IdSector'];
         $idUsuario = $_SESSION['IdUsuarioActual'];
@@ -113,6 +147,7 @@ class Encuesta extends Conexion
                                                 SubTipoEncuenta='${SubTipoEncuenta}',
                                                 Sucursal='${IdSucursal}',
                                                 Sector='${idSector}',
+                                                SubTipoEncuestaDetalle=' ${SubTipoEncuestaDetalle}',
                                                 ModificadoPorUsuarioId='${idUsuario}',
                                                 FechaModificacion ='{$FechaCreacion}'
                                                   WHERE IdEncuestaCabecera='${IdEncuesta}'";
@@ -217,11 +252,23 @@ class Encuesta extends Conexion
         $prefig = $idUsuario.+$idSector.+$IdSucursal;
         $IdEncuesta = uniqid($prefig);
         // Se gurdan datos en la tabla tbl_encuesta_cabecera
-        $sql = 'INSERT INTO tbl_encuesta_cabecera (IdEncuestaCabecera,NombreEncuesta,TiposEncuesta,SubTipoEncuenta,Sucursal,Sector,CreadoPorUsuarioId,FechaCreacion) VALUES
-                                                    (:IdEncuestaCabecera,:NombreEncuesta, :TiposEncuesta,:SubTipoEncuenta,:Sucursal,:Sector, :CreadoPorUsuarioId,:FechaCreacion) ';
+
+        $SubTipoEncuestaDeta = '';
+        $sqlSub = 'SELECT * FROM  tbl_sub_encuesta WHERE IdSubTipoEncuesta = :SubTipoEncuenta';
+        $resultado = $this->conexion_db->prepare($sqlSub);
+        $resultado->execute([':SubTipoEncuenta' => $SubTipoEncuenta]);
+        $numero_registro = $resultado->rowCount();
+        if (0 !== $numero_registro) {
+            while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                $SubTipoEncuestaDetalle = $registro['SubTipoEncuesta'];
+            }
+        }
+        $resultado->closeCursor();
+        $sql = 'INSERT INTO tbl_encuesta_cabecera (IdEncuestaCabecera,NombreEncuesta,TiposEncuesta,SubTipoEncuenta,SubTipoEncuestaDetalle,Sucursal,Sector,CreadoPorUsuarioId,FechaCreacion) VALUES
+                                                    (:IdEncuestaCabecera,:NombreEncuesta, :TiposEncuesta,:SubTipoEncuenta,:SubTipoEncuestaDetalle,:Sucursal,:Sector, :CreadoPorUsuarioId,:FechaCreacion) ';
 
         $resultado = $this->conexion_db->prepare($sql);
-        $resultado->execute([':IdEncuestaCabecera' => $IdEncuesta, ':NombreEncuesta' => $NombreEcnuesta, ':TiposEncuesta' => $TiposEncuesta, ':SubTipoEncuenta' => $SubTipoEncuenta, ':Sucursal' => $IdSucursal,
+        $resultado->execute([':IdEncuestaCabecera' => $IdEncuesta, ':NombreEncuesta' => $NombreEcnuesta, ':TiposEncuesta' => $TiposEncuesta, ':SubTipoEncuenta' => $SubTipoEncuenta, ':SubTipoEncuestaDetalle' => $SubTipoEncuestaDetalle, ':Sucursal' => $IdSucursal,
                                 ':Sector' => $idSector, ':CreadoPorUsuarioId' => $idUsuario, 'FechaCreacion' => $FechaCreacion, ]);
         // Se gurdan datos en la tabla tbl_encuesta_detalle
         $encuestaDetaSql = 'INSERT INTO tbl_encuesta_detalle (IdEncuesta,IdPreguntas,Pregunta,Repuesta,TipoRepuesta) VALUES
@@ -243,6 +290,7 @@ class Encuesta extends Conexion
                     $CampoRepuesta = $registro['DescripConfiRepuesta'];
                 }
             }
+              $resultado->closeCursor();
 
             break;
             case '7':
@@ -255,6 +303,7 @@ class Encuesta extends Conexion
                     $CampoRepuesta = $registro['DescripConfiRepuesta'];
                 }
             }
+              $resultado->closeCursor();
 
             break;
             case '8':
@@ -267,6 +316,7 @@ class Encuesta extends Conexion
                     $CampoRepuesta = $registro['DescripConfiRepuesta'];
                 }
             }
+              $resultado->closeCursor();
 
             break;
             default:
@@ -366,7 +416,6 @@ class Encuesta extends Conexion
             $Data->execute([':IdEncuesta' => $IdEncuesta, ':IdPreguntas' => $idPregunta, ':Pregunta' => $encuestaDetalle['Pregunta'][$i], ':Repuesta' => $CampoRepuesta,
                          ':TipoRepuesta' => $encuestaDetalle['tipoRepuesta'][$i], ]);
         }
-        $resultado->closeCursor();
     }
 
     //fin Funcion Guardar Datos Encuesta
@@ -432,7 +481,6 @@ class Encuesta extends Conexion
 
     public function getUrlEncuesta($GetUrlbyEncuestaId, $PermisoUrl, $FechaExpiracion)
     {
-        print_r($FechaExpiracion);
         session_start();
         $idUsuario = $_SESSION['IdUsuarioActual'];
         $FechaCreacion = date('Y/m/d');
@@ -455,6 +503,6 @@ class Encuesta extends Conexion
                             ':CreadoPorUsuarioId' => $idUsuario, ]);
         }
 
-        //  print_r($url);
+        print_r($url);
     }
 }

@@ -388,7 +388,7 @@ require 'header.php';
 
           swal({
             title: "Guardar Encuesta",
-            text: "Ok para guardar la EncuestaArray",
+            text: "Ok para guardar la Encuesta",
             type: "info",
             showCancelButton: true,
             closeOnConfirm: false,
@@ -406,7 +406,7 @@ require 'header.php';
                 console.log(html);
                 swal("Encuesta Guardada!");
                 setTimeout(function () {
-                  window.location.href = '../index.php';
+                window.location.href = '../index.php';
                 }, 1000);
 
               }

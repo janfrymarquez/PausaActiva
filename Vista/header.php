@@ -9,15 +9,17 @@
 <link href="css/select2.min.css" rel="stylesheet">
 <link rel="stylesheet" href="css/sweetalert.css">
 <link rel="stylesheet" href="css/chosen.css">
+<link rel="stylesheet" href="css/jquery.dataTables.min.css">
+
 <link rel="icon" href="img/favicon.ico">
   <link rel="stylesheet" type="text/css" href="dist/bootstrap-clockpicker.min.css">
-<link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-<script src="js/ValidarExistencia.js"></script>
+
+<script src="js/jquery.dataTables.min.js"></script>
 <script src="js/ImageSelect.jquery.js"></script>
 <script src="js/select2.min.js"></script>
 <script src="js/chosen.jquery.js"></script>
   <script src="js/sweetalert.js"></script>
-
+<script src="js/ValidarExistencia.js"></script>
 <script type="text/javascript" src="assets/js/highlight.min.js"></script>
 <script type="text/javascript">
     hljs.configure({tabReplace: '    '});
@@ -75,21 +77,21 @@ echo '<div class="profile-usertitle-name"> '.'Hola'.'  '.$usar.' </div>';
                        <em class="fas fa-cogs">&nbsp;</em> Configuraciones <span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"><em class="fa fa-plus"></em></span>
                    </a>
                    <ul class="children collapse" id="sub-item-1">
-                       <li><a class="" href="ModificarUsuario.php">
-                               <span class="fas fa-user">&nbsp;</span>Usuarios
-                           </a></li>
-                       <li><a class="" href="ModificarUsuario.php">
-                               <span class="glyphicon glyphicon-usd">&nbsp;</span>Clientes
-                           </a></li>
-                       <li><a class="" href="#">
-                               <span class="glyphicon glyphicon-shopping-cart">&nbsp;</span>Vendedores
-                           </a></li>
-                       <li><a class="" href="#">
-                               <span class="glyphicon glyphicon-eye-open">&nbsp;</span>Supervidores
-                           </a></li>
-                       <li><a class="" href="#">
-                               <span class="fa fa-line-chart">&nbsp;</span>Encuesta
-                           </a></li>
+                         <li><a class="" href="ModificarUsuario.php">
+                                 <span class="fas fa-user"></span> Usuarios
+                             </a></li>
+                         <li><a class="" href="clientebeta.php">
+                                 <span class="glyphicon glyphicon-usd"></span> Clientes
+                             </a></li>
+                         <li><a class="" href="#">
+                                 <span class="glyphicon glyphicon-shopping-cart"></span> Vendedores
+                             </a></li>
+                         <li><a class="" href="#">
+                                 <span class="glyphicon glyphicon-eye-open"></span> Supervidores
+                             </a></li>
+                         <li><a class="" href="#">
+                                 <span class="fa fa-line-chart"></span> Encuesta
+                             </a></li>
                    </ul>
                </li>
 

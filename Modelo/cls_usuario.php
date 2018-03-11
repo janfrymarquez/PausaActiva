@@ -135,4 +135,47 @@ class Usuario extends Conexion
 
         $this->conexion_db = null;
     }
+
+    public function getEmpleadoInterno()
+    {
+        $sqlEmpleado = 'SELECT * FROM  tbl_departamentos';
+
+        $resultado = $this->conexion_db->prepare($sqlEmpleado);
+
+        $resultado->execute();
+
+        $numero_registro = $resultado->rowCount();
+
+        if (0 !== $numero_registro) {
+            echo '<option selected disabled value=""> -- Selecione un departamento -- </option>';
+            while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                echo '<option value="'.$registro['IdDepartamento'].'">'.$registro['Departamento'].'</option>';
+            }
+        } else {
+            echo 'NoDisponible';
+        }
+
+        $resultado->closeCursor();
+    }
+
+    public function getEmpleadoExterno()
+    {
+        $sqlEmpleado = 'SELECT * FROM  tbl_localidades';
+
+        $resultado = $this->conexion_db->prepare($sqlEmpleado);
+
+        $resultado->execute();
+
+        $numero_registro = $resultado->rowCount();
+
+        if (0 !== $numero_registro) {
+            while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                echo '<option value="'.$registro['IdLocalidad'].'">'.$registro['NOM_UNIDAD'].'</option>';
+            }
+        } else {
+            echo 'NoDisponible';
+        }
+
+        $resultado->closeCursor();
+    }
 }

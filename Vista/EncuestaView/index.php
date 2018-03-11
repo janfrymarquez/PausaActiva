@@ -74,6 +74,7 @@ $resultados->closeCursor();
 
 
     <div class="Contenedor">
+      
    <div class= "BloquePregunta">
     <?php
 

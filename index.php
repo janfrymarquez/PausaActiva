@@ -86,21 +86,21 @@
                           <em class="fas fa-cogs">&nbsp;</em> Configuraciones <span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"><em class="fa fa-plus"></em></span>
                       </a>
                       <ul class="children collapse" id="sub-item-1">
-                          <li><a class="" href="Vista/ModificarUsuario.php">
-                                  <span class="fas fa-user">&nbsp;</span>Usuarios
-                              </a></li>
-                          <li><a class="" href="Vista/ModificarUsuario.php">
-                                  <span class="glyphicon glyphicon-usd">&nbsp;</span>Clientes
-                              </a></li>
-                          <li><a class="" href="#">
-                                  <span class="glyphicon glyphicon-shopping-cart">&nbsp;</span>Vendedores
-                              </a></li>
-                          <li><a class="" href="#">
-                                  <span class="glyphicon glyphicon-eye-open">&nbsp;</span>Supervidores
-                              </a></li>
-                          <li><a class="" href="#">
-                                  <span class="fa fa-line-chart">&nbsp;</span>Encuesta
-                              </a></li>
+                           <li><a class="" href="ModificarUsuario.php">
+                                   <span class="fas fa-user"></span> Usuarios
+                               </a></li>
+                           <li><a class="" href="Clientes.php">
+                                   <span class="glyphicon glyphicon-usd"></span> Clientes
+                               </a></li>
+                           <li><a class="" href="#">
+                                   <span class="glyphicon glyphicon-shopping-cart"></span> Vendedores
+                               </a></li>
+                           <li><a class="" href="#">
+                                   <span class="glyphicon glyphicon-eye-open"></span> Supervidores
+                               </a></li>
+                           <li><a class="" href="#">
+                                   <span class="fa fa-line-chart"></span> Encuesta
+                               </a></li>
                       </ul>
                   </li>
 
@@ -121,27 +121,67 @@
   		</div><!--/.row-->
 
 <br>
-      <div class="row">
-          <div class="col-lg-12 Filtro">
-          <div class="form-group col-md-3 pull-right">
-            <label for="select">Filtrar por:</label><select id="filtro" name="fetchby" class="form-control" >
-      <option  value="FechaCreacion">Fecha</option>
-      <option selected value="NombreEncuesta">Nombre</option>
-
-
-  </select>
-
-          </div>
 
 
 
-          </div>
-    </div>
 
-    <div id="EncuestaOpciones">
-          <ul class="ulMenu">
-          </ul>
-    </div>
+
+<div class="container">
+
+  <div id="EncuestaOpciones">
+        <ul class="ulMenu">
+        </ul>
+  </div>
+
+  <div class="row">
+    <div align="center">
+      <button class="btn btn-default filter-button active" data-filter="all">Todas</button>
+  <?php
+      $sql = 'SELECT * FROM  tbl_encuesta_cabecera WHERE CreadoPorUsuarioId = :Usuario';
+      $resultado = $base->prepare($sql);
+      $resultado->execute([':Usuario' => $idUsuario]);
+      $numero_registro = $resultado->rowCount();
+      if (0 !== $numero_registro) {
+          while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+              echo '<button class="btn btn-default filter-button" data-filter="F'.$registro['SubTipoEncuenta'].'">'.$registro['SubTipoEncuestaDetalle'].'</button>';
+          }
+      }
+        $resultado->closeCursor();
+              ?>
+
+
+
+         </div>
+
+  <?php
+  $fecha = '';
+  $sql = 'SELECT * FROM  tbl_encuesta_cabecera WHERE CreadoPorUsuarioId = :Usuario';
+  $resultado = $base->prepare($sql);
+  $resultado->execute([':Usuario' => $idUsuario]);
+  $numero_registro = $resultado->rowCount();
+  if (0 !== $numero_registro) {
+      while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+          if (null === $registro['FechaModificacion']) {
+              $fecha = $registro['FechaCreacion'];
+          } else {
+              $fecha = $registro['FechaModificacion'];
+          }
+          echo'  <div name="'.$registro['NombreEncuesta'].'" class="gallery_product col-lg-3 col-md-3 col-sm-3 col-xs-6 filter F'.$registro['SubTipoEncuenta'].'" id="'.$registro['IdEncuestaCabecera'].'">
+					<img src="Vista/img/EncuestaImagen.png" class="img-responsive" alt="" >
+
+					<a  href="Vista\EditarEncuesta.php?id='.$registro['IdEncuestaCabecera'].'">'.$registro['NombreEncuesta'].'</a>
+
+           <h6 class="MenuEncuesta"><i class="fas fa-edit"></i>Modificado '.$fecha.' <i class="fas fa-ellipsis-v"></i></h6>
+				</div>';
+      }
+      $resultado->closeCursor();
+  }
+   ?>
+
+
+
+</div>
+</div>
 
 
     <!-- Modal -->
@@ -242,41 +282,6 @@
   <!-- Mode -->
 
 
-<div class="Encuesta">
-  <div class="Div_Encuesta">
-<section class="encuesta-list">
-  <?php
-  $fecha = '';
-  $sql = 'SELECT * FROM  tbl_encuesta_cabecera WHERE CreadoPorUsuarioId = :Usuario';
-  $resultado = $base->prepare($sql);
-  $resultado->execute([':Usuario' => $idUsuario]);
-  $numero_registro = $resultado->rowCount();
-  if (0 !== $numero_registro) {
-      while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-          if (null === $registro['FechaModificacion']) {
-              $fecha = $registro['FechaCreacion'];
-          } else {
-              $fecha = $registro['FechaModificacion'];
-          }
-          echo'  <div name="'.$registro['NombreEncuesta'].'" class="encuesta-item encuestaList" id="'.$registro['IdEncuestaCabecera'].'">
-					<img src="Vista/img/EncuestaImagen.png" alt="" >
-
-					<a  href="Vista\EditarEncuesta.php?id='.$registro['IdEncuestaCabecera'].'">'.$registro['NombreEncuesta'].'</a>
-
-           <h6 class="MenuEncuesta"><i class="fas fa-edit"></i> &nbsp; Modificado '.$fecha.'</h6>
-				</div>';
-      }
-      $resultado->closeCursor();
-  }
-   ?>
-
-
-</section>
-</div>
-</div>
-
-
-
 
 
 
@@ -299,7 +304,7 @@ $(document).ready(function(){
 
   /* mostramos el menú si hacemos click derecho
   con el ratón */
-  $( ".encuestaList" ).bind( "contextmenu", function(e) {
+  $( ".gallery_product" ).bind( "contextmenu", function(e) {
     encuestaId= $(this).attr("id");
     nombreEncues= $(this).attr('name');
 
@@ -307,7 +312,7 @@ $(document).ready(function(){
     $(".ulMenu").html('<li class="liMenu" id="Editar"><a class="btn btn-primary" href="Vista/EditarEncuesta.php?id='+encuestaId+'"><i class="fas fa-edit fa-lg"></i>&nbsp;Editar &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></li><li class="liMenu" id="Compartir"><button type="button" class="btn btn-info btCompartirEncc" data-toggle="modal" data-target="#myModal"><i class="fas fa-share-alt fa-lg"></i>&nbsp;Compartir</button></li> <li class="liMenu" id="Eliminar"><a class="btn btn-danger" href="#"><i class="fas fa-trash-alt fa-lg"></i>&nbsp;Eliminar &nbsp;&nbsp;&nbsp;  </a></li>');
     $('.ModalEncuestName').html('<h5>'+nombreEncues+'</h5> ');
     $('.modalbottons').html('<button type="button" id="'+encuestaId+'" class="boton getUrlEncuesta" data-dismiss="modal"  data-toggle="modal" data-target="#modalUrl" onclick="GetEncuestaUrl()" ><i class="fas fa-link fa-lg"></i></button></br><label for="message-text"  id=""class="col-form-label GetURL">Copiar enlace:</label>')
-    $("#EncuestaOpciones").css({'display':'block', 'left': posicion.left+55, 'top': posicion.top+50});
+    $("#EncuestaOpciones").css({'display':'block', 'left': posicion.left+6, 'top': posicion.top+40});
     return false;
   });
 
@@ -345,6 +350,29 @@ $(document).ready(function(){
  break;
     }
   });
+
+
+  $(".filter-button").click(function(){
+         var value = $(this).attr('data-filter');
+
+         if(value == "all")
+         {
+
+             $('.filter').show('1000');
+         }
+         else
+         {
+
+             $(".filter").not('.'+value).hide('3000');
+             $('.filter').filter('.'+value).show('3000');
+
+         }
+     });
+
+     if ($(".filter-button").removeClass("active")) {
+ $(this).removeClass("active");
+ }
+ $(this).addClass("active");
 
 });
 

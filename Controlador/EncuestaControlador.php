@@ -25,6 +25,12 @@ if (isset($_POST['TiposEncuestaID']) && !empty($_POST['TiposEncuestaID'])) {
 
     $Encuesta->getSubTipoEncuentaByTipoEncuentaID($TipoEncuesta);
 }
+
+if (isset($_POST['SubTipoEncuenta']) && !empty($_POST['SubTipoEncuenta'])) {
+    $SubTipoEncuesta = $_POST['SubTipoEncuenta'];
+
+    $Encuesta->getClienteBySubTipoEncuenta($SubTipoEncuesta);
+}
 if (isset($_POST['GetUrlbyEncuestaId']) && !empty($_POST['GetUrlbyEncuestaId'])) {
     $GetUrlbyEncuestaId = $_POST['GetUrlbyEncuestaId'];
     $PermisoUrl = $_POST['PermisoUrl'];
@@ -33,7 +39,7 @@ if (isset($_POST['GetUrlbyEncuestaId']) && !empty($_POST['GetUrlbyEncuestaId']))
         $FechaExpiracion = $_POST['FechaExpiracion'];
         $fechaExpiracion = date('Y/m/d', strtotime($FechaExpiracion));
     } else {
-        $FechaExpiracion = '';
+        $fechaExpiracion = '';
     }
     $Encuesta->getUrlEncuesta($GetUrlbyEncuestaId, $PermisoUrl, $fechaExpiracion);
 }
