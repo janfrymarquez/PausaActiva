@@ -2019,6 +2019,39 @@ textarea {
   padding: 0;
 }
 
+.Encuesta-iten-modificado {
+  font-size: 12px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.Encuesta-iten-Name {
+  text-align: center;
+  background: #2D3E50;
+  color: #fff;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.Encuesta-iten-Name:hover {
+  white-space: initial;
+  z-index: 1;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+}
+
+.Mas-Opciones {
+  cursor: pointer;
+  display: inline-block;
+  float: right;
+  direction: ltr;
+  text-align: left;
+  z-index: 1;
+  font-size: 18px;
+}
+
 .liMenu {
   line-height: 10px;
   font-size: 16px;
@@ -2183,9 +2216,22 @@ img.pequeña {
   margin-bottom: 12%;
 }
 
+.AddDiv {
+  text-align: center;
+}
+
 .buttonUrl {
   height: 10%;
   margin-top: 5%;
+}
+
+.edit, .delete {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.error {
+  color: red;
 }
 
 .UrlEncuesta {
@@ -2215,7 +2261,12 @@ img.pequeña {
   padding: 20px 25px;
   margin: 30px 0;
   border-radius: 3px;
+  text-align: center;
   box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+}
+
+.DivLoader {
+  margin: auto;
 }
 
 .table-title {
@@ -2282,7 +2333,7 @@ table.table .avatar {
   margin-right: 10px;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 220px) {
   table {
     width: 100%;
   }
@@ -2353,8 +2404,8 @@ table.table .avatar {
   height: 34px;
   border-radius: 20px;
   padding-left: 35px;
-  border-color: #ddd;
   box-shadow: none;
+  border: 1px solid rgb(98, 171, 241);
 }
 
 .search-box input:focus {
@@ -2432,12 +2483,13 @@ table.table .avatar {
 
 .modal .modal-title {
   display: inline-block;
+  font-size: 130%;
+  font-color: rgb(134, 208, 231);
 }
 
 .modal .form-control {
   border-radius: 2px;
   box-shadow: none;
-  border-color: #dddddd;
 }
 
 .modal textarea.form-control {
@@ -2501,7 +2553,7 @@ table.table .avatar {
   border-radius: 5px;
   text-align: center;
   color: #42B32F;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
   margin-right: 5px;
 }
 
@@ -2535,23 +2587,6 @@ table.table .avatar {
   border: 1px solid #42B32F;
 }
 
-.gallery_product a {
-  display: block;
-  margin-top: -8px;
-  padding: 8px 0;
-  background: #2D3E50;
-  color: #fff;
-  z-index: 0;
-  text-align: center;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.gallery_product a:hover {
-  overflow: visible;
-  white-space: normal;
-}
-
 .container {
   margin-top: 2%;
   width: 98%;
@@ -2560,4 +2595,39 @@ table.table .avatar {
   padding-top: 5%;
   border: 1px solid #e9ecf2;
   background-color: #ffffff;
+}
+
+/* Loader */
+
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  z-index: 5000;
+  text-align: center;
+  -webkit-animation: spin 2s linear infinite;
+  /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

@@ -149,7 +149,7 @@ class Usuario extends Conexion
         if (0 !== $numero_registro) {
             echo '<option selected disabled value=""> -- Selecione un departamento -- </option>';
             while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                echo '<option value="'.$registro['IdDepartamento'].'">'.$registro['Departamento'].'</option>';
+                echo '<option value="'.$registro['IdDepartamento'].','.$registro['Departamento'].'">'.$registro['Departamento'].'</option>';
             }
         } else {
             echo 'NoDisponible';
@@ -169,8 +169,9 @@ class Usuario extends Conexion
         $numero_registro = $resultado->rowCount();
 
         if (0 !== $numero_registro) {
+            echo '<option selected disabled value=""> -- Selecione una heladeria -- </option>';
             while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                echo '<option value="'.$registro['IdLocalidad'].'">'.$registro['NOM_UNIDAD'].'</option>';
+                echo '<option value="'.$registro['IdLocalidad'].','.$registro['NOM_UNIDAD'].'">'.$registro['NOM_UNIDAD'].'</option>';
             }
         } else {
             echo 'NoDisponible';

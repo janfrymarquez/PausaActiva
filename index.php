@@ -25,11 +25,16 @@
   	<link href="Vista/css/bootstrap.min.css" rel="stylesheet">
     <link href="Vista/css/fontawesome-all.css" rel="stylesheet">
   	<link href="Vista/css/font-awesome.min.css" rel="stylesheet">
+    <link href="Vista/css/select2.min.css" rel="stylesheet">
   	<link href="Vista/css/datepicker3.css" rel="stylesheet">
+      	<link href="Vista/css/jquery-ui.min.css" rel="stylesheet">
   	<link href="Vista/css/styles.css" rel="stylesheet">
       <link rel="stylesheet" href="Vista/css/sweetalert.css">
     <script src="Vista/js/jquery.min.js"></script>
+        <script src="Vista/js/jquery-ui.min.js"></script>
     <script src="Vista/js/bootstrap.min.js"></script>
+    <script src="Vista/js/select2.min.js"></script>
+
     <script src="Vista/js/sweetalert.js"></script>
   	<!--Custom Font-->
   	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
@@ -86,12 +91,13 @@
                           <em class="fas fa-cogs">&nbsp;</em> Configuraciones <span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"><em class="fa fa-plus"></em></span>
                       </a>
                       <ul class="children collapse" id="sub-item-1">
-                           <li><a class="" href="ModificarUsuario.php">
+                           <li><a class="" href="Vista/ModificarUsuario.php">
                                    <span class="fas fa-user"></span> Usuarios
                                </a></li>
-                           <li><a class="" href="Clientes.php">
+                           <li><a class="" href="Vista/Clientes.php">
                                    <span class="glyphicon glyphicon-usd"></span> Clientes
                                </a></li>
+
                            <li><a class="" href="#">
                                    <span class="glyphicon glyphicon-shopping-cart"></span> Vendedores
                                </a></li>
@@ -166,12 +172,13 @@
           } else {
               $fecha = $registro['FechaModificacion'];
           }
-          echo'  <div name="'.$registro['NombreEncuesta'].'" class="gallery_product col-lg-3 col-md-3 col-sm-3 col-xs-6 filter F'.$registro['SubTipoEncuenta'].'" id="'.$registro['IdEncuestaCabecera'].'">
+          echo'<a href="Vista\EditarEncuesta.php?id='.$registro['IdEncuestaCabecera'].'"> <div name="'.$registro['NombreEncuesta'].'" class="gallery_product col-lg-3 col-md-3 col-sm-3 col-xs-6 filter F'.$registro['SubTipoEncuenta'].'" id="'.$registro['IdEncuestaCabecera'].'">
 					<img src="Vista/img/EncuestaImagen.png" class="img-responsive" alt="" >
 
-					<a  href="Vista\EditarEncuesta.php?id='.$registro['IdEncuestaCabecera'].'">'.$registro['NombreEncuesta'].'</a>
 
-           <h6 class="MenuEncuesta"><i class="fas fa-edit"></i>Modificado '.$fecha.' <i class="fas fa-ellipsis-v"></i></h6>
+             <div class="Encuesta-iten-Name">'.$registro['NombreEncuesta'].'</div></a>
+           <div class="Encuesta-iten-modificado"><i class="fas fa-edit"></i>Modificado '.$fecha.'
+           <div name="'.$registro['NombreEncuesta'].'" class="Mas-Opciones" id="'.$registro['IdEncuestaCabecera'].'"><i class="fas fa-ellipsis-v fa-sm"></i></div></div>
 				</div>';
       }
       $resultado->closeCursor();
@@ -192,47 +199,124 @@
 
           <div class="modal-CompartirHeader">
 
-            <h4 class="modal-title">Enviar Vínculo</h4>
-            <div class='ModalEncuestName'> </div>
+
+            <div class='ModalEncuestName '> </div>
           </div>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         </div>
         <div class="modal-body">
           <form>
-            <div class="form-group">
-              <label for="recipient-name" class="col-form-label">Permiso:</label></br>
-            <select class="form-control PermisoCompartir" name="Permisos">
 
 
-              <?php
-              $fecha = '';
-              $sql = 'SELECT * FROM  tbl_permiso_url WHERE Activo = :activo';
-              $resultado = $base->prepare($sql);
-              $resultado->execute([':activo' => 1]);
+            <div class="form-group ClienteOption">
+<input type="radio" id="USuarioHB" name="Cliente" value="TU">Todo los clientes de Helados Bon</br>
 
-            while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                echo '<option  value="'.$registro['Values'].'">'.$registro['Permiso'].'</option>';
-            }
+
+<input type="radio" id="UsuarioHE" name="Cliente" value="TH">Todas las Heladerias</br>
+
+<input type="radio" id="ClienteOpction" name="Cliente" checked value="TH">Clientes en especifico</br>
+
+
+</div>
+
+            <div class="form-group  Cliente-group">
+              <label for="recipient-name" class="col-form-label">Cliente a ser evaluado (*):</label></br>
+              <span id="iconForm" class="form-control-feedback Span_Clientes "></span>
+
+              <select class="ClienteSelect" id="ClienteSelect" style="width: 100%" multiple="multiple">
+
+
+
+                <?php
+                $fecha = '';
+
+                echo'</optgroup>   <optgroup label="Departamentos">';
+
+                $sql2 = 'SELECT * FROM  tbl_departamentos WHERE Activo = :activo';
+                $resultado = $base->prepare($sql2);
+                $resultado->execute([':activo' => 1]);
+
+                while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                    echo '<option  value="'.$registro['CodigoDeparamento'].',D">'.$registro['Departamento'].'</option>';
+                }
+                echo '</optgroup>';
+                echo'</optgroup>   <optgroup label="Usuarios">';
+                $sql = 'SELECT * FROM  tbl_clientes WHERE Activo = :activo';
+                $resultado = $base->prepare($sql);
+                $resultado->execute([':activo' => 1]);
+
+                while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                    echo '<option  value="'.$registro['IdClientes'].',U">'.$registro['NombreCliente'].'</option>';
+                }
+                echo '</optgroup>';
+
+                echo'</optgroup>   <optgroup label="HELADERIAS">';
+                $sql = 'SELECT * FROM tbl_localidades WHERE Activo = :activo';
+                $resultado = $base->prepare($sql);
+                $resultado->execute([':activo' => 1]);
+
+                while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                    echo '<option  value="'.$registro['COD_UNIDAD'].',H">'.$registro['NOM_UNIDAD'].'</option>';
+                }
+                echo '</optgroup>';
+
                 $resultado->closeCursor();
                 ?>
-            </select>
+              </select>
+              <div class="Clientes_error error"></div>
             </div>
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Permiso:</label></br>
+              <select class="form-control PermisoCompartir" name="Permisos">
+
+
+                <?php
+                $fecha = '';
+                $sql = 'SELECT * FROM  tbl_permiso_url WHERE Activo = :activo';
+                $resultado = $base->prepare($sql);
+                $resultado->execute([':activo' => 1]);
+
+                while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                    echo '<option  value="'.$registro['Values'].'">'.$registro['Permiso'].'</option>';
+                }
+                $resultado->closeCursor();
+                ?>
+              </select>
+            </div>
+
 
             <div class="form-group FechaExpiracion"></div>
 
-            <div class="form-group">
-              <label for="recipient-name" class="col-form-label">Correo Electronico:</label>
-              <input type="text" class="form-control" id="recipient-name">
+            <div class="form-group Evaluado-group">
+              <label for="recipient-name" class="col-form-label">Evaluador (*):</label></br>
+              <span id="iconForm" class="form-control-feedback Span_Evaluador "></span>
+
+              <select class="EvaludarSelec" id="EvaludarSelec" style="width: 100%" multiple="multiple">
+
+
+                <?php
+                $fecha = '';
+                $sql = 'SELECT * FROM  tbl_users WHERE Activo = :activo';
+                $resultado = $base->prepare($sql);
+                $resultado->execute([':activo' => 1]);
+
+                while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                    echo '<option  value="'.$registro['IdUsuario'].'">'.$registro['Nombre'].'</option>';
+                }
+                $resultado->closeCursor();
+                ?>
+              </select>
+              <div class="Error_Evaluador error"></div>
             </div>
             <div class="form-group">
               <label for="message-text" class="col-form-label">Mensaje(opcional):</label>
               <textarea class="form-control" id="message-text"></textarea>
             </div>
 
-     <div class="buttonUrl">
-            <div class="form-group col-md-1 modalbottons"></div>
+            <div class="buttonUrl">
+              <div class="form-group col-md-1 modalbottons"></div>
 
-    </div>
+            </div>
 
           </form>
         </div>
@@ -299,6 +383,33 @@
 
 $(document).ready(function(){
 
+
+
+  $( '#USuarioHB, #UsuarioHE').on( 'click', function() {
+    if( $(this).is(':checked') ){
+  $(".Cliente-group").hide();
+    }
+});
+
+
+$('#ClienteOpction').on( 'click', function() {
+  if( $(this).is(':checked') ){
+$(".Cliente-group").show();
+  }
+});
+
+
+
+
+
+  $(".ClienteSelect").select2({
+      width: 'resolve'
+  });
+
+  $('.EvaludarSelec').select2({
+      width: 'resolve'
+  });
+
   //Ocultamos el menú al cargar la página
   $("#EncuestaOpciones").hide();
 
@@ -310,13 +421,23 @@ $(document).ready(function(){
 
     var posicion = $(this).position();
     $(".ulMenu").html('<li class="liMenu" id="Editar"><a class="btn btn-primary" href="Vista/EditarEncuesta.php?id='+encuestaId+'"><i class="fas fa-edit fa-lg"></i>&nbsp;Editar &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></li><li class="liMenu" id="Compartir"><button type="button" class="btn btn-info btCompartirEncc" data-toggle="modal" data-target="#myModal"><i class="fas fa-share-alt fa-lg"></i>&nbsp;Compartir</button></li> <li class="liMenu" id="Eliminar"><a class="btn btn-danger" href="#"><i class="fas fa-trash-alt fa-lg"></i>&nbsp;Eliminar &nbsp;&nbsp;&nbsp;  </a></li>');
-    $('.ModalEncuestName').html('<h5>'+nombreEncues+'</h5> ');
-    $('.modalbottons').html('<button type="button" id="'+encuestaId+'" class="boton getUrlEncuesta" data-dismiss="modal"  data-toggle="modal" data-target="#modalUrl" onclick="GetEncuestaUrl()" ><i class="fas fa-link fa-lg"></i></button></br><label for="message-text"  id=""class="col-form-label GetURL">Copiar enlace:</label>')
+    $('.ModalEncuestName').html('<h5> <span class="modal-title">Enviar Vínculo para </span>  ' +nombreEncues+'</h5> ');
+    $('.modalbottons').html('<button type="button" id="'+encuestaId+'" class="boton getUrlEncuesta"  onclick="GetEncuestaUrl()" ><i class="fas fa-link fa-lg"></i></button></br><label for="message-text"  id=""class="col-form-label GetURL">Copiar enlace:</label>')
     $("#EncuestaOpciones").css({'display':'block', 'left': posicion.left+6, 'top': posicion.top+40});
     return false;
   });
 
+$(".Mas-Opciones").click("contextmenu", function(e) {
+  encuestaId= $(this).attr("id");
+  nombreEncues= $(this).attr('name');
 
+  var posicion = $(this).position();
+  $(".ulMenu").html('<li class="liMenu" id="Editar"><a class="btn btn-primary" href="Vista/EditarEncuesta.php?id='+encuestaId+'"><i class="fas fa-edit fa-lg"></i>&nbsp;Editar &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></li><li class="liMenu" id="Compartir"><button type="button" class="btn btn-info btCompartirEncc" data-toggle="modal" data-target="#myModal"><i class="fas fa-share-alt fa-lg"></i>&nbsp;Compartir</button></li> <li class="liMenu" id="Eliminar"><a class="btn btn-danger" href="#"><i class="fas fa-trash-alt fa-lg"></i>&nbsp;Eliminar &nbsp;&nbsp;&nbsp;  </a></li>');
+  $('.ModalEncuestName').html('<h5>'+nombreEncues+'</h5> ');
+  $('.modalbottons').html('<button type="button" id="'+encuestaId+'" class="boton getUrlEncuesta"  onclick="GetEncuestaUrl()" ><i class="fas fa-link fa-lg"></i></button></br><label for="message-text"  id=""class="col-form-label GetURL">Copiar enlace:</label>')
+  $("#EncuestaOpciones").css({'display':'block', 'left': posicion.left -180, 'top': posicion.top -160});
+  return false;
+});
 
   //cuando hagamos click, el menú desaparecerá
   $( document).bind( "click", function(e) {
@@ -341,7 +462,7 @@ $(document).ready(function(){
        case '3':
        case '4':
        $('.FechaExpiracion').show();
-       $('.FechaExpiracion').html('<label for="recipient-name" class="col-form-label">Fecha de Expiración:</label><input type="text" class="form-control UrlDateExpire" id="datepicker">');
+       $('.FechaExpiracion').html('<label for="recipient-name" class="col-form-label">Fecha de Expiración:</label><input type="text" placeholder="Especifique una fecha" class="form-control UrlDateExpire" id="datepicker">');
         $( "#datepicker" ).datepicker("option", "dateFormat", "yy-mm-dd");
          break;
 
@@ -350,6 +471,8 @@ $(document).ready(function(){
  break;
     }
   });
+
+
 
 
   $(".filter-button").click(function(){
@@ -376,23 +499,60 @@ $(document).ready(function(){
 
 });
 
-      function GetEncuestaUrl(){
-        EncuestaId2 =$('.getUrlEncuesta').attr("id");
+function GetEncuestaUrl(){
+  EncuestaId2 =$('.getUrlEncuesta').attr("id");
+var mensaja = $('#message-text').val();
+  var ClienteEvaluado = $('#ClienteSelect').val();
+  var Evaluador = $('#EvaludarSelec').val();
 
-        $.ajax({
-          type: 'POST',
-          url: 'Controlador/EncuestaControlador.php',
-          data: {'GetUrlbyEncuestaId': $('.getUrlEncuesta').attr("id"),
-                 'FechaExpiracion': $('.UrlDateExpire').val(),
-                 'PermisoUrl': $('.PermisoCompartir').val()},
+  if (ClienteEvaluado.length ===0) {
+    $('.Cliente-group').addClass('has-error');
 
-          success: function(html){
-            $('.URLCopiado').html('<input type="text" id="txtUrlCopy" class="form-control" value="'+html+'"> <span class="input-group-btn"><button class="btn btn-btn-primary btnCopiar " onclick="copiarAlPortapapeles()" type="button">Copiar</button></span>');
+    $('.Clientes_error').html('<div class="help-block">El campo Cliente a ser evaluado esta vacio </div>');
+    CampoEmpy = true
+  }else {
+    $('.Cliente-group').removeClass('has-error');
+    $('.Clientes_error').remove();
+  }
 
-          }
-        });
+  if (Evaluador.length === 0) {
+    $('.Evaluado-group').addClass('has-error');
+
+    $('.Error_Evaluador').html('<div class="help-block">El campo Evaluador esta vacio </div>');
+
+  }else {
+    $('.Cliente-group').removeClass('has-error');
+    $('.Clientes_error').remove();
+  }
+
+
+  if(ClienteEvaluado.length !==0 && Evaluador.length !==0){
+
+    $('#myModal').modal('toggle');
+    $('#modalUrl').modal('show');
+
+
+    $.ajax({
+      type: 'POST',
+      url: 'Controlador/EncuestaControlador.php',
+      data: {'GetUrlbyEncuestaId': $('.getUrlEncuesta').attr("id"),
+      'FechaExpiracion': $('.UrlDateExpire').val(),
+      'PermisoUrl': $('.PermisoCompartir').val(),
+      'ClienteAEvaluar':ClienteEvaluado,
+      'Evaluador':  Evaluador,
+      'mensaje' :mensaja},
+
+
+      success: function(html){
+        $('.URLCopiado').html('<input type="text" id="txtUrlCopy" class="form-control" value="'+html+'"> <span class="input-group-btn"><button class="btn btn-btn-primary btnCopiar " onclick="copiarAlPortapapeles()" type="button">Copiar</button></span>');
 
       }
+    });
+  }
+}
+
+
+
 
 
   function copiarAlPortapapeles() {

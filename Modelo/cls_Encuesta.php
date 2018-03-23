@@ -75,7 +75,7 @@ class Encuesta extends Conexion
     ///Funcion para octener clientes
     public function getClienteBySubTipoEncuenta($SubTipoEncuesta)
     {
-        $sqlcliente = 'SELECT * FROM  tbl_clientes ORDER by NombreCliente ASC';
+        $sqlcliente = 'SELECT * FROM  tbl_clientes';
 
         $resultado = $this->conexion_db->prepare($sqlcliente);
 
@@ -86,7 +86,7 @@ class Encuesta extends Conexion
         if (0 !== $numero_registro) {
             echo '<option value=""> -- Seleciones los Clientes -- </option>';
             while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                echo '<option value="'.$registro['IdClientes'].'">'.$registro['NombreCliente'].'</option>';
+                echo '<option value="'.$registro['IdClientes'].'">'.$registro['NombreCliente'].' '.$registro['ApellidoCliente'].'</option>';
             }
         } else {
             echo 'NoDisponible';
@@ -479,8 +479,18 @@ class Encuesta extends Conexion
         $Data->closeCursor();
     }
 
-    public function getUrlEncuesta($GetUrlbyEncuestaId, $PermisoUrl, $FechaExpiracion)
+    public function getUrlEncuesta($GetUrlbyEncuestaId, $PermisoUrl, $FechaExpiracion, $ClienteAEvaluar, $Evaluador, $mensaje)
     {
+        $Cliente;
+        $evaluador;
+
+        for ($i = 0; $i < count($ClienteAEvaluar); ++$i) {
+            $Cliente = implode(',', $ClienteAEvaluar);
+        }
+        for ($i = 0; $i < count($Evaluador); ++$i) {
+            $evaluador = implode(',', $Evaluador);
+        }
+
         session_start();
         $idUsuario = $_SESSION['IdUsuarioActual'];
         $FechaCreacion = date('Y/m/d');
@@ -488,20 +498,12 @@ class Encuesta extends Conexion
         $url = "http://lhbjjmarquez/SistemaEncuesta/Vista/EncuestaView/index.php?token=${token}";
 
         if ('3' === $PermisoUrl || $PermisoUrl = '4') {
-            $sql = 'INSERT INTO tbl_token(token,FechaEspiracion,IdEncuesta,FechaCreacion,CreadoPorUsuarioId) VALUES
-                                      (:token,:FechaEspiracion,  :IdEncuesta,:FechaCreacion,:CreadoPorUsuarioId) ';
-            $Data = $this->conexion_db->prepare($sql);
-
-            $Data->execute([':token' => $token, ':FechaEspiracion' => $FechaExpiracion, ':IdEncuesta' => $GetUrlbyEncuestaId, ':FechaCreacion' => $FechaCreacion,
-                                                       ':CreadoPorUsuarioId' => $idUsuario, ]);
-        } else {
-            $sql = 'INSERT INTO tbl_token(token,IdEncuesta,FechaCreacion,CreadoPorUsuarioId) VALUES
-                                      (:token, :IdEncuesta,:FechaCreacion,:CreadoPorUsuarioId) ';
-            $Data = $this->conexion_db->prepare($sql);
-
-            $Data->execute([':token' => $token, ':IdEncuesta' => $GetUrlbyEncuestaId, ':FechaCreacion' => $FechaCreacion,
-                            ':CreadoPorUsuarioId' => $idUsuario, ]);
         }
+        $sql = 'INSERT INTO tbl_token(token,FechaEspiracion,IdEncuesta,Evaluado, Evaluador, Mensaje,Permiso,FechaCreacion,CreadoPorUsuarioId) VALUES
+                                            (:token,:FechaEspiracion,:IdEncuesta,:Evaluado,:Evaluador,:Mensaje, :Permiso,:FechaCreacion, :CreadoPorUsuarioId ) ';
+        $Data = $this->conexion_db->prepare($sql);
+
+        $Data->execute([':token' => $token, ':FechaEspiracion' => $FechaExpiracion, ':IdEncuesta' => $GetUrlbyEncuestaId, ':Evaluado' => $Cliente, ':Evaluador' => $evaluador, ':Mensaje' => $mensaje, ':Permiso' => $PermisoUrl, ':FechaCreacion' => $FechaCreacion,  ':CreadoPorUsuarioId' => $idUsuario]);
 
         print_r($url);
     }

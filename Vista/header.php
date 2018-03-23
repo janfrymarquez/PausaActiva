@@ -10,12 +10,16 @@
 <link rel="stylesheet" href="css/sweetalert.css">
 <link rel="stylesheet" href="css/chosen.css">
 <link rel="stylesheet" href="css/jquery.dataTables.min.css">
+<script src="js/jquery.dataTables.min.js"></script>
 
 <link rel="icon" href="img/favicon.ico">
   <link rel="stylesheet" type="text/css" href="dist/bootstrap-clockpicker.min.css">
 
-<script src="js/jquery.dataTables.min.js"></script>
+
 <script src="js/ImageSelect.jquery.js"></script>
+
+
+<script src="js/jquery.validate.min.js"></script>
 <script src="js/select2.min.js"></script>
 <script src="js/chosen.jquery.js"></script>
   <script src="js/sweetalert.js"></script>
@@ -80,9 +84,10 @@ echo '<div class="profile-usertitle-name"> '.'Hola'.'  '.$usar.' </div>';
                          <li><a class="" href="ModificarUsuario.php">
                                  <span class="fas fa-user"></span> Usuarios
                              </a></li>
-                         <li><a class="" href="clientebeta.php">
+                         <li><a class="" href="Clientes.php">
                                  <span class="glyphicon glyphicon-usd"></span> Clientes
                              </a></li>
+                          
                          <li><a class="" href="#">
                                  <span class="glyphicon glyphicon-shopping-cart"></span> Vendedores
                              </a></li>

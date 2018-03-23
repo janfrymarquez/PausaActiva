@@ -77,7 +77,7 @@
   }
   ?>
 
-                                      </select>    <br>
+                                      </select>
 
                                   </div>
 
@@ -87,17 +87,9 @@
                                       <select class="form-control" id= "SubTipoEncuenta">
                                           <option disabled selected value> -- Seleciones un tipo de encuesta -- </option>
 
-                                      </select>   <br>
+                                      </select>
                                   </div>
-                                  <div class="form-group col-md-6" id="DivClientes">
-                                      <label> Escoja los empleado a ser encuesta </label>
-                                      <select class="form-control Clientes" name="Clientes[]" multiple="multiple" id="Clientes">
-                                          <option disabled selected value> -- Seleciones los Clientes -- </option>
-
-                                      </select><br>
-                                  </div>
-
-
+                                
 
                                   <div  class = "PreguntaBlock">
 
@@ -155,9 +147,7 @@
               <script src="js/ImageSelect.jquery.js"></script>
 
               <script>
-              $(document).ready(function() {
-                $('.Clientes').select2();
-              });
+
 
               function GuardarEncuesta(){
 
@@ -445,40 +435,7 @@
 
                 });
 
-                $('#DivClientes').hide();
-                $("#SubTipoEncuenta").on('change', function(){
 
-                  var SubTipoEncuenta= $(this).val();
-                      console.log(SubTipoEncuenta);
-
-                  if (SubTipoEncuenta ==9){
-
-                    $.ajax({
-                      type: 'POST',
-                      url: '../Controlador/EncuestaControlador.php',
-                      data: 'SubTipoEncuenta=' +SubTipoEncuenta,
-                      success: function(html){
-
-
-                        if(html== 'NoDisponible'){
-                          $('#DivClientes').hide();
-                        }
-
-                        else {
-                          $('#DivClientes').show();
-                          $('#Clientes').html(html);
-                          $('#Clientes').attr('name', 'Clientes');
-                        }
-                      }
-
-                    });
-
-
-                  }else {
-                      $('#DivClientes').hide();
-                  }
-
-                });
 
               });
 
