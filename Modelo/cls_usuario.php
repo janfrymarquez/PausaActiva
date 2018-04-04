@@ -78,7 +78,7 @@ class Usuario extends Conexion
 
             $this->conexion_db = null;
         } catch (Exception $e) {
-            echo '<script type="text/javascript">alert("Error al guardar los datos");</script>'.$e->GetMessage();
+            echo '<script type="text/javascript">alert("Error al guardar los datos");</script>' . $e->GetMessage();
         }
     }
 
@@ -96,13 +96,29 @@ class Usuario extends Conexion
             if ($password === $registro['Password']) {
                 session_start();
 
-                $_SESSION['userlog'] = $registro['Nombre'];
-
-                $_SESSION['profileimg'] = $registro['ImgenPerfil'];
+                $_SESSION['userlog']         = $registro['Nombre'];
+                $ahora                       = date("Y-n-j H:i:s");
+                $_SESSION['profileimg']      = $registro['ImgenPerfil'];
                 $_SESSION['IdUsuarioActual'] = $registro['IdUsuario'];
-                $_SESSION['IdSector'] = $registro['IdSector'];
-                $_SESSION['IdSucursal'] = $registro['IdSucursal'];
-                header('Location:../index.php');
+                $_SESSION['IdSector']        = $registro['IdSector'];
+                $_SESSION['IdSucursal']      = $registro['IdSucursal'];
+                $_SESSION["autentificado"]   = "SI";
+                $_SESSION["ultimoAcceso"]    = $ahora;
+                $_SESSION["Permiso"]         = $registro['Permiso'];
+
+                switch ($_SESSION["Permiso"]) {
+                    case '2':
+                        header('Location:../Vista/charts.php');
+                        break;
+                    case '3':
+                        header('Location:../index.php');
+                        break;
+
+                    default:
+                        header('Location:../index.php');
+                        break;
+                }
+
             } else {
                 echo '<script language="javascript">';
                 echo 'alert("La contraseña es incorrecta. Inténtalo de nuevo")';
@@ -117,7 +133,7 @@ class Usuario extends Conexion
     //Funcion para comprobar si el usuario existe en la base de datos
     public function UsuarioExiste($usuario)
     {
-        $sql = "SELECT * FROM  tbl_users WHERE Usuario ='${usuario}'";
+        $sql       = "SELECT * FROM  tbl_users WHERE Usuario ='${usuario}'";
         $resultado = $this->conexion_db->prepare($sql);
 
         $resultado->execute();
@@ -126,7 +142,7 @@ class Usuario extends Conexion
 
         if (0 !== $numero_registro) {
             echo 'existe';
-        //<div align="center" id="NoExiste" class="No_Disponible"> El nombre de usuario no esta disponible'
+            //<div align="center" id="NoExiste" class="No_Disponible"> El nombre de usuario no esta disponible'
         } else {
             echo 'no existe';
         }
@@ -149,7 +165,7 @@ class Usuario extends Conexion
         if (0 !== $numero_registro) {
             echo '<option selected disabled value=""> -- Selecione un departamento -- </option>';
             while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                echo '<option value="'.$registro['IdDepartamento'].','.$registro['Departamento'].'">'.$registro['Departamento'].'</option>';
+                echo '<option value="' . $registro['IdDepartamento'] . ',' . $registro['Departamento'] . '">' . $registro['Departamento'] . '</option>';
             }
         } else {
             echo 'NoDisponible';
@@ -171,7 +187,7 @@ class Usuario extends Conexion
         if (0 !== $numero_registro) {
             echo '<option selected disabled value=""> -- Selecione una heladeria -- </option>';
             while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                echo '<option value="'.$registro['IdLocalidad'].','.$registro['NOM_UNIDAD'].'">'.$registro['NOM_UNIDAD'].'</option>';
+                echo '<option value="' . $registro['IdLocalidad'] . ',' . $registro['NOM_UNIDAD'] . '">' . $registro['NOM_UNIDAD'] . '</option>';
             }
         } else {
             echo 'NoDisponible';

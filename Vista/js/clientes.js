@@ -81,14 +81,14 @@ $(document).ready(function() {
 
   $("#BorrarCliente").click(function(e) {
     event.preventDefault();
-    var Id = $('.BorrarClienteID').attr('id');
+    var IdCliente = $('.BorrarClienteID').attr('id');
 
 
 
     $.ajax({
       type: "POST",
       url: "../Controlador/ClienteControlador.php",
-      data: 'Id=' + Id,
+      data: 'IdCliente=' + IdCliente,
       beforeSend: function(objeto) {
         $(".datos_ajax_delete").addClass('loader');
       },
@@ -103,11 +103,6 @@ $(document).ready(function() {
 
 
   });
-
-
-
-
-
 
   $('#FormDepartamento').hide();
   $("#TipoCliente").on('change', function() {

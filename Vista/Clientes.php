@@ -1,10 +1,47 @@
 <?php
-ini_set('session.cookie_lifetime', '3600');
-ini_set('session.gc_maxlifetime', '3600');
 session_start();
+if (isset($_SESSION['userlog'])) {
+    $fechaGuardada = $_SESSION['ultimoAcceso'];
+    $idUsuario = $_SESSION['IdUsuarioActual'];
+    $permiso = $_SESSION['Permiso'];
 
-if (!isset($_SESSION['userlog'])) {
-    header('location:login.php');
+    switch ($_SESSION['Permiso']) {
+        case '2':
+            header('Location:charts.php');
+
+            break;
+        case '4':
+            header('Location:CompleteEncuesta.php');
+
+            break;
+        case '1':
+
+            break;
+        default:
+            header('Location:../index.php');
+
+            break;
+    }
+
+    $ahora = date('Y-n-j H:i:s');
+    if ('SI' !== $_SESSION['autentificado']) {
+        header('Location:login.php');
+
+        return false;
+    }
+    $tiempo_transcurrido = (strtotime($ahora) - strtotime($fechaGuardada));
+    if ($tiempo_transcurrido >= 1200) {
+        //1200 milisegundos = 1200/60 = 20 Minutos...
+        session_destroy();
+        header('Location:login.php');
+
+        return false;
+    }
+    $_SESSION['ultimoAcceso'] = $ahora;
+} else {
+    header('Location:login.php');
+
+    return false;
 }
 
 require '../Modelo/Conexion.php';
@@ -44,8 +81,8 @@ $base = $Conexion->Conexion();
 
 <body>
   <?php
-  require 'header.php';
-  ?>
+require 'header.php';
+?>
 
   <div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
     <div class="row">
@@ -96,16 +133,16 @@ $base = $Conexion->Conexion();
 
 
 
-                      	<!-- Add Modal HTML -->
-                      	<div id="addEmployeeModal" class="modal fade">
-                      		<div class="modal-dialog">
-                      			<div class="modal-content">
-                      				<form id="formAddCliente" autocomplete="off">
-                      					<div class="modal-header">
-                      						<h4 class="modal-title">Agregar empleado</h4>
-                      						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                      					</div>
-                      					<div class="modal-body">
+                        <!-- Add Modal HTML -->
+                        <div id="addEmployeeModal" class="modal fade">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <form id="formAddCliente" autocomplete="off">
+                                <div class="modal-header">
+                                  <h4 class="modal-title">Agregar empleado</h4>
+                                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                </div>
+                                <div class="modal-body">
 
                                     <div class="AddDiv col-xs-12 ">
                                         <div  id="UserNoDisponible">  </div>
@@ -152,19 +189,19 @@ $base = $Conexion->Conexion();
                                                   <option disabled selected value> --Elija una opcion-- </option>
 
                                                   <?php
-                                                  $sql = 'SELECT * FROM  tbl_tipo_clientes';
-                                                  $resultado = $base->prepare($sql);
-                                                  $resultado->execute();
-                                                  $numero_registro = $resultado->rowCount();
+$sql = 'SELECT * FROM  tbl_tipo_clientes';
+$resultado = $base->prepare($sql);
+$resultado->execute();
+$numero_registro = $resultado->rowCount();
 
-                                                  if (0 !== $numero_registro) {
-                                                      while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                                                          echo '<option value="'.$registro['IdAreaCliente'].'">'.$registro['TipoCliente'].'</option>';
-                                                      }
-                                                  } else {
-                                                      echo '<option value="">  Tipo de repuesta no disponibles </option>';
-                                                  }
-                                                  ?>
+if (0 !== $numero_registro) {
+    while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+        echo '<option value="'.$registro['IdAreaCliente'].'">'.$registro['TipoCliente'].'</option>';
+    }
+} else {
+    echo '<option value="">  Tipo de repuesta no disponibles </option>';
+}
+?>
                                               </select>
                                                 <span id="iconForm" class="form-control-feedback SpanTipo "></span>
                                             <div class="Error_TipoCliente"></div>
@@ -177,16 +214,16 @@ $base = $Conexion->Conexion();
                                         <div class="Error_Departamento"></div>
                                     </div>
 
-                      					</div>
-                      					<div class="modal-footer">
+                                </div>
+                                <div class="modal-footer">
 
                                   <button  name="reset" type="reset"  data-dismiss="modal" class="btn btn-danger"> Cerrar </button>
-                      						<button  name="add" type="submit" class="btn btn-success add"> Guardar </button>
-                      					</div>
-                      				</form>
-                      			</div>
-                      		</div>
-                      	</div>
+                                  <button  name="add" type="submit" class="btn btn-success add"> Guardar </button>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
                         <!-- Edit Modal HTML -->
                         <div id="editEmployeeModal" class="modal fade">
                           <div class="modal-dialog">
@@ -239,34 +276,34 @@ $base = $Conexion->Conexion();
                                     </div>
                                     <div class="modal-footer">
                                       <button  name="reset" type="reset"  data-dismiss="modal" class="btn btn-danger"> Cerrar </button>
-                          						<button  name="addEditar" id="editarClienteForm" type="submit" class="btn btn-success addEditar"> Guardar </button>
+                                      <button  name="addEditar" id="editarClienteForm" type="submit" class="btn btn-success addEditar"> Guardar </button>
                                     </div>
                               </form>
                             </div>
                           </div>
                         </div>
 
-                  	                   <!-- Delete Modal HTML -->
-                      	<div id="deleteClienteModal" class="modal fade">
-                      		<div class="modal-dialog">
-                      			<div class="modal-content">
-                      				<form id="eliminarDatos">
-                      					<div class="modal-header">
-                      						<h4 class="modal-title">Borrar cliente</h4>
-                      						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            					</div>
-                              					<div class="modal-body">
-                              						<div  id="borrarClienteMensaje" class="borrarClienteMensaje"></div>
-                              						<p class="text-warning"><small>Una vez borrado no es posible recuperarlo.</small></p>
-                              					</div>
-                            					<div class="modal-footer">
-                      						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                      						<input type="submit"  class="btn btn-danger" id="BorrarCliente" value="Delete">
-                      					</div>
-                      				</UsuarioControlador.php>
-                      			</div>
-                      		</div>
-                      	</div>
+                                       <!-- Delete Modal HTML -->
+                        <div id="deleteClienteModal" class="modal fade">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <form id="eliminarDatos">
+                                <div class="modal-header">
+                                  <h4 class="modal-title">Borrar cliente</h4>
+                                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                      </div>
+                                        <div class="modal-body">
+                                          <div  id="borrarClienteMensaje" class="borrarClienteMensaje"></div>
+                                          <p class="text-warning"><small>Una vez borrado no es posible recuperarlo.</small></p>
+                                        </div>
+                                      <div class="modal-footer">
+                                  <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                                  <input type="submit"  class="btn btn-danger" id="BorrarCliente" value="Delete">
+                                </div>
+                              </UsuarioControlador.php>
+                            </div>
+                          </div>
+                        </div>
             </div>
           </div>
         </div>
@@ -278,7 +315,7 @@ $base = $Conexion->Conexion();
 </script>
 
 <script src="js/clientes.js"></script>
-    		<script type="text/javascript">
+        <script type="text/javascript">
 
 
         $(document).ready(function(){
@@ -287,10 +324,10 @@ $base = $Conexion->Conexion();
 
         });
 
-    		</script>
+        </script>
 
 
 
 
-    	</body>
-    	</html>
+      </body>
+      </html>

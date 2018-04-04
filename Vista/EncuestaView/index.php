@@ -1,34 +1,72 @@
 <?php
-require '../../Modelo/Conexion.php';
 
-$Conexion = new Conexion();
-$base = $Conexion->Conexion();
+try {
+    require '../../Modelo/Conexion.php';
 
-$token = $_GET['token'];
-$IdTipoEncuesta = '';
-$SubTipoEncuenta = '';
-$activo = 1;
-$sql = 'SELECT * FROM  tbl_token WHERE token = :token && Activo = :Activo';
-$resultados = $base->prepare($sql);
-$resultados->execute([':token' => $token, ':Activo' => $activo]);
-$numero_registro = $resultados->rowCount();
-if (0 !== $numero_registro) {
-    $registros = $resultados->fetch(PDO::FETCH_ASSOC);
+    $Conexion = new Conexion();
+    $base = $Conexion->Conexion();
 
-    $Id = $registros['IdEncuesta'];
+    function eliminarEnlace($tokn)
+    {
+        $ConexionDb = new Conexion();
+        $base = $ConexionDb->Conexion();
+        $FechaCreacion = date('Y/m/d');
+        $Activo = '0';
+
+        $sqldelete = "UPDATE tbl_token set     FechaModificacion ='${FechaCreacion}',
+                                            Activo ='${Activo}'
+                                            WHERE token='${tokn}'";
+
+        $resultados = $base->prepare($sqldelete);
+        $resultados->execute();
+        $resultados->closeCursor();
+    }
+    function UpdateClienteEvaluar($IdCliente)
+    {
+        $ConexionDb = new Conexion();
+        $base = $ConexionDb->Conexion();
+        $estatus = 'Evaluado';
+        $sqldelete = "UPDATE tbl_evaluados set    Estatus ='${estatus}'
+
+                                          WHERE IdCliente='${IdCliente}'";
+
+        $resultado = $base->prepare($sqldelete);
+        $resultado->execute();
+        $resultado->closeCursor();
+    }
+
+    $token = $_GET['token'];
+    if (isset($_GET['idCliente'])) {
+        $idClientes = $_GET['idCliente'];
+    } else {
+        $idClientes = 'N_A';
+    }
+
+    $activo = 1;
+
+    $sql = 'SELECT * FROM  tbl_token WHERE token = :token';
+    $resultados = $base->prepare($sql);
+    $resultados->execute([':token' => $token]);
+    $numero_registro = $resultados->rowCount();
+    if (0 !== $numero_registro) {
+        $registros = $resultados->fetch(PDO::FETCH_ASSOC);
+
+        $Id = $registros['IdEncuesta'];
+    }
+    $resultados->closeCursor();
+
+    $sql = 'SELECT * FROM  tbl_encuesta_cabecera WHERE IdEncuestaCabecera = :Id && Activo = :Activo';
+    $resultados = $base->prepare($sql);
+    $resultados->execute([':Id' => $Id, ':Activo' => $activo]);
+    $numero_registro = $resultados->rowCount();
+    if (0 !== $numero_registro) {
+        $registros = $resultados->fetch(PDO::FETCH_ASSOC);
+
+        $NombreEncuesta = $registros['NombreEncuesta'];
+    }
+    $resultados->closeCursor();
+} catch (Exception $e) {
 }
-$resultados->closeCursor();
-
-$sql = 'SELECT * FROM  tbl_encuesta_cabecera WHERE IdEncuestaCabecera = :Id && Activo = :Activo';
-$resultados = $base->prepare($sql);
-$resultados->execute([':Id' => $Id, ':Activo' => $activo]);
-$numero_registro = $resultados->rowCount();
-if (0 !== $numero_registro) {
-    $registros = $resultados->fetch(PDO::FETCH_ASSOC);
-
-    $NombreEncuesta = $registros['NombreEncuesta'];
-}
-$resultados->closeCursor();
 
 ?>
 
@@ -59,14 +97,10 @@ $resultados->closeCursor();
    <script src="../js/sweetalert.js"></script>
 
   </head>
-  <body class="Cuerpo">
+  <body  class="Cuerpo">
 
 
-<?php echo ' <div id="'.$Id.'"  class="Cabecera"> <h1>  '.$NombreEncuesta.' </h1> </div>';
 
-// Obtener la direccion Ip del cliente
-
-?>
 
 
 
@@ -74,17 +108,18 @@ $resultados->closeCursor();
 
 
     <div class="Contenedor">
-      
+      <?php echo ' <div   id="'.$Id.'"  class="Cabecera"> <h1>  '.$NombreEncuesta.' </h1> </div>';
+
+      ?>
    <div class= "BloquePregunta">
     <?php
 
-
-    $sql = ' SELECT * FROM  tbl_encuesta_detalle WHERE IdEncuesta = :IdEncuesta ';
-    $resultado = $base->prepare($sql);
-    $resultado->execute([':IdEncuesta' => $Id]);
-    $registros = $resultado->fetchAll(PDO::FETCH_OBJ);
-    $contador = 1;
-    foreach ($registros as $obj): ?>
+$sql = ' SELECT * FROM  tbl_encuesta_detalle WHERE IdEncuesta = :IdEncuesta ';
+$resultado = $base->prepare($sql);
+$resultado->execute([':IdEncuesta' => $Id]);
+$registros = $resultado->fetchAll(PDO::FETCH_OBJ);
+$contador = 1;
+foreach ($registros as $obj): ?>
 
 
 
@@ -102,28 +137,28 @@ $resultados->closeCursor();
       <div class="DivOpciones" id="Rep<?php echo $obj->IdEncuestaDetalle; ?>">
         <?php
 
-        $Repuesta = explode(',', $obj->Repuesta);
-        $tipoRepuesta = $obj->TipoRepuesta;
-        foreach ($Repuesta as $objRepuesta) {
-            switch ($tipoRepuesta) {
-            case '1':
+$Repuesta = explode(',', $obj->Repuesta);
+$tipoRepuesta = $obj->TipoRepuesta;
+foreach ($Repuesta as $objRepuesta) {
+    switch ($tipoRepuesta) {
+        case '1':
 
-           echo '<input type="radio" class="Repuesta" required  id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada'.$obj->IdEncuestaDetalle.'" value="'.$objRepuesta.'"> '.$objRepuesta.' <br>';
-
-            break;
-            case '2':
-
-          echo '<input type="radio" required class="Repuesta"  id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada'.$obj->IdEncuestaDetalle.'" value="'.$objRepuesta.'"> '.$objRepuesta.' <br>';
+            echo '<input type="radio" class="Repuesta" required  id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada'.$obj->IdEncuestaDetalle.'" value="'.$objRepuesta.'"> '.$objRepuesta.' <br>';
 
             break;
-            case '3':
-              echo '<textarea  autocomolete="off" class="Repuesta"  name="comentarios" id="'.$obj->IdEncuestaDetalle.'" class="Respuesta_'.$obj->IdEncuestaDetalle.'" rows="4" cols="60"></textarea>';
+        case '2':
+
+            echo '<input type="radio" required class="Repuesta"  id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada'.$obj->IdEncuestaDetalle.'" value="'.$objRepuesta.'"> '.$objRepuesta.' <br>';
 
             break;
-            case '4':
+        case '3':
+            echo '<textarea  autocomolete="off" class="Repuesta"  name="comentarios" id="'.$obj->IdEncuestaDetalle.'" class="Respuesta_'.$obj->IdEncuestaDetalle.'" rows="4" cols="60"></textarea>';
 
             break;
-            case '5':
+        case '4':
+
+            break;
+        case '5':
 
             $sql = 'SELECT * FROM  tbl_repuesta_imagen';
             $resultado = $base->prepare($sql);
@@ -131,23 +166,23 @@ $resultados->closeCursor();
             $numero_registro = $resultado->rowCount();
             if (0 !== $numero_registro) {
                 while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                    echo'    <label><input type="radio" class="Repuesta" id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada'.$obj->IdEncuestaDetalle.'" value="'.$registro['ImagenDescripcion'].'" /><img class="pequeña" src="../'.$registro['ImagenRuta'].'"></label>';
+                    echo '    <label><input type="radio" class="Repuesta" id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada'.$obj->IdEncuestaDetalle.'" value="'.$registro['ImagenDescripcion'].'" /><img class="pequeña" src="../'.$registro['ImagenRuta'].'"></label>';
                 }
             } else {
                 echo '<option value="">  Tipo de repuesta no disponibles </option>';
             }
 
             break;
-            case '6':
-            case '7':
-            case '8':
+        case '6':
+        case '7':
+        case '8':
 
-              echo '<input type="radio" required class="Repuesta checkval'.$obj->IdEncuestaDetalle.'" id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada'.$obj->IdEncuestaDetalle.'" value="'.$objRepuesta.'"> '.$objRepuesta.' <br>';
+            echo '<input type="radio" required class="Repuesta checkval'.$obj->IdEncuestaDetalle.'" id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada'.$obj->IdEncuestaDetalle.'" value="'.$objRepuesta.'"> '.$objRepuesta.' <br>';
 
             break;
-          }
-        }
-        ?>
+    }
+}
+?>
       </div> <!--Campo de Repuesta-->
 
 
@@ -178,6 +213,11 @@ $(function(){
 
 function enviarResultado(){
 
+ if(<?php echo $idClientes; ?> !== N_A){
+   idcliente = <?php echo $idClientes; ?>;
+ }else {
+ idcliente = '';
+ }
   var resultado=[];
   var IdEncuesta =$('.Cabecera').attr('id');
   resultado.push({
@@ -185,6 +225,7 @@ function enviarResultado(){
     Id_Pregunta:[],
     RepuestaSelec:[],
     IdEncuesta:IdEncuesta,
+    IdCliente: idcliente
 });
 $.each(resultado, function( index, value){
     $("#formEnviarEncuesta :input.Repuesta:checked").each(function(){
@@ -206,9 +247,11 @@ console.log(EncuestaArray);
   success: function(html){
   swal("Gracias!", "Gracias por preferirnos!", "success");
 $('.sa-confirm-button-container').click(function(){
+
+  <?php   UpdateClienteEvaluar($idClientes); ?>
   setTimeout(function()
    {
-       location.reload();
+       location.href ="EncuestaFinalizar.php";
 
    }, 100);
 

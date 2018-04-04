@@ -1,12 +1,52 @@
 	<?php
-ini_set('session.cookie_lifetime', '3600');
-ini_set('session.gc_maxlifetime', '3600');
 session_start();
+if (isset($_SESSION['userlog'])) {
+    $fechaGuardada = $_SESSION['ultimoAcceso'];
+    $idUsuario = $_SESSION['IdUsuarioActual'];
+    $permiso = $_SESSION['Permiso'];
 
-if (!isset($_SESSION['userlog'])) {
-    header('location:login.php');
+    switch ($_SESSION['Permiso']) {
+        case '2':
+            header('Location:charts.php');
+
+            break;
+        case '4':
+            header('Location:PrepareEncuesta.php');
+
+            break;
+        case '1':
+
+            break;
+        default:
+            header('Location:../index.php');
+
+            break;
+    }
+
+    $ahora = date('Y-n-j H:i:s');
+    if ('SI' !== $_SESSION['autentificado']) {
+        header('Location:login.php');
+
+        return false;
+    }
+    $tiempo_transcurrido = (strtotime($ahora) - strtotime($fechaGuardada));
+    if ($tiempo_transcurrido >= 1200) {
+        //1200 milisegundos = 1200/60 = 20 Minutos...
+        session_destroy();
+        header('Location:login.php');
+
+        return false;
+    }
+    $_SESSION['ultimoAcceso'] = $ahora;
+} else {
+    header('Location:login.php');
+
+    return false;
 }
+require '../Modelo/Conexion.php';
 
+$Conexion = new Conexion();
+$base = $Conexion->Conexion();
 ?>
 
 
@@ -20,12 +60,8 @@ if (!isset($_SESSION['userlog'])) {
 		<meta charset="utf-8">
 		 <link rel="icon" href="img/favicon.ico">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Pausa Activa Admin</title>
-		<link href="css/bootstrap.min.css" rel="stylesheet">
-		<link href="css/font-awesome.min.css" rel="stylesheet">
-		<script src="js/bootstrap.min.js"></script>
-		<script src="js/jquery.min.js"></script>
-		<link href="css/styles.css" rel="stylesheet">
+		<title>Crear Usuarios</title>
+
 
 
 		<link rel="stylesheet" type="text/css" href="assets/css/github.min.css">
@@ -121,10 +157,22 @@ require 'header.php';
 									 <div class="form-group col-md-6">
 										<label>Permisos</label>
 											<select class="form-control " name="Permisos" required>
-												<option>Pausa Activa</option>
-												<option>SuperAdmin</option>
-												<option>Consulta</option>
-												<option>Admin</option>
+
+												 <option disabled selected value> -- Elija una opción  -- </option>
+
+												<?php
+$sql = 'SELECT * FROM  tbl_permisos_usuarios WHERE Activo = :Activo';
+$resultado = $base->prepare($sql);
+$resultado->execute([':Activo' => 1]);
+$numero_registro = $resultado->rowCount();
+if (0 !== $numero_registro) {
+    while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+        echo '<option  value="'.$registro['IdPermiso'].'">'.$registro['Permiso'].'</option>';
+    }
+}
+$resultado->closeCursor();
+?>
+
 
 
 												</select>

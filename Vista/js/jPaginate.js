@@ -110,7 +110,7 @@ offset = unfortunately calculating heights with javascript isn't always 100% acc
 
         var buttonSent = '<button type="button"   id="buttonEnviarEncuesta" class="btn btn-info" onclick="enviarResultado()">Enviar</button>';
         var next_inactive = "<li><a class='inactive'>" + options.next + "</a></li>";
-        end = "</ul><br clear='all' />"
+        end = "</ul>"
         var after = number_of_pages - options.after + 1;
         var pagi_range = paginationCalculator(curr);
         for (i = 1; i <= number_of_pages; i++) {

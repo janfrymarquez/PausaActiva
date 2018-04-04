@@ -1,17 +1,46 @@
   <?php
 
-  session_start();
+session_start();
+if (isset($_SESSION["userlog"])) {
+    $fechaGuardada = $_SESSION["ultimoAcceso"];
+    $idUsuario     = $_SESSION['IdUsuarioActual'];
+    $permiso       = $_SESSION["Permiso"];
 
-  if (!isset($_SESSION['userlog'])) {
-      header('location:login.php');
-  }
+    switch ($_SESSION["Permiso"]) {
+        case '2':
+            header('Location:charts.php');
+            break;
+        case '4':
+            header('Location:PrepareEncuesta.php');
+            break;
 
-  require '../Modelo/Conexion.php';
+    }
 
-  $Conexion = new Conexion();
-  $base = $Conexion->Conexion();
+    $ahora = date("Y-n-j H:i:s");
+    if ($_SESSION["autentificado"] != "SI") {
+        header("Location:login.php");
+        return false;
+    } else {
+        $tiempo_transcurrido = (strtotime($ahora) - strtotime($fechaGuardada));
+        if ($tiempo_transcurrido >= 1200) {
+//1200 milisegundos = 1200/60 = 20 Minutos...
+            session_destroy();
+            header("Location:login.php");
+            return false;
+        } else { $_SESSION["ultimoAcceso"] = $ahora;}
+    }
 
-  ?>
+} else {
+    header("Location:login.php");
+    return false;
+}
+
+require '../Modelo/Conexion.php';
+
+$Conexion = new Conexion();
+$base     = $Conexion->Conexion();
+
+?>
 
 
   <!DOCTYPE html>
@@ -30,8 +59,8 @@
 
       </head>
       <?php
-  require 'header.php';
-  ?>
+require 'header.php';
+?>
       <body>
 
           <div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
@@ -59,23 +88,23 @@
                                       <label>Tipo de Ecnuesta</label>
 
                                       <select class="form-control" name="TipoEncuesta" id="TiposEncuestaID" >
-                                          <option disabled selected value> -- Elija una opcion  -- </option>
+                                          <option disabled selected value> -- Elija una opción  -- </option>
 
                                           <?php
-  $sql = 'SELECT * FROM  tbl_tipo_encuesta';
-  $resultado = $base->prepare($sql);
-  $resultado->execute();
+$sql       = 'SELECT * FROM  tbl_tipo_encuesta';
+$resultado = $base->prepare($sql);
+$resultado->execute();
 
-  $numero_registro = $resultado->rowCount();
+$numero_registro = $resultado->rowCount();
 
-  if (0 !== $numero_registro) {
-      while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-          echo '<option value="'.$registro['IdTipoEncuesta'].'">'.$registro['DescTipoEncuesta'].'</option>';
-      }
-  } else {
-      echo '<option value=""> Tipo de encuesta no disponibles </option>';
-  }
-  ?>
+if (0 !== $numero_registro) {
+    while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+        echo '<option value="' . $registro['IdTipoEncuesta'] . '">' . $registro['DescTipoEncuesta'] . '</option>';
+    }
+} else {
+    echo '<option value=""> Tipo de encuesta no disponibles </option>';
+}
+?>
 
                                       </select>
 
@@ -89,7 +118,7 @@
 
                                       </select>
                                   </div>
-                                
+
 
                                   <div  class = "PreguntaBlock">
 
@@ -108,19 +137,19 @@
                                                   <option disabled selected value> --Elija una opcion-- </option>
 
                                                   <?php
-  $sql = 'SELECT * FROM  tbl_conf_repuesta';
-  $resultado = $base->prepare($sql);
-  $resultado->execute();
-  $numero_registro = $resultado->rowCount();
+$sql       = 'SELECT * FROM  tbl_conf_repuesta';
+$resultado = $base->prepare($sql);
+$resultado->execute();
+$numero_registro = $resultado->rowCount();
 
-  if (0 !== $numero_registro) {
-      while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-          echo '<option value="'.$registro['IdConfiRepuesta'].'" data-img-src="'.$registro['IconoConfiRepuesta'].'">'.$registro['DescripConfiRepuesta'].'</option>';
-      }
-  } else {
-      echo '<option value="">  Tipo de repuesta no disponibles </option>';
-  }
-  ?>
+if (0 !== $numero_registro) {
+    while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+        echo '<option value="' . $registro['IdConfiRepuesta'] . '" data-img-src="' . $registro['IconoConfiRepuesta'] . '">' . $registro['DescripConfiRepuesta'] . '</option>';
+    }
+} else {
+    echo '<option value="">  Tipo de repuesta no disponibles </option>';
+}
+?>
                                               </select>
 
                                           </div>
@@ -229,17 +258,18 @@
 
 
 
-                  $('.PreguntaBlock').append(' <div id ="row'+i+'"> <div   class= "form-group col-md-8"><input type="text" id="'+i+'" name="Pregunta[]" placeholder="Introduzca la pregunta aqui" class="form-control Pregunta"></div> <div class ="DivTipoDeRepuesta form-group col-md-3"><select  class="my-select form-control TipoDeRepuesta_'+i+'" id="'+i+'" name="TipoDeRepuesta"><option disabled selected value> --Elija una opcion-- </option><?php  $sql = 'SELECT * FROM  tbl_conf_repuesta'; $resultado = $base->prepare($sql);
-                  $resultado->execute();
-                  $numero_registro = $resultado->rowCount();
-                  if (0 !== $numero_registro) {
-                      while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                          echo '<option value="'.$registro['IdConfiRepuesta'].'" data-img-src="'.$registro['IconoConfiRepuesta'].'">'.$registro['DescripConfiRepuesta'].'</option>';
-                      }
-                  } else {
-                      echo '<option value="">  Tipo de repuesta no disponibles </option>';
-                  }
-                  ?></select></div><div class ="form-group col-md-1"><button type="button" name="remove" id="'+i+'"  class="btn btn-danger btn_remove"><i class="fa fa-trash-o fa-lg" aria-hidden="true" ></i></button></div><div class="form-group col-md-12 "  class = "Repuesta" id="Rep'+i+'"> </div> </div>');
+                  $('.PreguntaBlock').append(' <div id ="row'+i+'"> <div   class= "form-group col-md-8"><input type="text" id="'+i+'" name="Pregunta[]" placeholder="Introduzca la pregunta aqui" class="form-control Pregunta"></div> <div class ="DivTipoDeRepuesta form-group col-md-3"><select  class="my-select form-control TipoDeRepuesta_'+i+'" id="'+i+'" name="TipoDeRepuesta"><option disabled selected value> --Elija una opcion-- </option><?php $sql = 'SELECT * FROM  tbl_conf_repuesta';
+$resultado                                                                                                                                                                                                                                                                                                                                                                                                                                                         = $base->prepare($sql);
+$resultado->execute();
+$numero_registro = $resultado->rowCount();
+if (0 !== $numero_registro) {
+    while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+        echo '<option value="' . $registro['IdConfiRepuesta'] . '" data-img-src="' . $registro['IconoConfiRepuesta'] . '">' . $registro['DescripConfiRepuesta'] . '</option>';
+    }
+} else {
+    echo '<option value="">  Tipo de repuesta no disponibles </option>';
+}
+?></select></div><div class ="form-group col-md-1"><button type="button" name="remove" id="'+i+'"  class="btn btn-danger btn_remove"><i class="fa fa-trash-o fa-lg" aria-hidden="true" ></i></button></div><div class="form-group col-md-12 "  class = "Repuesta" id="Rep'+i+'"> </div> </div>');
 
                   i++;
 
@@ -278,67 +308,67 @@
                     break;
                     case '5':
                     repuesta = '<div id="apDiv1"><table width="100%" border="0"><tr><?php $sql = 'SELECT * FROM  tbl_repuesta_imagen';
-                    $resultado = $base->prepare($sql);
-                    $resultado->execute();
-                    $numero_registro = $resultado->rowCount();
-                    if (0 !== $numero_registro) {
-                        while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                            echo '<td><img id="ImagenRepuesta" src="'.$registro['ImagenRuta'].'"></td><td width="20"></td>';
-                        }
-                    } else {
-                        echo '<option value="">  Tipo de repuesta no disponibles </option>';
-                    }
-                    ?></select></tr></table></div>';
+$resultado                                                                                     = $base->prepare($sql);
+$resultado->execute();
+$numero_registro = $resultado->rowCount();
+if (0 !== $numero_registro) {
+    while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+        echo '<td><img id="ImagenRepuesta" src="' . $registro['ImagenRuta'] . '"></td><td width="20"></td>';
+    }
+} else {
+    echo '<option value="">  Tipo de repuesta no disponibles </option>';
+}
+?></select></tr></table></div>';
                     break;
                     case '6':
                     repuesta = '<ul class="fa-ul"><?php $sql = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
-                    $resultado = $base->prepare($sql);
-                    $resultado->execute([':Codigo' => 6]);
-                    $numero_registro = $resultado->rowCount();
-                    if (0 !== $numero_registro) {
-                        while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                            //echo '<td><img id="ImagenRepuesta" src="'.$registro['ImagenRuta'].'"></td><td width="20"></td>';
-                            $RepuestaArray = explode(',', $registro['DescripConfiRepuesta']);
+$resultado                                                   = $base->prepare($sql);
+$resultado->execute([':Codigo' => 6]);
+$numero_registro = $resultado->rowCount();
+if (0 !== $numero_registro) {
+    while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+        //echo '<td><img id="ImagenRepuesta" src="'.$registro['ImagenRuta'].'"></td><td width="20"></td>';
+        $RepuestaArray = explode(',', $registro['DescripConfiRepuesta']);
 
-                            foreach ($RepuestaArray as $obj) {
-                                echo '<li><i class="fa-li fa fa-circle-o fa-lg"></i>&nbsp;'.$obj.'</li>';
-                            }
-                        }
-                    }?></ul>';
+        foreach ($RepuestaArray as $obj) {
+            echo '<li><i class="fa-li fa fa-circle-o fa-lg"></i>&nbsp;' . $obj . '</li>';
+        }
+    }
+}?></ul>';
                     break;
                     case  '7':
                     repuesta = '<ul class="fa-ul"><?php $sql = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
-                    $resultado = $base->prepare($sql);
-                    $resultado->execute([':Codigo' => 7]);
-                    $numero_registro = $resultado->rowCount();
-                    if (0 !== $numero_registro) {
-                        while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                            //echo '<td><img id="ImagenRepuesta" src="'.$registro['ImagenRuta'].'"></td><td width="20"></td>';
-                            $RepuestaArray = explode(',', $registro['DescripConfiRepuesta']);
+$resultado                                                   = $base->prepare($sql);
+$resultado->execute([':Codigo' => 7]);
+$numero_registro = $resultado->rowCount();
+if (0 !== $numero_registro) {
+    while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+        //echo '<td><img id="ImagenRepuesta" src="'.$registro['ImagenRuta'].'"></td><td width="20"></td>';
+        $RepuestaArray = explode(',', $registro['DescripConfiRepuesta']);
 
-                            foreach ($RepuestaArray as $obj) {
-                                echo '<li><i class="fa-li fa fa-circle-o fa-lg"></i>&nbsp;'.$obj.'</li>';
-                            }
-                        }
-                    }?></ul>';
+        foreach ($RepuestaArray as $obj) {
+            echo '<li><i class="fa-li fa fa-circle-o fa-lg"></i>&nbsp;' . $obj . '</li>';
+        }
+    }
+}?></ul>';
 
                     break;
 
 
                     case  '8':  // O
                     repuesta = '<ul class="fa-ul"><?php $sql = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
-                    $resultado = $base->prepare($sql);
-                    $resultado->execute([':Codigo' => 8]);
-                    $numero_registro = $resultado->rowCount();
-                    if (0 !== $numero_registro) {
-                        while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                            $RepuestaArray = explode(',', $registro['DescripConfiRepuesta']);
+$resultado                                                   = $base->prepare($sql);
+$resultado->execute([':Codigo' => 8]);
+$numero_registro = $resultado->rowCount();
+if (0 !== $numero_registro) {
+    while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+        $RepuestaArray = explode(',', $registro['DescripConfiRepuesta']);
 
-                            foreach ($RepuestaArray as $obj) {
-                                echo '<li><i class="fa-li fa fa-circle-o fa-lg"></i>&nbsp;'.$obj.'</li>';
-                            }
-                        }
-                    }?></ul>';
+        foreach ($RepuestaArray as $obj) {
+            echo '<li><i class="fa-li fa fa-circle-o fa-lg"></i>&nbsp;' . $obj . '</li>';
+        }
+    }
+}?></ul>';
                     break;
 
                   }

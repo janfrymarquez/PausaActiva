@@ -33,16 +33,17 @@ if (isset($_POST['SubTipoEncuenta']) && !empty($_POST['SubTipoEncuenta'])) {
 }
 if (isset($_POST['GetUrlbyEncuestaId']) && !empty($_POST['GetUrlbyEncuestaId'])) {
     $GetUrlbyEncuestaId = $_POST['GetUrlbyEncuestaId'];
-    $PermisoUrl = $_POST['PermisoUrl'];
-    $ClienteAEvaluar = $_POST['ClienteAEvaluar'];
-    $Evaluador = $_POST['Evaluador'];
-    $mensaje = $_POST['mensaje'];
+    $PermisoUrl         = $_POST['PermisoUrl'];
+    $ClienteAEvaluar    = $_POST['ClienteAEvaluar'];
+    $Evaluador          = $_POST['Evaluador'];
+    $mensaje            = $_POST['mensaje'];
+    $clienteOpcion      = $_POST['clienteoption'];
 
     if ('3' === $PermisoUrl || '4' === $PermisoUrl) {
         $FechaExpiracion = $_POST['FechaExpiracion'];
         $fechaExpiracion = date('Y/m/d', strtotime($FechaExpiracion));
     } else {
-        $fechaExpiracion = '';
+        $fechaExpiracion = 'null';
     }
-    $Encuesta->getUrlEncuesta($GetUrlbyEncuestaId, $PermisoUrl, $fechaExpiracion, $ClienteAEvaluar, $Evaluador, $mensaje);
+    $Encuesta->getUrlEncuesta($GetUrlbyEncuestaId, $PermisoUrl, $fechaExpiracion, $ClienteAEvaluar, $Evaluador, $mensaje, $clienteOpcion);
 }

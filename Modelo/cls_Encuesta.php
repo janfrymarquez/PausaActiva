@@ -98,14 +98,14 @@ class Encuesta extends Conexion
     //Funcion para editarlos encuesta en al base de datos
     public function ActualizarDatosEncuesta($Datosactualizado)
     {
-        date_default_timezone_set('America/Santo_Domingo');  //Se seleciona la zona horaria
+        date_default_timezone_set('America/Santo_Domingo'); //Se seleciona la zona horaria
         //array para guardar las pregunta y repuesta
         $encuestaDetalle = [
-      'Pregunta' => [],
-      'tipoRepuesta' => [],
-      'Repuesta' => [],
-      'IdEncuestaDetalle' => [],
-  ];
+            'Pregunta' => [],
+            'tipoRepuesta' => [],
+            'Repuesta' => [],
+            'IdEncuestaDetalle' => [],
+        ];
 
         $cont = 0;
 
@@ -168,50 +168,50 @@ class Encuesta extends Conexion
             $CampoRepuesta = '';
 
             switch ($encuestaDetalle['tipoRepuesta'][$i]) {
-            case '6':
-             $sql3 = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
-            $resultado = $this->conexion_db->prepare($sql3);
-            $resultado->execute([':Codigo' => 6]);
-            $numero_registro = $resultado->rowCount();
-            if (0 !== $numero_registro) {
-                while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                    $CampoRepuesta = $registro['DescripConfiRepuesta'];
-                }
+                case '6':
+                    $sql3 = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
+                    $resultado = $this->conexion_db->prepare($sql3);
+                    $resultado->execute([':Codigo' => 6]);
+                    $numero_registro = $resultado->rowCount();
+                    if (0 !== $numero_registro) {
+                        while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                            $CampoRepuesta = $registro['DescripConfiRepuesta'];
+                        }
+                    }
+
+                    break;
+                case '7':
+                    $sql1 = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
+                    $resultado = $this->conexion_db->prepare($sql1);
+                    $resultado->execute([':Codigo' => 7]);
+                    $numero_registro = $resultado->rowCount();
+                    if (0 !== $numero_registro) {
+                        while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                            $CampoRepuesta = $registro['DescripConfiRepuesta'];
+                        }
+                    }
+
+                    break;
+                case '8':
+                    $sql2 = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
+                    $resultado = $this->conexion_db->prepare($sql2);
+                    $resultado->execute([':Codigo' => 8]);
+                    $numero_registro = $resultado->rowCount();
+                    if (0 !== $numero_registro) {
+                        while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                            $CampoRepuesta = $registro['DescripConfiRepuesta'];
+                        }
+                    }
+
+                    break;
+                default:
+                    $CampoRepuesta = $encuestaDetalle['Repuesta'][$i];
+
+                    break;
             }
-
-            break;
-            case '7':
-             $sql1 = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
-            $resultado = $this->conexion_db->prepare($sql1);
-            $resultado->execute([':Codigo' => 7]);
-            $numero_registro = $resultado->rowCount();
-            if (0 !== $numero_registro) {
-                while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                    $CampoRepuesta = $registro['DescripConfiRepuesta'];
-                }
-            }
-
-            break;
-            case '8':
-             $sql2 = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
-            $resultado = $this->conexion_db->prepare($sql2);
-            $resultado->execute([':Codigo' => 8]);
-            $numero_registro = $resultado->rowCount();
-            if (0 !== $numero_registro) {
-                while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                    $CampoRepuesta = $registro['DescripConfiRepuesta'];
-                }
-            }
-
-            break;
-            default:
-              $CampoRepuesta = $encuestaDetalle['Repuesta'][$i];
-
-              break;
-          }
 
             $Data->execute([':IdPreguntas' => $i + 1, ':Pregunta' => $encuestaDetalle['Pregunta'][$i], ':Repuesta' => $CampoRepuesta,
-                                     ':TipoRepuesta' => $encuestaDetalle['tipoRepuesta'][$i], ':IdEncuestaDetalle' => $encuestaDetalle['IdEncuestaDetalle'][$i], ]);
+                ':TipoRepuesta' => $encuestaDetalle['tipoRepuesta'][$i], ':IdEncuestaDetalle' => $encuestaDetalle['IdEncuestaDetalle'][$i], ]);
         }
         $resultado->closeCursor();
     }
@@ -220,13 +220,13 @@ class Encuesta extends Conexion
 
     public function GuardarDatosEncuesta($dataArray)
     {
-        date_default_timezone_set('America/Santo_Domingo');  //Se seleciona la zona horaria
+        date_default_timezone_set('America/Santo_Domingo'); //Se seleciona la zona horaria
         //array para guardar las pregunta y repuesta
         $encuestaDetalle = [
-      'Pregunta' => [],
-      'tipoRepuesta' => [],
-      'Repuesta' => [],
-  ];
+            'Pregunta' => [],
+            'tipoRepuesta' => [],
+            'Repuesta' => [],
+        ];
 
         $cont = 0;
 
@@ -269,7 +269,7 @@ class Encuesta extends Conexion
 
         $resultado = $this->conexion_db->prepare($sql);
         $resultado->execute([':IdEncuestaCabecera' => $IdEncuesta, ':NombreEncuesta' => $NombreEcnuesta, ':TiposEncuesta' => $TiposEncuesta, ':SubTipoEncuenta' => $SubTipoEncuenta, ':SubTipoEncuestaDetalle' => $SubTipoEncuestaDetalle, ':Sucursal' => $IdSucursal,
-                                ':Sector' => $idSector, ':CreadoPorUsuarioId' => $idUsuario, 'FechaCreacion' => $FechaCreacion, ]);
+            ':Sector' => $idSector, ':CreadoPorUsuarioId' => $idUsuario, 'FechaCreacion' => $FechaCreacion, ]);
         // Se gurdan datos en la tabla tbl_encuesta_detalle
         $encuestaDetaSql = 'INSERT INTO tbl_encuesta_detalle (IdEncuesta,IdPreguntas,Pregunta,Repuesta,TipoRepuesta) VALUES
                             (:IdEncuesta,:IdPreguntas, :Pregunta,:Repuesta,:TipoRepuesta)';
@@ -280,66 +280,66 @@ class Encuesta extends Conexion
             $CampoRepuesta = '';
 
             switch ($encuestaDetalle['tipoRepuesta'][$i]) {
-            case '6':
-             $sql3 = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
-            $resultado = $this->conexion_db->prepare($sql3);
-            $resultado->execute([':Codigo' => 6]);
-            $numero_registro = $resultado->rowCount();
-            if (0 !== $numero_registro) {
-                while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                    $CampoRepuesta = $registro['DescripConfiRepuesta'];
-                }
+                case '6':
+                    $sql3 = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
+                    $resultado = $this->conexion_db->prepare($sql3);
+                    $resultado->execute([':Codigo' => 6]);
+                    $numero_registro = $resultado->rowCount();
+                    if (0 !== $numero_registro) {
+                        while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                            $CampoRepuesta = $registro['DescripConfiRepuesta'];
+                        }
+                    }
+                    $resultado->closeCursor();
+
+                    break;
+                case '7':
+                    $sql1 = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
+                    $resultado = $this->conexion_db->prepare($sql1);
+                    $resultado->execute([':Codigo' => 7]);
+                    $numero_registro = $resultado->rowCount();
+                    if (0 !== $numero_registro) {
+                        while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                            $CampoRepuesta = $registro['DescripConfiRepuesta'];
+                        }
+                    }
+                    $resultado->closeCursor();
+
+                    break;
+                case '8':
+                    $sql2 = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
+                    $resultado = $this->conexion_db->prepare($sql2);
+                    $resultado->execute([':Codigo' => 8]);
+                    $numero_registro = $resultado->rowCount();
+                    if (0 !== $numero_registro) {
+                        while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                            $CampoRepuesta = $registro['DescripConfiRepuesta'];
+                        }
+                    }
+                    $resultado->closeCursor();
+
+                    break;
+                default:
+                    $CampoRepuesta = $encuestaDetalle['Repuesta'][$i];
+
+                    break;
             }
-              $resultado->closeCursor();
-
-            break;
-            case '7':
-             $sql1 = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
-            $resultado = $this->conexion_db->prepare($sql1);
-            $resultado->execute([':Codigo' => 7]);
-            $numero_registro = $resultado->rowCount();
-            if (0 !== $numero_registro) {
-                while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                    $CampoRepuesta = $registro['DescripConfiRepuesta'];
-                }
-            }
-              $resultado->closeCursor();
-
-            break;
-            case '8':
-             $sql2 = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
-            $resultado = $this->conexion_db->prepare($sql2);
-            $resultado->execute([':Codigo' => 8]);
-            $numero_registro = $resultado->rowCount();
-            if (0 !== $numero_registro) {
-                while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                    $CampoRepuesta = $registro['DescripConfiRepuesta'];
-                }
-            }
-              $resultado->closeCursor();
-
-            break;
-            default:
-              $CampoRepuesta = $encuestaDetalle['Repuesta'][$i];
-
-              break;
-          }
 
             $Data->execute([':IdEncuesta' => $IdEncuesta, ':IdPreguntas' => $i + 1, ':Pregunta' => $encuestaDetalle['Pregunta'][$i], ':Repuesta' => $CampoRepuesta,
-                         ':TipoRepuesta' => $encuestaDetalle['tipoRepuesta'][$i], ]);
+                ':TipoRepuesta' => $encuestaDetalle['tipoRepuesta'][$i], ]);
         }
         $resultado->closeCursor();
     }
 
     public function InsertarDatosOnEncuesta($dataArray)
     {
-        date_default_timezone_set('America/Santo_Domingo');  //Se seleciona la zona horaria
+        date_default_timezone_set('America/Santo_Domingo'); //Se seleciona la zona horaria
         //array para guardar las pregunta y repuesta
         $encuestaDetalle = [
-      'Pregunta' => [],
-      'tipoRepuesta' => [],
-      'Repuesta' => [],
-  ];
+            'Pregunta' => [],
+            'tipoRepuesta' => [],
+            'Repuesta' => [],
+        ];
 
         $cont = 0;
 
@@ -371,50 +371,50 @@ class Encuesta extends Conexion
             $CampoRepuesta = '';
 
             switch ($encuestaDetalle['tipoRepuesta'][$i]) {
-            case '6':
-             $sql3 = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
-            $resultado = $this->conexion_db->prepare($sql3);
-            $resultado->execute([':Codigo' => 6]);
-            $numero_registro = $resultado->rowCount();
-            if (0 !== $numero_registro) {
-                while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                    $CampoRepuesta = $registro['DescripConfiRepuesta'];
-                }
+                case '6':
+                    $sql3 = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
+                    $resultado = $this->conexion_db->prepare($sql3);
+                    $resultado->execute([':Codigo' => 6]);
+                    $numero_registro = $resultado->rowCount();
+                    if (0 !== $numero_registro) {
+                        while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                            $CampoRepuesta = $registro['DescripConfiRepuesta'];
+                        }
+                    }
+
+                    break;
+                case '7':
+                    $sql1 = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
+                    $resultado = $this->conexion_db->prepare($sql1);
+                    $resultado->execute([':Codigo' => 7]);
+                    $numero_registro = $resultado->rowCount();
+                    if (0 !== $numero_registro) {
+                        while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                            $CampoRepuesta = $registro['DescripConfiRepuesta'];
+                        }
+                    }
+
+                    break;
+                case '8':
+                    $sql2 = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
+                    $resultado = $this->conexion_db->prepare($sql2);
+                    $resultado->execute([':Codigo' => 8]);
+                    $numero_registro = $resultado->rowCount();
+                    if (0 !== $numero_registro) {
+                        while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                            $CampoRepuesta = $registro['DescripConfiRepuesta'];
+                        }
+                    }
+
+                    break;
+                default:
+                    $CampoRepuesta = $encuestaDetalle['Repuesta'][$i];
+
+                    break;
             }
-
-            break;
-            case '7':
-             $sql1 = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
-            $resultado = $this->conexion_db->prepare($sql1);
-            $resultado->execute([':Codigo' => 7]);
-            $numero_registro = $resultado->rowCount();
-            if (0 !== $numero_registro) {
-                while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                    $CampoRepuesta = $registro['DescripConfiRepuesta'];
-                }
-            }
-
-            break;
-            case '8':
-             $sql2 = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
-            $resultado = $this->conexion_db->prepare($sql2);
-            $resultado->execute([':Codigo' => 8]);
-            $numero_registro = $resultado->rowCount();
-            if (0 !== $numero_registro) {
-                while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                    $CampoRepuesta = $registro['DescripConfiRepuesta'];
-                }
-            }
-
-            break;
-            default:
-              $CampoRepuesta = $encuestaDetalle['Repuesta'][$i];
-
-              break;
-          }
 
             $Data->execute([':IdEncuesta' => $IdEncuesta, ':IdPreguntas' => $idPregunta, ':Pregunta' => $encuestaDetalle['Pregunta'][$i], ':Repuesta' => $CampoRepuesta,
-                         ':TipoRepuesta' => $encuestaDetalle['tipoRepuesta'][$i], ]);
+                ':TipoRepuesta' => $encuestaDetalle['tipoRepuesta'][$i], ]);
         }
     }
 
@@ -434,7 +434,7 @@ class Encuesta extends Conexion
 
     public function GuardarResultadosEncuesta($resultadoArrayEncuesta)
     {
-        date_default_timezone_set('America/Santo_Domingo');  //Se seleciona la zona horaria
+        date_default_timezone_set('America/Santo_Domingo'); //Se seleciona la zona horaria
 
         $fechaCreacion = date('Y-m-d');
         $horaCreacion = date('H:i:s');
@@ -474,37 +474,71 @@ class Encuesta extends Conexion
         }
         for ($i = 0; $i < count($idPregunta); ++$i) {
             $Data->execute([':IdPregunta' => $idPregunta[$i], ':IdEncuesta' => $EncuestaId, ':CampoSelecionado' => $respSelec[$i], ':DireccionIpCreacion' => $direccionIp, ':FechaCreacion' => $fechaCreacion,
-                             ':HoraCreacion' => $horaCreacion, ]);
+                ':HoraCreacion' => $horaCreacion, ]);
         }
         $Data->closeCursor();
     }
 
-    public function getUrlEncuesta($GetUrlbyEncuestaId, $PermisoUrl, $FechaExpiracion, $ClienteAEvaluar, $Evaluador, $mensaje)
+    public function getUrlEncuesta($GetUrlbyEncuestaId, $PermisoUrl, $FechaExpiracion, $ClienteAEvaluar, $Evaluador, $mensaje, $clienteOpcion)
     {
-        $Cliente;
-        $evaluador;
+        $Clientes = [];
+        $TipodeClientes = [];
+        $Cliente = '';
+        $TipodeCliente = '';
+        $evaluador = '';
+        $clieteText = '';
+        $temp = '';
 
-        for ($i = 0; $i < count($ClienteAEvaluar); ++$i) {
-            $Cliente = implode(',', $ClienteAEvaluar);
+        if ('' === $FechaExpiracion) {
+            $FechaExpiracion = null;
         }
-        for ($i = 0; $i < count($Evaluador); ++$i) {
-            $evaluador = implode(',', $Evaluador);
+
+        if (empty($ClienteAEvaluar)) {
+            $ClienteAEvaluar = null;
         }
+
+        if (empty($Evaluador)) {
+            $Evaluador = null;
+        }
+
+        if (null !== $ClienteAEvaluar) {
+            for ($i = 0; $i < count($ClienteAEvaluar); ++$i) {
+                $clieteText = $ClienteAEvaluar[$i];
+                $temp = explode('/', $clieteText);
+                array_push($Clientes, $temp[0]);
+                array_push($TipodeClientes, $temp[1]);
+            }
+        }
+
+        if (null !== $Evaluador) {
+            for ($i = 0; $i < count($Evaluador); ++$i) {
+                $evaluador = implode(',', $Evaluador);
+            }
+        }
+        $sqlevaluado = 'INSERT INTO tbl_evaluados (TipoCliente,IdCliente,IdToken,idEncuesta,FechaCreacion,CreadoPorUsuarioId) VALUES
+                                                                   (:TipoCliente,:IdCliente, :IdToken, :idEncuesta, :FechaCreacion,:CreadoPorUsuarioId)';
 
         session_start();
         $idUsuario = $_SESSION['IdUsuarioActual'];
         $FechaCreacion = date('Y/m/d');
         $token = sha1(uniqid());
-        $url = "http://lhbjjmarquez/SistemaEncuesta/Vista/EncuestaView/index.php?token=${token}";
+        $url = "http://lhbjjmarquez/SistemaEncuesta/Vista/EncuestaView/PrepareEncuesta.php?token=${token}";
 
-        if ('3' === $PermisoUrl || $PermisoUrl = '4') {
+        if (count($Clientes) > 0) {
+            $Data = $this->conexion_db->prepare($sqlevaluado);
+
+            for ($i = 0; $i < count($Clientes); ++$i) {
+                $Data->execute([':TipoCliente' => $TipodeClientes[$i], ':IdCliente' => $Clientes[$i], ':IdToken' => $token, ':idEncuesta' => $GetUrlbyEncuestaId, ':FechaCreacion' => $FechaCreacion, ':CreadoPorUsuarioId' => $idUsuario]);
+            }
+            $Data->closeCursor();
         }
-        $sql = 'INSERT INTO tbl_token(token,FechaEspiracion,IdEncuesta,Evaluado, Evaluador, Mensaje,Permiso,FechaCreacion,CreadoPorUsuarioId) VALUES
-                                            (:token,:FechaEspiracion,:IdEncuesta,:Evaluado,:Evaluador,:Mensaje, :Permiso,:FechaCreacion, :CreadoPorUsuarioId ) ';
+
+        $sql = 'INSERT INTO tbl_token(token, Url, FechaEspiracion,IdEncuesta, Evaluador, Mensaje,ClienteOpcion,Permiso,FechaCreacion,CreadoPorUsuarioId) VALUES
+                          (:token, :Url,:FechaEspiracion,:IdEncuesta,:Evaluador,:Mensaje, :ClienteOpcion, :Permiso,:FechaCreacion, :CreadoPorUsuarioId ) ';
         $Data = $this->conexion_db->prepare($sql);
 
-        $Data->execute([':token' => $token, ':FechaEspiracion' => $FechaExpiracion, ':IdEncuesta' => $GetUrlbyEncuestaId, ':Evaluado' => $Cliente, ':Evaluador' => $evaluador, ':Mensaje' => $mensaje, ':Permiso' => $PermisoUrl, ':FechaCreacion' => $FechaCreacion,  ':CreadoPorUsuarioId' => $idUsuario]);
-
+        $Data->execute([':token' => $token, ':Url' => $url, ':FechaEspiracion' => $FechaExpiracion, ':IdEncuesta' => $GetUrlbyEncuestaId, ':Evaluador' => $evaluador, ':Mensaje' => $mensaje, ':ClienteOpcion' => $clienteOpcion, ':Permiso' => $PermisoUrl, ':FechaCreacion' => $FechaCreacion, ':CreadoPorUsuarioId' => $idUsuario]);
+        $Data->closeCursor();
         print_r($url);
     }
 }

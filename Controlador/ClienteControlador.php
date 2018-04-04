@@ -90,8 +90,8 @@ if (isset($_POST['Edit'])) {
     print_r(json_encode($data));
 }
 
-if (isset($_POST['Id'])) {
-    $Id = ($_POST['Id']);
+if (isset($_POST['IdCliente'])) {
+    $Id = ($_POST['IdCliente']);
     $Cliente->DeleteCliente($Id);
 }
 

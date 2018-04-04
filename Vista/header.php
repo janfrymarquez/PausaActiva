@@ -56,6 +56,7 @@
 
                    <?php
 $usar = $_SESSION['userlog'];
+$permiso = $_SESSION['Permiso'];
 
 echo '<div class="profile-usertitle-name"> '.'Hola'.'  '.$usar.' </div>';
 ?>
@@ -72,36 +73,84 @@ echo '<div class="profile-usertitle-name"> '.'Hola'.'  '.$usar.' </div>';
    <ul class="nav menu">
 
 
-     <li ><a href="../index.php"><em class="fas fa-home">&nbsp;</em> Inicio</a></li>
+    <?php
 
-     <li><a href="FormularioEncuesta.php"><em class="far fa-plus-square">&nbsp;</em> Crear Encuesta </a></li>
+switch ($permiso) {
+    case '2':
+        echo '<li><a href="charts.php"><em class="fas fa-chart-pie">&nbsp;</em> Reportes</a></li>
+        <li><a href="logout.php"><em class="fa fa-power-off">&nbsp;</em> Logout</a></li>';
+
+        break;
+    case '3':
+
+        echo '
+    <li ><a href="../index.php"><em class="fas fa-home">&nbsp;</em> Inicio</a></li>
+    <li class="parent "><a data-toggle="collapse" href="#sub-item-2">
+    <em class="fas fa-tachometer-alt">&nbsp;</em> Encuesta <span data-toggle="collapse" href="#sub-item-2" class="icon pull-right"><em class="fa fa-plus"></em></span>
+    </a>
+    <ul class="children collapse" id="sub-item-2">
+    <li><a href="CompleteEncuesta.php">
+    <em class="icon-share-alt">&nbsp;</em> Llenar Encuesta
+    </a></li>
+    <li><a href="FormularioEncuesta.php">
+    <em class="far fa-plus-square">&nbsp;</em> Crear Encuesta
+    </a></li>
+    </ul>
+    </li>
+
+    <li><a href="charts.php"><em class="fas fa-chart-pie">&nbsp;</em> Reportes</a></li>
+     <li><a href="logout.php"><em class="fa fa-power-off">&nbsp;</em> Logout</a></li>';
+
+        break;
+    default:
+        echo ' <li ><a href="../index.php"><em class="fas fa-home">&nbsp;</em> Inicio</a></li>
+
+        <li class="parent "><a data-toggle="collapse" href="#sub-item-2">
+        <em class="fas fa-tachometer-alt">&nbsp;</em> Encuesta <span data-toggle="collapse" href="#sub-item-2" class="icon pull-right"><em class="fa fa-plus"></em></span>
+        </a>
+        <ul class="children collapse" id="sub-item-2">
+        <li><a href="CompleteEncuesta.php">
+        <em class="icon-share-alt">&nbsp;</em> Llenar Encuesta
+        </a></li>
+        <li><a href="FormularioEncuesta.php">
+        <em class="far fa-plus-square">&nbsp;</em> Crear Encuesta
+        </a></li>
+        </ul>
+        </li>
+
+  <li class="parent "><a data-toggle="collapse" href="#sub-item-1">
+                          <em class="fas fa-cogs">&nbsp;</em> Configuraciones <span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"><em class="fa fa-plus"></em></span>
+                      </a>
 
 
-<li class="parent "><a data-toggle="collapse" href="#sub-item-1">
-                       <em class="fas fa-cogs">&nbsp;</em> Configuraciones <span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"><em class="fa fa-plus"></em></span>
-                   </a>
-                   <ul class="children collapse" id="sub-item-1">
-                         <li><a class="" href="ModificarUsuario.php">
-                                 <span class="fas fa-user"></span> Usuarios
-                             </a></li>
-                         <li><a class="" href="Clientes.php">
-                                 <span class="glyphicon glyphicon-usd"></span> Clientes
-                             </a></li>
-                          
-                         <li><a class="" href="#">
-                                 <span class="glyphicon glyphicon-shopping-cart"></span> Vendedores
-                             </a></li>
-                         <li><a class="" href="#">
-                                 <span class="glyphicon glyphicon-eye-open"></span> Supervidores
-                             </a></li>
-                         <li><a class="" href="#">
-                                 <span class="fa fa-line-chart"></span> Encuesta
-                             </a></li>
-                   </ul>
-               </li>
 
-<li><a href="charts.php"><em class="fas fa-chart-pie">&nbsp;</em> Reportes</a></li>
+                    <ul class="children collapse" id="sub-item-1">
+                           <li><a class="" href="ModificarUsuario.php">
+                                   <span class="fas fa-user"></span> Usuarios
+                               </a></li>
+                           <li><a class="" href="Clientes.php">
+                                   <span class="glyphicon glyphicon-usd"></span> Clientes
+                               </a></li>
 
-     <li><a href="logout.php"><em class="fa fa-power-off">&nbsp;</em> Logout</a></li>
+                           <li><a class="" href="#">
+                                   <span class="glyphicon glyphicon-shopping-cart"></span> Vendedores
+                               </a></li>
+                           <li><a class="" href="#">
+                                   <span class="glyphicon glyphicon-eye-open"></span> Supervidores
+                               </a></li>
+                           <li><a class="" href="#">
+                                   <span class="fa fa-line-chart"></span> Encuesta
+                               </a></li>
+                      </ul>
+                  </li>
+
+  <li><a href="charts.php"><em class="fas fa-chart-pie">&nbsp;</em> Reportes</a></li>
+
+        <li><a href="logout.php"><em class="fa fa-power-off">&nbsp;</em> Logout</a></li>';
+
+        break;
+}
+
+?>
    </ul>
  </div><!--/.sidebar-->
