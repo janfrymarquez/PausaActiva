@@ -6,7 +6,10 @@ require '../Modelo/cls_clientes.php';
 $Cliente = new Clientes();
   $errors = [];
   $data = [];
+
 if (isset($_POST['add'])) {
+    $errors = [];
+    $data = [];
     if (empty($_POST['Nombre'])) {
         $errors['nombre'] = 'Nombre vacio';
     }
@@ -53,6 +56,38 @@ if (isset($_POST['add'])) {
     print_r(json_encode($data));
 }
 
+if (isset($_POST['EnviarActivarPermiso'])) {
+    $errors = [];
+    $data = [];
+
+    if (empty($_POST['Usuario'])) {
+        $errors['usuario'] = 'Usuario en blanco';
+    }
+    if (empty($_POST['Permiso'])) {
+        $errors['permiso'] = 'permiso en blanco';
+    }
+
+    if (!empty($errors)) {
+        $data['success'] = false;
+        $data['errors'] = $errors;
+    } else {
+        $data['success'] = true;
+        $data['message'] = 'Success!';
+
+        $nombre = htmlentities(addslashes($_POST['Nombre']));
+        $email = htmlentities(addslashes($_POST['Email']));
+        $apellido = htmlentities(addslashes($_POST['Apellido']));
+        $usuario = htmlentities(addslashes($_POST['Usuario']));
+        $permiso = htmlentities(addslashes($_POST['Permiso']));
+        $password = htmlentities(addslashes($_POST['Password']));
+        $idCliente = htmlentities(addslashes($_POST['IdCliente']));
+
+        $Cliente->ActivateLogin($idCliente, $password, $permiso, $usuario, $nombre, $email, $apellido);
+    }
+
+    print_r(json_encode($data));
+}
+
 if (isset($_POST['Edit'])) {
     if (empty($_POST['nombre'])) {
         $errors['nombre'] = 'Nombre vacio';
@@ -90,9 +125,14 @@ if (isset($_POST['Edit'])) {
     print_r(json_encode($data));
 }
 
-if (isset($_POST['IdCliente'])) {
-    $Id = ($_POST['IdCliente']);
+if (isset($_POST['IdClienteBorrar'])) {
+    $Id = ($_POST['IdClienteBorrar']);
     $Cliente->DeleteCliente($Id);
+}
+
+if (isset($_POST['IdClienteDesactivarPermiso'])) {
+    $IdClienteDesactivarPermiso = ($_POST['IdClienteDesactivarPermiso']);
+    $Cliente->DesactivarPermiso($IdClienteDesactivarPermiso);
 }
 
     $action = (isset($_REQUEST['action']) && null !== $_REQUEST['action']) ? $_REQUEST['action'] : '';

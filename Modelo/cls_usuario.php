@@ -36,104 +36,104 @@ class Usuario extends Conexion
         }
     }
 
-    public function RegistrarUser($ID, $Usuario, $password, $Email, $Nombre, $Apellido, $imagen, $UsuarioActual, $FechaCreacion)
+    public function VerificarUser($usuario, $password, $token)
     {
-        try {
-            $Password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 15]);
+        $data = [];
+        if ('none' !== $token) {
+            $sql = 'SELECT * FROM  tbl_Empleados WHERE Codigo = :login  LIMIT 1';
 
-            //Modificar Usuario
+            $sentencia = $this->conexion_db->prepare($sql);
 
-            if ($ID > 0) {
-                $sql = "UPDATE tbl_users
-                SET Password = '${Password}' ,
-                  Email = '${Email}' ,
-                  Foto = '${imagen}' ,
-                  PrimerNombre ='${Nombre}' ,
-                  Apellido = '${Apellido}',
-                  ModificadoPorUsuarioId ='${UsuarioActual}' ,
-                  FechaModificacion= '${FechaCreacion}'
-                  WHERE IdUsuario='${ID}' ";
-                $resultado = $this->conexion_db->prepare($sql);
+            $sentencia->execute([':login' => $usuario]);
+            $numero_registro = $sentencia->rowCount();
+            if (0 !== $numero_registro) {
+                while ($registro = $sentencia->fetch(PDO::FETCH_ASSOC)) {
+                    if ($password === $registro['Password']) {
+                        $idCliente = $registro['Codigo'];
+                        $ConsultaEvaludo = 'SELECT * FROM  tbl_evaluados WHERE IdCliente = :Cliente & IdToken= :IdToken LIMIT 1';
+                        $ExeConsultaEvaluado = $this->conexion_db->prepare($ConsultaEvaludo);
+                        $ExeConsultaEvaluado->execute([':Cliente' => $idCliente, ':IdToken' => $token]);
 
-                $resultado->execute();
-
-                echo '<script language="javascript">';
-                echo 'alert("El usuario fue modificado exitoxamente")';
-                echo '</script>';
+                        $numero_registros = $ExeConsultaEvaluado->rowCount();
+                        if (0 !== $numero_registros) {
+                            while ($registros = $ExeConsultaEvaluado->fetch(PDO::FETCH_ASSOC)) {
+                                $estatus = $registros['Estatus'];
+                                if ('Evaluar' === $estatus) {
+                                    $data['success'] = true;
+                                    $data['url'] = '../Vista/EncuestaView/index.php?token='.$token.' & idCliente='.$idCliente.'';
+                                } else {
+                                    $data['success'] = true;
+                                    $data['url'] = '../Vista/EncuestaView/EncuestaCompletada.php';
+                                }
+                            }
+                        } else {
+                            $data['success'] = true;
+                            $data['url'] = '../Vista/EncuestaView/EncuestaCompletada.php';
+                        }
+                    } else {
+                        $data['success'] = false;
+                    }
+                }
+            } else {
+                $data['success'] = false;
             }
-            //Crear usuario
-            else {
-                $sql = 'INSERT INTO tbl_users (Usuario,Password,Email,PrimerNombre,Apellido,Foto,CreadoPorUsuarioId,FechaCreacion) VALUES (:Usuario, :Password,:Email,:Nombre,:Apellido, :imgen,:Creadopor,:FechaCreacion) ';
+        } else {
+            $sql = 'SELECT * FROM  tbl_users WHERE Usuario = :login  LIMIT 1';
 
-                $resultado = $this->conexion_db->prepare($sql);
+            $sentencia = $this->conexion_db->prepare($sql);
 
-                $resultado->execute([':Usuario' => $Usuario, ':Password' => $Password, ':Email' => $Email, ':Nombre' => $Nombre, ':Apellido' => $Apellido, ':imgen' => $imagen, 'Creadopor' => $UsuarioActual, ':FechaCreacion' => $FechaCreacion]);
+            $sentencia->execute([':login' => $usuario]);
+            $numero_registro = $sentencia->rowCount();
+            if (0 !== $numero_registro) {
+                while ($registro = $sentencia->fetch(PDO::FETCH_ASSOC)) {
+                    if ($password === $registro['Password']) {
+                        $data['success'] = true;
+                        session_start();
 
-                echo '<script language="javascript">';
-                echo 'alert("Los datos fueron guardado corectamente")';
-                echo '</script>';
-            }
+                        $_SESSION['userlog'] = $registro['Nombre'];
+                        $ahora = date('Y-n-j H:i:s');
+                        $_SESSION['profileimg'] = $registro['ImgenPerfil'];
+                        $_SESSION['IdUsuarioActual'] = $registro['IdUsuario'];
+                        $_SESSION['IdSector'] = $registro['IdSector'];
+                        $_SESSION['IdSucursal'] = $registro['IdSucursal'];
+                        $_SESSION['autentificado'] = 'SI';
+                        $_SESSION['ultimoAcceso'] = $ahora;
+                        $_SESSION['Permiso'] = $registro['Permiso'];
+                        $_SESSION['email'] = $registro['Email'];
 
-            $resultado->closeCursor();
-
-            $this->conexion_db = null;
-        } catch (Exception $e) {
-            echo '<script type="text/javascript">alert("Error al guardar los datos");</script>' . $e->GetMessage();
-        }
-    }
-
-    public function VerificarUser($usuario, $password)
-    {
-        $autenticado = false;
-
-        $sql = 'SELECT * FROM  tbl_users WHERE Usuario = :login  LIMIT 1';
-
-        $sentencia = $this->conexion_db->prepare($sql);
-
-        $sentencia->execute([':login' => $usuario]);
-
-        while ($registro = $sentencia->fetch(PDO::FETCH_ASSOC)) {
-            if ($password === $registro['Password']) {
-                session_start();
-
-                $_SESSION['userlog']         = $registro['Nombre'];
-                $ahora                       = date("Y-n-j H:i:s");
-                $_SESSION['profileimg']      = $registro['ImgenPerfil'];
-                $_SESSION['IdUsuarioActual'] = $registro['IdUsuario'];
-                $_SESSION['IdSector']        = $registro['IdSector'];
-                $_SESSION['IdSucursal']      = $registro['IdSucursal'];
-                $_SESSION["autentificado"]   = "SI";
-                $_SESSION["ultimoAcceso"]    = $ahora;
-                $_SESSION["Permiso"]         = $registro['Permiso'];
-
-                switch ($_SESSION["Permiso"]) {
+                        switch ($registro['Permiso']) {
                     case '2':
-                        header('Location:../Vista/charts.php');
+                        $data['url'] = 'charts.php';
+
                         break;
                     case '3':
-                        header('Location:../index.php');
-                        break;
+                        $data['url'] = '../index.php';
 
+                        break;
                     default:
-                        header('Location:../index.php');
-                        break;
+                        $data['url'] = '../index.php';
+
+                    break;
                 }
-
+                    } else {
+                        $data['success'] = false;
+                    }
+                }
             } else {
-                echo '<script language="javascript">';
-                echo 'alert("La contraseña es incorrecta. Inténtalo de nuevo")';
-                echo '</script>';
+                $data['success'] = false;
             }
-        }
-        $sentencia->closeCursor();
+            $sentencia->closeCursor();
 
-        $this->conexion_db = null;
+            $this->conexion_db = null;
+        }
+
+        return $data;
     }
 
     //Funcion para comprobar si el usuario existe en la base de datos
     public function UsuarioExiste($usuario)
     {
-        $sql       = "SELECT * FROM  tbl_users WHERE Usuario ='${usuario}'";
+        $sql = "SELECT * FROM  tbl_users WHERE Usuario ='${usuario}'";
         $resultado = $this->conexion_db->prepare($sql);
 
         $resultado->execute();
@@ -142,7 +142,7 @@ class Usuario extends Conexion
 
         if (0 !== $numero_registro) {
             echo 'existe';
-            //<div align="center" id="NoExiste" class="No_Disponible"> El nombre de usuario no esta disponible'
+        //<div align="center" id="NoExiste" class="No_Disponible"> El nombre de usuario no esta disponible'
         } else {
             echo 'no existe';
         }
@@ -165,7 +165,7 @@ class Usuario extends Conexion
         if (0 !== $numero_registro) {
             echo '<option selected disabled value=""> -- Selecione un departamento -- </option>';
             while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                echo '<option value="' . $registro['IdDepartamento'] . ',' . $registro['Departamento'] . '">' . $registro['Departamento'] . '</option>';
+                echo '<option value="'.$registro['IdDepartamento'].','.$registro['Departamento'].'">'.$registro['Departamento'].'</option>';
             }
         } else {
             echo 'NoDisponible';
@@ -187,7 +187,7 @@ class Usuario extends Conexion
         if (0 !== $numero_registro) {
             echo '<option selected disabled value=""> -- Selecione una heladeria -- </option>';
             while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                echo '<option value="' . $registro['IdLocalidad'] . ',' . $registro['NOM_UNIDAD'] . '">' . $registro['NOM_UNIDAD'] . '</option>';
+                echo '<option value="'.$registro['IdLocalidad'].','.$registro['NOM_UNIDAD'].'">'.$registro['NOM_UNIDAD'].'</option>';
             }
         } else {
             echo 'NoDisponible';

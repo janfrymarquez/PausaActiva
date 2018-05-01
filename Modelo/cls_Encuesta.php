@@ -11,6 +11,7 @@
  */
 
 require 'Conexion.php';
+require_once 'cls_maill.php';
 
 class Encuesta extends Conexion
 {
@@ -34,6 +35,20 @@ class Encuesta extends Conexion
             }
             //echo "No Existe {$atributo}... :'(";
         }
+    }
+
+    public function eliminarEnlace($tokn)
+    {
+        $FechaCreacion = date('Y/m/d');
+        $Activo = '0';
+
+        $sqldelete = "UPDATE tbl_token set     FechaModificacion ='${FechaCreacion}',
+                                            Activo ='${Activo}'
+                                            WHERE token='${tokn}'";
+
+        $resultado = $this->conexion_db->prepare($sqldelete);
+        $resultados->execute();
+        $resultados->closeCursor();
     }
 
     public function AgregarPregunta($pregunta)
@@ -147,7 +162,7 @@ class Encuesta extends Conexion
                                                 SubTipoEncuenta='${SubTipoEncuenta}',
                                                 Sucursal='${IdSucursal}',
                                                 Sector='${idSector}',
-                                                SubTipoEncuestaDetalle=' ${SubTipoEncuestaDetalle}',
+                                                SubTipoEncuestaDetalle='${SubTipoEncuestaDetalle}',
                                                 ModificadoPorUsuarioId='${idUsuario}',
                                                 FechaModificacion ='{$FechaCreacion}'
                                                   WHERE IdEncuestaCabecera='${IdEncuesta}'";
@@ -271,15 +286,21 @@ class Encuesta extends Conexion
         $resultado->execute([':IdEncuestaCabecera' => $IdEncuesta, ':NombreEncuesta' => $NombreEcnuesta, ':TiposEncuesta' => $TiposEncuesta, ':SubTipoEncuenta' => $SubTipoEncuenta, ':SubTipoEncuestaDetalle' => $SubTipoEncuestaDetalle, ':Sucursal' => $IdSucursal,
             ':Sector' => $idSector, ':CreadoPorUsuarioId' => $idUsuario, 'FechaCreacion' => $FechaCreacion, ]);
         // Se gurdan datos en la tabla tbl_encuesta_detalle
-        $encuestaDetaSql = 'INSERT INTO tbl_encuesta_detalle (IdEncuesta,IdPreguntas,Pregunta,Repuesta,TipoRepuesta) VALUES
-                            (:IdEncuesta,:IdPreguntas, :Pregunta,:Repuesta,:TipoRepuesta)';
+        $encuestaDetaSql = 'INSERT INTO tbl_encuesta_detalle (IdEncuesta,IdPreguntas,Pregunta,Repuesta,TipoRepuesta,ValorRepuesta) VALUES
+                            (:IdEncuesta,:IdPreguntas, :Pregunta,:Repuesta,:TipoRepuesta, :ValorRepuesta)';
         $Data = $this->conexion_db->prepare($encuestaDetaSql);
 
         for ($i = 0; $i < count($encuestaDetalle['Pregunta']); ++$i) {
             //Switch case para obtener descrion de la opciones para la encuesta
             $CampoRepuesta = '';
+            $valorRepuesta = '';
 
             switch ($encuestaDetalle['tipoRepuesta'][$i]) {
+            case '5':
+            $CampoRepuesta = $encuestaDetalle['Repuesta'][$i];
+            $valorRepuesta = $encuestaDetalle['valorRepuesta'][$i];
+
+            break;
                 case '6':
                     $sql3 = 'SELECT * FROM  tbl_conf_repuesta WHERE IdConfiRepuesta = :Codigo';
                     $resultado = $this->conexion_db->prepare($sql3);
@@ -288,6 +309,7 @@ class Encuesta extends Conexion
                     if (0 !== $numero_registro) {
                         while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
                             $CampoRepuesta = $registro['DescripConfiRepuesta'];
+                            $valorRepuesta = $registro['ValorRepuesta'];
                         }
                     }
                     $resultado->closeCursor();
@@ -301,6 +323,7 @@ class Encuesta extends Conexion
                     if (0 !== $numero_registro) {
                         while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
                             $CampoRepuesta = $registro['DescripConfiRepuesta'];
+                            $valorRepuesta = $registro['ValorRepuesta'];
                         }
                     }
                     $resultado->closeCursor();
@@ -314,6 +337,7 @@ class Encuesta extends Conexion
                     if (0 !== $numero_registro) {
                         while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
                             $CampoRepuesta = $registro['DescripConfiRepuesta'];
+                            $valorRepuesta = $registro['ValorRepuesta'];
                         }
                     }
                     $resultado->closeCursor();
@@ -321,12 +345,13 @@ class Encuesta extends Conexion
                     break;
                 default:
                     $CampoRepuesta = $encuestaDetalle['Repuesta'][$i];
+                    $valorRepuesta = '';
 
                     break;
             }
 
             $Data->execute([':IdEncuesta' => $IdEncuesta, ':IdPreguntas' => $i + 1, ':Pregunta' => $encuestaDetalle['Pregunta'][$i], ':Repuesta' => $CampoRepuesta,
-                ':TipoRepuesta' => $encuestaDetalle['tipoRepuesta'][$i], ]);
+                ':TipoRepuesta' => $encuestaDetalle['tipoRepuesta'][$i], ':ValorRepuesta' => $valorRepuesta, ]);
         }
         $resultado->closeCursor();
     }
@@ -461,19 +486,25 @@ class Encuesta extends Conexion
 
         $direccionIp = getRealIP();
 
-        $guardarResultadoSql = 'INSERT INTO tbl_resultados (IdPregunta,IdEncuesta,CampoSelecionado,DireccionIpCreacion,FechaCreacion,HoraCreacion) VALUES
-                                  (:IdPregunta,:IdEncuesta, :CampoSelecionado, :DireccionIpCreacion,:FechaCreacion,:HoraCreacion)';
+        $guardarResultadoSql = 'INSERT INTO tbl_resultados (IdPregunta,IdEncuesta,CampoSelecionado,ValorCampoSelecionado,idCliente, Token,DireccionIpCreacion,FechaCreacion,HoraCreacion) VALUES
+                                  (:IdPregunta,:IdEncuesta, :CampoSelecionado, :ValorCampoSelecionado, :idCliente, :Token, :DireccionIpCreacion,:FechaCreacion,:HoraCreacion)';
         $Data = $this->conexion_db->prepare($guardarResultadoSql);
         $idPregunta = [];
         $respSelec = [];
         $EncuestaId = '';
+        $valor = [];
+        $cliente = '';
+        $token = '';
         foreach ($resultadoArrayEncuesta as $key => $value) {
             $idPregunta = $value->Id_Pregunta;
             $respSelec = $value->RepuestaSelec;
             $EncuestaId = $value->IdEncuesta;
+            $valorResp = $value->valorRepuesta;
+            $cliente = $value->IdCliente;
+            $token = $value->token;
         }
         for ($i = 0; $i < count($idPregunta); ++$i) {
-            $Data->execute([':IdPregunta' => $idPregunta[$i], ':IdEncuesta' => $EncuestaId, ':CampoSelecionado' => $respSelec[$i], ':DireccionIpCreacion' => $direccionIp, ':FechaCreacion' => $fechaCreacion,
+            $Data->execute([':IdPregunta' => $idPregunta[$i], ':IdEncuesta' => $EncuestaId, ':CampoSelecionado' => $respSelec[$i], ':ValorCampoSelecionado' => $valorResp[$i], ':idCliente' => $cliente, ':Token' => $token, ':DireccionIpCreacion' => $direccionIp, ':FechaCreacion' => $fechaCreacion,
                 ':HoraCreacion' => $horaCreacion, ]);
         }
         $Data->closeCursor();
@@ -502,8 +533,9 @@ class Encuesta extends Conexion
         }
 
         if (null !== $ClienteAEvaluar) {
-            for ($i = 0; $i < count($ClienteAEvaluar); ++$i) {
-                $clieteText = $ClienteAEvaluar[$i];
+            $clientesAEvaluarUnico = array_unique($ClienteAEvaluar);
+            for ($i = 0; $i < count($clientesAEvaluarUnico); ++$i) {
+                $clieteText = $clientesAEvaluarUnico[$i];
                 $temp = explode('/', $clieteText);
                 array_push($Clientes, $temp[0]);
                 array_push($TipodeClientes, $temp[1]);
@@ -511,8 +543,9 @@ class Encuesta extends Conexion
         }
 
         if (null !== $Evaluador) {
-            for ($i = 0; $i < count($Evaluador); ++$i) {
-                $evaluador = implode(',', $Evaluador);
+            $EvaluadorUnico = array_unique($Evaluador);
+            for ($i = 0; $i < count($EvaluadorUnico); ++$i) {
+                $evaluador = implode(',', $EvaluadorUnico);
             }
         }
         $sqlevaluado = 'INSERT INTO tbl_evaluados (TipoCliente,IdCliente,IdToken,idEncuesta,FechaCreacion,CreadoPorUsuarioId) VALUES
@@ -522,7 +555,27 @@ class Encuesta extends Conexion
         $idUsuario = $_SESSION['IdUsuarioActual'];
         $FechaCreacion = date('Y/m/d');
         $token = sha1(uniqid());
-        $url = "http://lhbjjmarquez/SistemaEncuesta/Vista/EncuestaView/PrepareEncuesta.php?token=${token}";
+        $url = $_SERVER['SERVER_NAME']."/Vista/EncuestaView/PrepareEncuesta.php?token=${token}";
+
+        if ('TU' === $clienteOpcion) {
+            $sqlEmpleadoEvaluar = 'INSERT INTO tbl_evaluados (TipoCliente,IdCliente,IdToken,idEncuesta,FechaCreacion,CreadoPorUsuarioId) VALUES
+                                                     (:TipoCliente,:IdCliente, :IdToken, :idEncuesta, :FechaCreacion,:CreadoPorUsuarioId)';
+
+            $DataInserEmpleado = $this->conexion_db->prepare($sqlEmpleadoEvaluar);
+
+            $sql2 = 'SELECT * FROM  tbl_Empleados WHERE Activo = :Codigo';
+            $resultado = $this->conexion_db->prepare($sql2);
+            $resultado->execute([':Codigo' => 1]);
+            $numero_registro = $resultado->rowCount();
+            if (0 !== $numero_registro) {
+                while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                    $DataInserEmpleado->execute([':TipoCliente' => 'U', ':IdCliente' => $registro['Codigo'], ':IdToken' => $token, ':idEncuesta' => $GetUrlbyEncuestaId, ':FechaCreacion' => $FechaCreacion, ':CreadoPorUsuarioId' => $idUsuario]);
+                }
+                $DataInserEmpleado->closeCursor();
+            }
+
+            $resultado->closeCursor();
+        }
 
         if (count($Clientes) > 0) {
             $Data = $this->conexion_db->prepare($sqlevaluado);
@@ -540,5 +593,88 @@ class Encuesta extends Conexion
         $Data->execute([':token' => $token, ':Url' => $url, ':FechaEspiracion' => $FechaExpiracion, ':IdEncuesta' => $GetUrlbyEncuestaId, ':Evaluador' => $evaluador, ':Mensaje' => $mensaje, ':ClienteOpcion' => $clienteOpcion, ':Permiso' => $PermisoUrl, ':FechaCreacion' => $FechaCreacion, ':CreadoPorUsuarioId' => $idUsuario]);
         $Data->closeCursor();
         print_r($url);
+    }
+
+    public function SentEmailToCompleteEncuesta($SentEncuestaMail, $PermisoUrl, $FechaExpiracion, $ClienteAEvaluar, $Evaluador, $mensaje, $clienteOpcion, $NombreEncuesta)
+    {
+        $SentEmail = new Maill();
+        $Clientes = [];
+        $TipodeClientes = [];
+        $Cliente = '';
+        $TipodeCliente = '';
+        $evaluador = '';
+        $clieteText = '';
+        $temp = '';
+
+        if ('' === $FechaExpiracion) {
+            $FechaExpiracion = null;
+        }
+
+        if (empty($ClienteAEvaluar)) {
+            $ClienteAEvaluar = null;
+        }
+
+        if (empty($Evaluador)) {
+            $Evaluador = null;
+        }
+
+        if (null !== $ClienteAEvaluar) {
+            $clientesAEvaluarUnico = array_unique($ClienteAEvaluar);
+            for ($i = 0; $i < count($clientesAEvaluarUnico); ++$i) {
+                $clieteText = $clientesAEvaluarUnico[$i];
+                $temp = explode('/', $clieteText);
+                array_push($Clientes, $temp[0]);
+                array_push($TipodeClientes, $temp[1]);
+            }
+        }
+
+        if (null !== $Evaluador) {
+            $EvaluadorUnico = array_unique($Evaluador);
+            for ($i = 0; $i < count($EvaluadorUnico); ++$i) {
+                $evaluador = implode(',', $EvaluadorUnico);
+            }
+        }
+        $sqlevaluado = 'INSERT INTO tbl_evaluados (TipoCliente,IdCliente,IdToken,idEncuesta,FechaCreacion,CreadoPorUsuarioId) VALUES
+                                                                   (:TipoCliente,:IdCliente, :IdToken, :idEncuesta, :FechaCreacion,:CreadoPorUsuarioId)';
+
+        session_start();
+        $idUsuario = $_SESSION['IdUsuarioActual'];
+        $FechaCreacion = date('Y/m/d');
+        $token = sha1(uniqid());
+        $url = $_SERVER['SERVER_NAME']."/Vista/EncuestaView/PrepareEncuesta.php?token=${token}";
+
+        if (count($Clientes) > 0) {
+            $Data = $this->conexion_db->prepare($sqlevaluado);
+
+            for ($i = 0; $i < count($Clientes); ++$i) {
+                $Data->execute([':TipoCliente' => $TipodeClientes[$i], ':IdCliente' => $Clientes[$i], ':IdToken' => $token, ':idEncuesta' => $SentEncuestaMail, ':FechaCreacion' => $FechaCreacion, ':CreadoPorUsuarioId' => $idUsuario]);
+            }
+            $Data->closeCursor();
+        }
+
+        $sql = 'INSERT INTO tbl_token(token, Url, FechaEspiracion,IdEncuesta, Evaluador, Mensaje,ClienteOpcion,Permiso,FechaCreacion,CreadoPorUsuarioId) VALUES
+                          (:token, :Url,:FechaEspiracion,:IdEncuesta,:Evaluador,:Mensaje, :ClienteOpcion, :Permiso,:FechaCreacion, :CreadoPorUsuarioId ) ';
+        $Data = $this->conexion_db->prepare($sql);
+
+        $Data->execute([':token' => $token, ':Url' => $url, ':FechaEspiracion' => $FechaExpiracion, ':IdEncuesta' => $SentEncuestaMail, ':Evaluador' => $evaluador, ':Mensaje' => $mensaje, ':ClienteOpcion' => $clienteOpcion, ':Permiso' => $PermisoUrl, ':FechaCreacion' => $FechaCreacion, ':CreadoPorUsuarioId' => $idUsuario]);
+        $Data->closeCursor();
+
+        if (null !== $Evaluador) {
+            $EvaluadorUnico = array_unique($Evaluador);
+            for ($i = 0; $i < count($EvaluadorUnico); ++$i) {
+                $name = 'Encuesta Bon';
+                $subject = 'Completar la encuesta '.$NombreEncuesta.'';
+                $mensaje = '<h4> Te invito a completar la encuesta  '.$NombreEncuesta.'</h4> <p> '.$mensaje.'.</p>
+                            <a  title="Pulse aqui para llenar la encuesta" href="'.$url.'" style="background-color: #4CAF50; border: none;color: white;padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block;font-size: 16px;margin: 4px 2px;cursor: pointer;">Pulse aqui</a>';
+
+                $resulSentEmail = $SentEmail->sentEmail($name, $EvaluadorUnico[$i], $subject, $mensaje);
+            }
+
+            if ($resulSentEmail['success']) {
+                print_r('success');
+            } else {
+                print_r('error');
+            }
+        }
     }
 }

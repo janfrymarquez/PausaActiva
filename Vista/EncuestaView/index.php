@@ -21,14 +21,14 @@ try {
         $resultados->execute();
         $resultados->closeCursor();
     }
-    function UpdateClienteEvaluar($IdCliente)
+    function UpdateClienteEvaluar($IdCliente, $token)
     {
         $ConexionDb = new Conexion();
         $base = $ConexionDb->Conexion();
         $estatus = 'Evaluado';
         $sqldelete = "UPDATE tbl_evaluados set    Estatus ='${estatus}'
 
-                                          WHERE IdCliente='${IdCliente}'";
+                                          WHERE IdCliente='${IdCliente}' & IdToken= '${token}'";
 
         $resultado = $base->prepare($sqldelete);
         $resultado->execute();
@@ -73,7 +73,7 @@ try {
 
 <!DOCTYPE html>
 <html>
-  <head>
+  <head><meta http-equiv="Content-Type" content="text/html; charset=euc-jp">
 
 
       <link href="../css/styles.css" rel="stylesheet">
@@ -81,30 +81,20 @@ try {
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <link href="../css/bootstrap.min.css" rel="stylesheet">
       <link rel="stylesheet" href="../css/sweetalert.css">
-
+      <link href="../css/select2.min.css" rel="stylesheet">
       <link href="../css/font-awesome.min.css" rel="stylesheet">
-      <link href="../css/datepicker3.css" rel="stylesheet">
 
 
 
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-    <meta charset="utf-8">
+
+
     <title><?php echo $NombreEncuesta; ?></title>
-    <script src="../js/jquery.js"></script>
 
-    <script src="../js/jPaginate.js"></script>
-
-   <script src="../js/sweetalert.js"></script>
 
   </head>
   <body  class="Cuerpo">
 
-
-
-
-
-
-  <form id= "formEnviarEncuesta" >
+  <form method="post"  id= "formEnviarEncuesta" >
 
 
     <div class="Contenedor">
@@ -128,8 +118,8 @@ foreach ($registros as $obj): ?>
 
       <div  id="row<?php echo $obj->IdEncuestaDetalle; ?>">
 
-        <div  >
-        <h4  id="<?php echo $obj->IdEncuestaDetalle; ?>" class="Pregunta" name="Pregunta[]"><?php echo $obj->IdPreguntas.' '.$obj->Pregunta; ?></h3>
+        <div class="form_field"><div>
+        <h4  id="<?php echo $obj->IdEncuestaDetalle; ?>" class="Preguntas" name="Pregunta[]"><?php echo $obj->IdPreguntas.' '.$obj->Pregunta; ?></h3>
         </div>
 
 
@@ -138,24 +128,27 @@ foreach ($registros as $obj): ?>
         <?php
 
 $Repuesta = explode(',', $obj->Repuesta);
+  $ValorRepuesta = explode(',', $obj->ValorRepuesta);
 $tipoRepuesta = $obj->TipoRepuesta;
+$x = 0;
 foreach ($Repuesta as $objRepuesta) {
     switch ($tipoRepuesta) {
         case '1':
 
-            echo '<input type="radio" class="Repuesta" required  id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada'.$obj->IdEncuestaDetalle.'" value="'.$objRepuesta.'"> '.$objRepuesta.' <br>';
+            echo '<input type="radio" class="Respuesta required RepuestaRadio" required  id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada'.$obj->IdEncuestaDetalle.'" value="'.$objRepuesta.'"> '.$objRepuesta.' <br>';
 
             break;
         case '2':
 
-            echo '<input type="radio" required class="Repuesta"  id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada'.$obj->IdEncuestaDetalle.'" value="'.$objRepuesta.'"> '.$objRepuesta.' <br>';
+            echo '<input type="checkbox" required class="CampoCheck required"  id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada'.$obj->IdEncuestaDetalle.'" value="'.$objRepuesta.'"> '.$objRepuesta.' <br>';
 
             break;
         case '3':
-            echo '<textarea  autocomolete="off" class="Repuesta"  name="comentarios" id="'.$obj->IdEncuestaDetalle.'" class="Respuesta_'.$obj->IdEncuestaDetalle.'" rows="4" cols="60"></textarea>';
+            echo '<textarea  autocomolete="off"  placeholder="Escribe aqui tu comentario "  name="comentarios" id="'.$obj->IdEncuestaDetalle.'"  class=" Respuesta required inputRepuesta" ></textarea>';
 
             break;
-        case '4':
+            case '4':
+          echo '<input type="number" placeholder="Introduce un numero entre 1 y 10" class=" Respuesta required inputRepuesta" id="'.$obj->IdEncuestaDetalle.'" name="cantidad" min="1" max="10"><br>';
 
             break;
         case '5':
@@ -166,7 +159,7 @@ foreach ($Repuesta as $objRepuesta) {
             $numero_registro = $resultado->rowCount();
             if (0 !== $numero_registro) {
                 while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                    echo '    <label><input type="radio" class="Repuesta" id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada'.$obj->IdEncuestaDetalle.'" value="'.$registro['ImagenDescripcion'].'" /><img class="pequeña" src="../'.$registro['ImagenRuta'].'"></label>';
+                    echo '    <label><input type="radio" class="Respuesta valorRepuesta required RepuestaRadio" id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada'.$obj->IdEncuestaDetalle.'" value="'.$registro['ImagenDescripcion'].'/'.$registro['ValorImagen'].'" /><img class="pequeña" src="../'.$registro['ImagenRuta'].'"></label>';
                 }
             } else {
                 echo '<option value="">  Tipo de repuesta no disponibles </option>';
@@ -177,23 +170,43 @@ foreach ($Repuesta as $objRepuesta) {
         case '7':
         case '8':
 
-            echo '<input type="radio" required class="Repuesta checkval'.$obj->IdEncuestaDetalle.'" id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada'.$obj->IdEncuestaDetalle.'" value="'.$objRepuesta.'"> '.$objRepuesta.' <br>';
+            echo '<input type="radio" required class="Respuesta RepuestaRadio valorRepuesta required checkval'.$obj->IdEncuestaDetalle.'" id="'.$obj->IdEncuestaDetalle.'" name="OpcionSelecionada'.$obj->IdEncuestaDetalle.'" value="'.$objRepuesta.'/'.$ValorRepuesta[$x].'"> '.$objRepuesta.' <br>';
+++$x;
 
             break;
+            case '9':
+            echo ' <input type="text"  id="'.$obj->IdEncuestaDetalle.'"  placeholder="Escribe aqui"  required class="Respuesta required  inputRepuesta RepuestaInput"></input> </br>';
+
+            break;
+            case '10':
+            echo '<select class="ClienteSelet2 Respuesta inputRepuesta" id="'.$obj->IdEncuestaDetalle.'">';
+ echo '<option disabled selected value></option>';
+$sql = 'SELECT * FROM  tbl_Empleados WHERE Activo = :activo';
+$resultado = $base->prepare($sql);
+$resultado->execute([':activo' => 1]);
+
+while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+    echo '<option  data-select2-id="'.$registro['Codigo'].'" value="'.$registro['Nombre'].'">'.$registro['Nombre'].'</option>';
+}
+echo '</select>';
+
+break;
     }
 }
 ?>
       </div> <!--Campo de Repuesta-->
-
-
+<div class="error_message_holder"></div>
+    </div>
       </div> <!-- Numero de pregunta-->
 <?php
 ++$contador; endforeach; ?>
 
 
 </div > <!-- CampoPregunta-->
-<div id ="buttonSent" class="BotonEnviar"></div>
-<div id ="Paginacion" class="divPaginacion"></div>
+
+
+
+</br><button type="submit" name="add" id ="buttonSent"  class="btn btn-success add"> Enviar encuesta</button>
 
 </div>  <!-- Conenedor-->
 
@@ -201,71 +214,155 @@ foreach ($Repuesta as $objRepuesta) {
 
 
 </form>
-
+<script src="../js/jquery.js"></script>
+<script src="../js/jquery.validate.min.js"></script>
+<script src="../js/jPaginate.js"></script>
+<script src="../js/sweetalert.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 <script>
 
 
 
+
+
+/*
 $(function(){
     $(".BloquePregunta").jPaginate();
 
 });
 
-function enviarResultado(){
+*/
 
- if(<?php echo $idClientes; ?> !== N_A){
-   idcliente = <?php echo $idClientes; ?>;
- }else {
- idcliente = '';
- }
-  var resultado=[];
-  var IdEncuesta =$('.Cabecera').attr('id');
-  resultado.push({
-
-    Id_Pregunta:[],
-    RepuestaSelec:[],
-    IdEncuesta:IdEncuesta,
-    IdCliente: idcliente
-});
-$.each(resultado, function( index, value){
-    $("#formEnviarEncuesta :input.Repuesta:checked").each(function(){
-      value.RepuestaSelec.push($(this).val());
-      value.Id_Pregunta.push($(this).attr('id'));
-
-      });
-    });
-
-  var EncuestaArray = JSON.stringify(resultado);
-
-console.log(EncuestaArray);
-
-  $.ajax({
-  type: 'POST',
-    url: '../../Controlador/GuardarEditarEncuesta.php',
-  dataType: "text",
-  data: { 'EncuestaArray': JSON.stringify(resultado) },
-  success: function(html){
-  swal("Gracias!", "Gracias por preferirnos!", "success");
-$('.sa-confirm-button-container').click(function(){
-
-  <?php   UpdateClienteEvaluar($idClientes); ?>
-  setTimeout(function()
-   {
-       location.href ="EncuestaFinalizar.php";
-
-   }, 100);
-
-})
-
-
+function toTop() {
+window.scrollTo(0, 0)
 }
 
+$(document).ready(function() {
+
+     var boton = $('.go-top-btn');
+
+     $(window).on('scroll', function() {
+         var scrollTop = $(window).scrollTop();
+
+
+         if (scrollTop >= 500) {
+             boton.addClass('visible');
+         } else {
+             boton.removeClass('visible');
+         }
+     });
+
+
+     $('.ClienteSelet2').select2();
+
+
+
+
+
+            $('#formEnviarEncuesta').validate({
+                  errorPlacement: function(error, element) {
+                        error.html('Esta campo es requerido');
+                           if(element.closest('.form_field').find('label.error').length == 0){
+                               error.insertBefore( element.closest('.form_field').find('.error_message_holder') );
+                        }
+              },
+
+          submitHandler: function(form){
+
+            if('<?php echo $idClientes; ?>' !== 'N_A'){
+              idcliente = <?php echo $idClientes; ?>;
+            }else {
+              idcliente = '';
+            }
+            var resultado=[];
+            var IdEncuesta =$('.Cabecera').attr('id');
+            var token = '<?php echo $token; ?>' ;
+            resultado.push({
+
+              Id_Pregunta:[],
+              RepuestaSelec:[],
+              IdEncuesta:IdEncuesta,
+              valorRepuesta:[],
+              IdCliente: idcliente,
+              token:token,
+
+            });
+            $.each(resultado, function( index, value){
+              $("#formEnviarEncuesta :input.Respuesta").each(function(){
+                if($(this).hasClass('RepuestaRadio') && this.checked){
+
+                  if ($(this).hasClass('valorRepuesta')){
+                  $repuestaCompleta = $(this).val().split('/');
+                  value.RepuestaSelec.push($repuestaCompleta[0]);
+                  value.valorRepuesta.push($repuestaCompleta[1]);
+                    value.Id_Pregunta.push($(this).attr('id'));
+
+                }else{
+
+                  value.valorRepuesta.push(' ');
+                  value.RepuestaSelec.push($(this).val());
+                  value.Id_Pregunta.push($(this).attr('id'));
+                }
+
+              }
+
+              if ($(this).hasClass('CampoCheck') && this.checked){
+
+                value.valorRepuesta.push(' ');
+                value.RepuestaSelec.push($(this).val());
+                value.Id_Pregunta.push($(this).attr('id'));
+
+              }
+              if ($(this).hasClass('inputRepuesta')){
+                value.valorRepuesta.push(' ');
+                value.RepuestaSelec.push($(this).val());
+                value.Id_Pregunta.push($(this).attr('id'));
+
+              }
+
+              });
+
+
+
+
+            });
+
+            var EncuestaArray = JSON.stringify(resultado);
+
+            console.log(resultado);
+
+                $.ajax({
+                type: 'POST',
+                url: '../../Controlador/GuardarEditarEncuesta.php',
+                dataType: "text",
+                data: { 'EncuestaArray': JSON.stringify(resultado) },
+                success: function(html){
+                swal("Gracias!", "Gracias por completar la encuesta!", "success");
+                $('.sa-confirm-button-container').click(function(){
+
+                <?php   UpdateClienteEvaluar($idClientes, $token); ?>
+                setTimeout(function()
+                {
+                location.href ="EncuestaFinalizar.php";
+
+                  }, 100);
+
+              })
+
+              }
+
+                });
+              }
+          });
+
 });
-
-}
-
 </script>
 
 
   </body>
+
+  <footer>
+  <a class="go-top-btn" value="Top" onClick=toTop()></a>
+  </footer>
 </html>

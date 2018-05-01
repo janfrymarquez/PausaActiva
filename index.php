@@ -1,10 +1,12 @@
-  <?php
+<?php
 
 session_start();
 if (isset($_SESSION['userlog'])) {
     $fechaGuardada = $_SESSION['ultimoAcceso'];
     $idUsuario = $_SESSION['IdUsuarioActual'];
     $permiso = $_SESSION['Permiso'];
+    $usar = $_SESSION['userlog'];
+    $email = $_SESSION['email'];
     switch ($_SESSION['Permiso']) {
         case '2':
             header('Location:Vista/charts.php');
@@ -54,7 +56,7 @@ $base = $Conexion->Conexion();
     <meta charset="utf-8">
      <link rel="icon" href="Vista/img/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Analytic Soluction</title>
+    <title>Bon Encuesta</title>
     <link href="Vista/css/bootstrap.min.css" rel="stylesheet">
     <link href="Vista/css/fontawesome-all.css" rel="stylesheet">
     <link href="Vista/css/font-awesome.min.css" rel="stylesheet">
@@ -68,8 +70,9 @@ $base = $Conexion->Conexion();
     <script src="Vista/js/select2.min.js"></script>
 
     <script src="Vista/js/sweetalert.js"></script>
+
     <!--Custom Font-->
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
 
   </head>
   <body>
@@ -79,12 +82,55 @@ $base = $Conexion->Conexion();
               <div class="container-fluid">
                   <div class="navbar-header">
 
-                      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar-collapse"><span class="sr-only">Toggle navigation</span>
+                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar-collapse"><span class="sr-only">Toggle navigation</span>
                           <span class="icon-bar"></span>
                           <span class="icon-bar"></span>
                           <span class="icon-bar"></span></button>
 
-                      <a class="navbar-brand" href="#"><span>Encuesta </span> </span> Analytic Soluction</a>
+                      <a class="navbar-brand" href="#"><span> Bon</span> </span> Encuesta</a>
+
+                      <ul class="navbar-right navbar-nav ">
+                     <li class="dropdown">
+                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                             <span class="glyphicon glyphicon-user"></span>
+                             <strong><?php echo $usar; ?></strong>
+                             <span class="glyphicon glyphicon-chevron-down"></span>
+                         </a>
+                         <ul class="dropdown-menu">
+                             <li>
+                                 <div class="navbar-login">
+                                     <div class="row">
+                                         <div class="col-lg-4">
+                                             <p class="text-center">
+                                               <img src="Vista/img/<?php echo $_SESSION['profileimg']; ?> " class="img-responsive" alt="">
+                                             </p>
+                                         </div>
+                                         <div class="col-lg-8">
+                                             <p class="text-left"><strong><?php echo $usar; ?></strong></p>
+                                             <p class="text-left small"><?php echo $email; ?></p>
+                                             <p class="text-left">
+                                                 <a href="Vista/ActualizarPerfil.php" class="btn btn-primary btn-block btn-sm">Actualizar Datos</a>
+                                             </p>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </li>
+                             <li class="divider"></li>
+                             <li>
+                                 <div class="navbar-login navbar-login-session">
+                                     <div class="row">
+                                         <div class="col-lg-12">
+                                             <p>
+                                                 <a  href="Vista/logout.php" class="btn btn-danger btn-block">Cerrar Sesion</a>
+                                             </p>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </li>
+                         </ul>
+                     </li>
+                   </ul>
+                  </div>
 
                   </div>
               </div><!-- /.container-fluid -->
@@ -167,9 +213,7 @@ switch ($permiso) {
 
 
                     <ul class="children collapse" id="sub-item-1">
-                           <li><a class="" href="Vista/ModificarUsuario.php">
-                                   <span class="fas fa-user"></span> Usuarios
-                               </a></li>
+
                            <li><a class="" href="Vista/Clientes.php">
                                    <span class="glyphicon glyphicon-usd"></span> Clientes
                                </a></li>
@@ -180,9 +224,7 @@ switch ($permiso) {
                            <li><a class="" href="#">
                                    <span class="glyphicon glyphicon-eye-open"></span> Supervidores
                                </a></li>
-                           <li><a class="" href="#">
-                                   <span class="fa fa-line-chart"></span> Encuesta
-                               </a></li>
+
                       </ul>
                   </li>
 
@@ -209,7 +251,7 @@ switch ($permiso) {
           <li><a href="index.php">
             <em class="fa fa-home"></em>
           </a></li>
-          <li class="active">Dashboard</li>
+          <li class="active">HOME</li>
         </ol>
       </div><!--/.row-->
 
@@ -221,23 +263,24 @@ switch ($permiso) {
 
 <div class="container">
 
-  <div id="EncuestaOpciones">
-        <ul class="ulMenu">
-        </ul>
-  </div>
 
   <div class="row">
     <div align="center">
-      <button class="btn btn-default filter-button active" data-filter="all">Todas</button>
+
   <?php
-$sql = 'SELECT * FROM  tbl_encuesta_cabecera WHERE CreadoPorUsuarioId = :Usuario';
+$sql = 'SELECT distinct   SubTipoEncuenta, SubTipoEncuestaDetalle FROM  tbl_encuesta_cabecera WHERE CreadoPorUsuarioId = :Usuario';
 $resultado = $base->prepare($sql);
 $resultado->execute([':Usuario' => $idUsuario]);
 $numero_registro = $resultado->rowCount();
 if (0 !== $numero_registro) {
+    echo '<button class="btn btn-default filter-button active" data-filter="all">Todas</button>';
     while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-        echo '<button class="btn btn-default filter-button" data-filter="F'.$registro['SubTipoEncuenta'].'">'.$registro['SubTipoEncuestaDetalle'].'</button>';
+        if (0 !== $registro['SubTipoEncuenta']) {
+            echo '<button class="btn btn-default filter-button" data-filter="F'.$registro['SubTipoEncuenta'].'">'.$registro['SubTipoEncuestaDetalle'].'</button>';
+        }
     }
+} else {
+    echo '<div class="NoEncuestaActive"> No ha creado ninguna plantilla Consulte Crear Encuesta</div> <a href="Vista\FormularioEncuesta.php">Pulse aqui para crear</a>';
 }
 $resultado->closeCursor();
 ?>
@@ -254,6 +297,7 @@ $resultado->execute([':Usuario' => $idUsuario]);
 $numero_registro = $resultado->rowCount();
 if (0 !== $numero_registro) {
     while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+        $nombreEncusta = $registro['NombreEncuesta'];
         if (null === $registro['FechaModificacion']) {
             $fecha = $registro['FechaCreacion'];
         } else {
@@ -272,6 +316,10 @@ if (0 !== $numero_registro) {
 }
 ?>
 
+<div id="EncuestaOpciones">
+      <ul class="ulMenu">
+      </ul>
+</div>
 
 
 </div>
@@ -296,12 +344,12 @@ if (0 !== $numero_registro) {
  <center><div id="CargandoPagina"></div></center>
 
             <div class="form-group ClienteOption">
-<input type="radio" id="USuarioHB" name="Cliente"  checked value="TU">Todo los usuarios</br>
+<input type="radio" id="USuarioHB" name="Cliente"  checked value="TU">Todo los usuarios </span &nbsp;>
+<input type="radio" id="Departamento" name="Cliente"  value="CE">Por departamento </span &nbsp;>
+<input type="radio" id="Heladerias" name="Cliente" value="TH">Todas las heladerias</span &nbsp;>
 
-<input type="radio" id="Departamento" name="Cliente"  value="CE">Por departamento</br>
-<input type="radio" id="Heladerias" name="Cliente" value="TH">Todas las heladerias </br>
-
-<input type="radio" id="ClienteOpction" name="Cliente"  value="CE">Clientes en especifico</br>
+<input type="radio" id="ClienteOpction" name="Cliente"  value="CE">Clientes en especifico</span &nbsp;>
+<input type="radio" id="NoAplica" name="Cliente"  value="NA">No aplica</span &nbsp;>
 
 
 </div>
@@ -391,8 +439,8 @@ $resultado->closeCursor();
               <label for="recipient-name" class="col-form-label">Evaluador (*):</label></br>
               <span id="iconForm" class="form-control-feedback Span_Evaluador "></span>
 
-              <select class="EvaludarSelec" id="EvaludarSelec" style="width: 100%" multiple="multiple">
-
+              <select title="Selecione un usuario o agrege un correo" class="EvaludarSelec" id="EvaludarSelec" style="width: 100%" multiple="multiple">
+            <option  disabled >Selecione un usuario o agrege un correo</option>
 
                 <?php
 $fecha = '';
@@ -401,13 +449,18 @@ $resultado = $base->prepare($sql);
 $resultado->execute([':activo' => 1]);
 
 while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
-    echo '<option  value="'.$registro['IdUsuario'].'">'.$registro['Nombre'].'</option>';
+    echo '<option  value="'.$registro['Email'].'">'.$registro['Nombre'].'</option>';
 }
 $resultado->closeCursor();
 ?>
               </select>
               <div class="Error_Evaluador error"></div>
             </div>
+
+
+
+
+
             <div class="form-group">
               <label for="message-text" class="col-form-label">Mensaje(opcional):</label>
               <textarea class="form-control" id="message-text"></textarea>
@@ -422,7 +475,7 @@ $resultado->closeCursor();
         </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary MymodalClose" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Enviar</button>
+        <button type="button" class="btn btn-primary SentEmail " onclick="SentEmail()">Enviar Correo</button>
       </div>
     </div>
   </div>
@@ -463,9 +516,6 @@ $resultado->closeCursor();
 </div>
 </div>
 
-  <!-- Mode -->
-
-
 
 
 
@@ -485,6 +535,8 @@ $(document).ready(function(){
 
   $(".Cliente-group").hide();
   $(".Departamento-group").hide();
+  $('.Evaluado-group').hide();
+      $('.modalbottons').hide();
 
   $( '#USuarioHB, #Heladerias').on( 'click', function() {
     if( $(this).is(':checked') ){
@@ -492,7 +544,8 @@ $(document).ready(function(){
       $('.ClienteSelect').val(null).trigger('change');
   $(".Cliente-group").hide();
   $(".Departamento-group").hide();
-
+  $('.SentEmail').show();
+$('.Evaluado-group').hide();
 
     }
 });
@@ -503,15 +556,29 @@ $('#ClienteOpction').on( 'click', function() {
     $('#DepartamentoSelect').val(null).trigger('change');
       $(".Departamento-group").hide();
 $(".Cliente-group").show();
-
+$('.SentEmail').show();
+$('.Evaluado-group').show();
   }
 });
+$('#NoAplica').on( 'click', function() {
+  if( $(this).is(':checked') ){
+    $('#DepartamentoSelect').val(null).trigger('change');
+      $(".Departamento-group").hide();
+$(".Cliente-group").hide();
+$('.SentEmail').hide();
+$('.Evaluado-group').show();
+  }
+});
+
+NoAplica
 
 $('#Departamento').on( 'click', function() {
   if( $(this).is(':checked') ){
     $('.ClienteSelect').val(null).trigger('change');
       $(".Cliente-group").hide();
 $(".Departamento-group").show();
+$('.SentEmail').show();
+$('.Evaluado-group').show();
 
   }
 });
@@ -531,9 +598,31 @@ $('.UrlCopiadoClose').on('click', function() {
       width: 'resolve'
   });
 
+
+
   $('.EvaludarSelec').select2({
-      width: 'resolve'
-  });
+
+    placeholder: {
+      id: '-1',
+      text: 'Seleciones un usuario o agrege un correo'
+    },
+    width: 'resolve',
+    tags: true,
+   tokenSeparators: [',', ' '],
+   createTag: function (params) {
+    var caract = new RegExp(/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/);
+    if (caract.test(params.term)  == false) {
+      // Return null to disable tag creation
+      return null;
+    }
+
+    return {
+      id: params.term,
+      text: params.term
+    }
+  }
+
+});
 
   //Ocultamos el menú al cargar la página
   $("#EncuestaOpciones").hide();
@@ -584,10 +673,15 @@ $(".Mas-Opciones").click("contextmenu", function(e) {
 
     var  permiso_url = $(this).val();
     switch (permiso_url) {
+      case '1':
+      $('.FechaExpiracion').hide();
+      $('.modalbottons').hide();
+       break;
 
        case '3':
        case '4':
        $('.FechaExpiracion').show();
+       $('.modalbottons').show();
        $('.FechaExpiracion').html('<label for="recipient-name" class="col-form-label">Fecha de Expiración:</label><input type="text" placeholder="Especifique una fecha" class="form-control UrlDateExpire" id="datepicker">');
        $( "#datepicker" ).datepicker({ minDate: 0,
                                       changeMonth: true,
@@ -596,6 +690,7 @@ $(".Mas-Opciones").click("contextmenu", function(e) {
 
         default:
         $('.FechaExpiracion').hide();
+        $('.modalbottons').show();
  break;
     }
   });
@@ -626,6 +721,69 @@ $(".Mas-Opciones").click("contextmenu", function(e) {
  $(this).addClass("active");
 
 });
+
+function SentEmail(){
+
+  EncuestaId2 =$('.getUrlEncuesta').attr("id");
+var mensaja = $('#message-text').val();
+  var Cliente = $('#ClienteSelect').val();
+  var Departamento = $('#DepartamentoSelect').val();
+  var Evaluador = $('#EvaludarSelec').val();
+ var NombreEncuesta = '<?php echo $nombreEncusta; ?>';
+
+if(Evaluador ==''){
+Evaluador = null;
+}
+if(Cliente == '' && Departamento == ''  ){
+  ClienteEvaluado = null;
+
+}
+ else if (Cliente != ''){
+  ClienteEvaluado = Cliente;
+}
+else {
+  ClienteEvaluado =Departamento;
+}
+
+
+    $.ajax({
+      type: 'POST',
+      url: 'Controlador/EncuestaControlador.php',
+      data: {'SentEncuestaMail': $('.getUrlEncuesta').attr("id"),
+      'FechaExpiracion': $('.UrlDateExpire').val(),
+      'PermisoUrl': $('.PermisoCompartir').val(),
+      'ClienteAEvaluar':ClienteEvaluado,
+      'Evaluador':  Evaluador,
+      'mensaje' :mensaja,
+      'nombreEncuesta' :NombreEncuesta,
+       'clienteoption' :$('input:radio[name=Cliente]:checked').val()},
+
+ beforeSend: function(objeto) {
+          $("#CargandoPagina").addClass('loader');
+        },
+
+      success: function(html){
+console.log(html);
+         $('#ClienteSelect').val(null).trigger('change');
+               $('#EvaludarSelec').val(null).trigger('change');
+                $("#CargandoPagina").removeClass('loader');
+                $('#myModal').modal('toggle');
+                if(html == 'success'){
+                  swal("Buen trabajo!", "Tu mensaje ha sido enviado!", "success");
+                }else {
+                  swal ( "Oops" ,  "Algo salio mal" ,  "error" );
+                  console.log(html);
+                }
+
+
+
+
+      }
+
+
+    });
+
+}
 
 
 

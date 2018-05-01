@@ -1,0 +1,12 @@
+
+[26-Apr-2018 13:49:18 America/Santo_Domingo] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/hbon/public_html/bonencuesta.com.do/Vista/EncuestaView/PrepareEncuesta.php:65) in /home/hbon/public_html/bonencuesta.com.do/Vista/EncuestaView/PrepareEncuesta.php on line 69
+[26-Apr-2018 18:19:36 UTC] PHP Parse error:  syntax error, unexpected end of file in /home/hbon/public_html/bonencuesta.com.do/Vista/EncuestaView/Encuestaevaluado.php on line 97
+[26-Apr-2018 18:19:55 UTC] PHP Parse error:  syntax error, unexpected end of file in /home/hbon/public_html/bonencuesta.com.do/Vista/EncuestaView/Encuestaevaluado.php on line 97
+[26-Apr-2018 18:19:57 UTC] PHP Parse error:  syntax error, unexpected end of file in /home/hbon/public_html/bonencuesta.com.do/Vista/EncuestaView/Encuestaevaluado.php on line 97
+[26-Apr-2018 18:20:14 UTC] PHP Parse error:  syntax error, unexpected end of file in /home/hbon/public_html/bonencuesta.com.do/Vista/EncuestaView/Encuestaevaluado.php on line 97
+[26-Apr-2018 18:21:02 UTC] PHP Parse error:  syntax error, unexpected end of file in /home/hbon/public_html/bonencuesta.com.do/Vista/EncuestaView/Encuestaevaluado.php on line 97
+[26-Apr-2018 18:21:41 UTC] PHP Parse error:  syntax error, unexpected end of file in /home/hbon/public_html/bonencuesta.com.do/Vista/EncuestaView/Encuestaevaluado.php on line 97
+[26-Apr-2018 18:28:10 UTC] PHP Parse error:  syntax error, unexpected end of file in /home/hbon/public_html/bonencuesta.com.do/Vista/EncuestaView/Encuestaevaluado.php on line 97
+[26-Apr-2018 18:28:14 UTC] PHP Parse error:  syntax error, unexpected end of file in /home/hbon/public_html/bonencuesta.com.do/Vista/EncuestaView/Encuestaevaluado.php on line 97
+[26-Apr-2018 18:34:00 UTC] PHP Parse error:  syntax error, unexpected end of file in /home/hbon/public_html/bonencuesta.com.do/Vista/EncuestaView/Encuestaevaluado.php on line 90
+[26-Apr-2018 18:34:03 UTC] PHP Parse error:  syntax error, unexpected end of file in /home/hbon/public_html/bonencuesta.com.do/Vista/EncuestaView/Encuestaevaluado.php on line 90

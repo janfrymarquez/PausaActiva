@@ -1,74 +1,59 @@
-
 <?php
 
-include "../Modelo/cls_usuario.php";
-if (isset($_POST["enviar"])) {
 
-    $usuario  = htmlentities(addslashes($_POST["Usuario"]));
-    $password = htmlentities(addslashes($_POST["Password"]));
+  if (isset($_GET['token'])) {
+      $token = $_GET['token'];
+  } else {
+      $token = 'none';
+  }
 
-    $user = new Usuario();
-
-    $user->VerificarUser($usuario, $password);
-
-    /* if ($login) {
-
-session_start();
-
-$_SESSION["userlog"] = $_POST["Usuario"];
-
-header("Location:../index.php");
-
-}*/
-}
 ?>
-
-
-
-
 <!DOCTYPE html>
-
-
 <html >
-<head>
-  <meta charset="UTF-8">
-  <title>Login Encuesta</title>
- <link rel="icon" href="img/favicon.ico">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+<head><meta http-equiv="Content-Type" content="text/html; charset=euc-jp">
 
-  <link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900'>
-<link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Montserrat:400,700'>
-<link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+  <title>Login Encuesta</title>
+
 
       <link rel="stylesheet" href="css/styleLogin.css">
+      <link href="css/bootstrap.min.css" rel="stylesheet">
+      <link href="css/fontawesome-all.css" rel="stylesheet">
+      <link href="css/font-awesome.min.css" rel="stylesheet">
 
 
 </head>
 
 <body>
 
+
+
+
 <div class="container">
   <div class="info">
-    <h1> Encuesta Analytic Soluction</h1>
+    <h1> Sistema BonEncuesta</h1>
   </div>
+
+
 </div>
-<div class="form" >
-  <div class="thumbnail"><img src="img/logo.png"><br/></div>
-  <form class="register-form">
 
-    <input type="text" placeholder="Correo electriconico" name "Correo" id "Correo"/>
-    <button>Aceptar</button>
-  </form>
 
-  <form class="login-form" action ="login.php" method="POST">
+<div class="Logincontainer"  >
 
-    <input type="text" placeholder="Usuario"  name="Usuario" id="Usuario"/>
 
-    <input type="password" placeholder="Contraseña" name="Password" id= "Password"/>
+                  <div id="login-detail" class="hidden">
+                      <div id="login-status-messaje"><i class="fas fa-exclamation-triangle"> El inicio de sesión no es válido</i></div>
+                  </div>
+  <div class="thumbnail"><img src="img/Logo.png"><br/></div>
+
+  <form id="FormLogin" >
+
+    <input type="text" placeholder="Usuario" class="required"  name="Usuario" id="Usuario"/>
+    <input type="text"  hidden name="token" id="token"  value="<?php echo $token; ?>" />
+    <input type="password" placeholder="Contraseña" class="required" autocomplete="false" name="Password" id= "Password"/>
 
 <input type="checkbox" name="recordar" value="recordar"> Recordar Credenciales
 
-    <input id="button" type="submit" value="Entrar" name="enviar" id="enviar" >
+    <button id="button" type="button"  >Entrar</button>
     <p class="message"> <a href="#">¿Olvidó su contraseña?</a></p>
   </form>
 
@@ -77,11 +62,9 @@ header("Location:../index.php");
 
 </div>
 
+  <script src="js/jquery.js"></script>
+  <script src="js/login.js"></script>
 
-
-  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-
-    <script src="js/login.js"></script>
 
 </body>
 </html>
